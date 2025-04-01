@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   is_map_valid.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jacobmaizel <jacobmaizel@student.42.fr>    +#+  +:+       +#+        */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 13:12:10 by jacobmaizel       #+#    #+#             */
-/*   Updated: 2025/03/31 13:16:16 by jacobmaizel      ###   ########.fr       */
+/*   Updated: 2025/04/01 10:51:34 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,40 @@ int	is_map_closed(char **map, int width, int height)
 		y++;
 	}
 	return (1);
+}
+
+void	init_player(t_game *game, int x, int y, char dir)
+{
+	game->player.x = x + 0.5;
+	game->player.y = y + 0.5;
+	if (dir == 'N')
+	{
+		game->player.dir_x = 0;
+		game->player.dir_y = -1;
+		game->player.plane_x = 0.66;
+		game->player.plane_y = 0;
+	}
+	else if (dir == 'S')
+	{
+		game->player.dir_x = 0;
+		game->player.dir_y = 1;
+		game->player.plane_x = -0.66;
+		game->player.plane_y = 0;
+	}
+	else if (dir == 'E')
+	{
+		game->player.dir_x = 1;
+		game->player.dir_y = 0;
+		game->player.plane_x = 0;
+		game->player.plane_y = 0.66;
+	}
+	else if (dir == 'W')
+	{
+		game->player.dir_x = -1;
+		game->player.dir_y = 0;
+		game->player.plane_x = 0;
+		game->player.plane_y = -0.66;
+	}
 }
 
 /*
