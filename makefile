@@ -1,63 +1,88 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/03/28 14:37:22 by jmaizel           #+#    #+#              #
-#    Updated: 2025/03/28 14:37:24 by jmaizel          ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+NAME = cub3D
+CC = gcc
+CFLAGS = -Wall -Wextra -Werror
+INCLUDES_DIR = ./includes
+LIBFT_DIR = ./libft
+MLX_DIR = ./minilibx-linux
 
-# Compiler et flags
-CC      = gcc
-CFLAGS  = -Wall -Wextra -Werror
+# Répertoires sources et objets
+SRC_DIR = ./srcs
+OBJ_DIR = ./objs
+MAIN_DIR = $(SRC_DIR)/main
+PARSING_DIR = $(SRC_DIR)/parsing
+RAYCASTING_DIR = $(SRC_DIR)/raycasting
 
-# Nom du programme
-NAME    = cub3D
-
-# Répertoires
-SRC_DIR     = ./src
-OBJ_DIR     = ./obj
-LIBFT_DIR   = ./libft
-MLX_FLAGS   = -lmlx -lXext -lX11 -lm
+# Bibliothèques
+LIBFT = $(LIBFT_DIR)/libft.a
+MLX = $(MLX_DIR)/libmlx.a
+MLX_FLAGS = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm
+LIBS = -L$(LIBFT_DIR) -lft $(MLX_FLAGS)
 
 # Includes
-INCLUDES    = -I$(LIBFT_DIR) -I$(SRC_DIR) -I.
+INCLUDES = -I$(INCLUDES_DIR) -I$(LIBFT_DIR)/includes -I$(MLX_DIR)
 
-# Fichiers source
-SRC_FILES = 
-SRC       = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
-OBJ       = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+# Fichiers sources
+MAIN_FILES = main.c
+PARSING_FILES = parsing_cub_file.c parsing_map.c is_map_valid.c utils.c
+RAYCASTING_FILES = raycasting.c textures.c movement.c
 
-# Libs
-LIBFT      = $(LIBFT_DIR)/libft.a
 
-# Règle par défaut
+# Rassembler tous les fichiers source
+SRC_FILES = $(addprefix $(MAIN_DIR)/, $(MAIN_FILES)) \
+            $(addprefix $(PARSING_DIR)/, $(PARSING_FILES)) \
+            $(addprefix $(RAYCASTING_DIR)/, $(RAYCASTING_FILES))
+
+# Objets générés à partir des sources
+OBJS = $(SRC_FILES:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+
+# Comptage pour la barre de progression
+TOTAL_FILES := $(words $(SRC_FILES))
+COMPILED_FILES := 0
+
+# Définition de la barre de progression
+define progress_bar
+	@$(eval COMPILED_FILES=$(shell echo $$(($(COMPILED_FILES) + 1))))
+	@PROGRESS=$$(($(COMPILED_FILES) * 100 / $(TOTAL_FILES))); \
+	BAR=$$(seq -s= $$(($$PROGRESS / 5)) | sed 's/[0-9]//g'); \
+	printf "\rCompiling [%-20s] %d%%" "$$BAR" "$$PROGRESS"
+endef
+
+# Règles
 all: $(NAME)
 
-# Compilation du programme
-$(NAME): $(OBJ) $(LIBFT)
-	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -o $(NAME) $(MLX_FLAGS)
+$(NAME): $(OBJS) $(LIBFT) $(MLX)
+	@echo "\nLinking $(NAME)..."
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBS)
+	@echo "\n$(NAME) successfully built!"
 
-# Compilation des .o dans obj/
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	$(call progress_bar)
 
-# Compilation de libft
+$(OBJ_DIR):
+	@mkdir -p $(OBJ_DIR)/main
+	@mkdir -p $(OBJ_DIR)/parsing
+	@mkdir -p $(OBJ_DIR)/ray_casting
+
 $(LIBFT):
-	@$(MAKE) -C $(LIBFT_DIR)
+	@make --no-print-directory -C $(LIBFT_DIR)
 
-# Nettoyage
+$(MLX):
+	@make --no-print-directory -C $(MLX_DIR)
+
 clean:
-	rm -rf $(OBJ_DIR)
-	@$(MAKE) -C $(LIBFT_DIR) clean
+	@echo "Cleaning object files..."
+	@rm -rf $(OBJ_DIR)
+	@make clean --no-print-directory -C $(LIBFT_DIR)
+	@make clean --no-print-directory -C $(MLX_DIR)
+	@echo "Object files cleaned!"
 
 fclean: clean
-	rm -f $(NAME)
-	@$(MAKE) -C $(LIBFT_DIR) fclean
+	@echo "Cleaning executable..."
+	@rm -f $(NAME)
+	@make fclean --no-print-directory -C $(LIBFT_DIR)
+	@echo "Executable cleaned!"
 
 re: fclean all
 

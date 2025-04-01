@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 13:12:10 by jacobmaizel       #+#    #+#             */
-/*   Updated: 2025/04/01 10:51:34 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/01 11:51:19 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ int	is_map_closed(char **map, int width, int height)
 	char	c;
 
 	int x, y;
+	(void)width;
 	y = 0;
 	while (y < height)
 	{
@@ -106,7 +107,7 @@ int	validate_map(t_game *game)
 			if (ft_strchr("NSEW", c))
 			{
 				if (player_count++)
-					return (exit_error("Error\nPlus d’un joueur trouvé"), 0);
+					return (exit_error("Error\nPlus d'un joueur trouvé"), 0);
 				init_player(game, x, y, c);
 			}
 			x++;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_map.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jacobmaizel <jacobmaizel@student.42.fr>    +#+  +:+       +#+        */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 12:11:54 by jacobmaizel       #+#    #+#             */
-/*   Updated: 2025/03/31 12:30:38 by jacobmaizel      ###   ########.fr       */
+/*   Updated: 2025/04/01 11:53:35 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,17 +46,13 @@ ok la on passe dans le parsing de la map	uniquement(pas que le .cub)
 2. on compte combien de ligne fait la map pour pouvoir l alouer apres et faire une copie
 3. ensuite on appelle les fonctions de parsing avec validat_map
 */
-int	parse_map(char **lines, t_game *game)
+int	parse_map(char **lines, t_game *game, int start_index)
 {
 	int	i;
 	int	start;
 	int	map_lines;
 
-	i = 0;
-	while (lines[i] && !ft_strchr("01NSEW", lines[i][0]))
-		i++;
-	if (!lines[i])
-		return (exit_error("Error: No Map\n"), 0);
+	i = start_index; // Commencer à partir de l'index spécifié
 	start = i;
 	map_lines = 0;
 	while (lines[i] && ft_strchr(" 01NSEW", lines[i][0]))
@@ -76,7 +72,7 @@ int	parse_map(char **lines, t_game *game)
 	game->map.grid[i] = NULL;
 	game->map.height = map_lines;
 	game->map.width = find_max_width(game->map.grid);
-	if (!validat_map(game))
+	if (!validate_map(game))
 		return (0);
 	return (1);
 }
