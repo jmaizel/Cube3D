@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:37:18 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/01 16:15:51 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/03 10:46:57 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ void	render_frame(t_game *game)
 		y++;
 	}
 	complete_raycasting(game);
+	draw_minimap(game);
+	draw_gun(game);
 }
 
 int	close_window(t_game *game)
@@ -132,7 +134,6 @@ void	safe_draw_textured_line(int x, t_ray *ray, t_game *game)
 		y++;
 	}
 }
-
 int	main(int argc, char **argv)
 {
 	t_game	game;

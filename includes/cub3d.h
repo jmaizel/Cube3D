@@ -15,6 +15,7 @@
 # define WIN_HEIGHT 720
 # define TEX_WIDTH 64
 # define TEX_HEIGHT 64
+# define ROT_SPEED 0.05
 
 typedef struct s_player
 {
@@ -114,5 +115,7 @@ void			rotate_right(t_game *game);
 int				close_window(t_game *game);
 void			render_frame(t_game *game);
 int				load_all_textures(t_game *game);
+void			draw_minimap(t_game *game);
+void			draw_gun(t_game *game);
 
 #endif

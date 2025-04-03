@@ -22,7 +22,7 @@ LIBS = -L$(LIBFT_DIR) -lft $(MLX_FLAGS)
 INCLUDES = -I$(INCLUDES_DIR) -I$(LIBFT_DIR)/includes -I$(MLX_DIR)
 
 # Fichiers sources
-MAIN_FILES = main.c
+MAIN_FILES = main.c draw1.c
 PARSING_FILES = parsing_cub_file.c parsing_map.c is_map_valid.c utils.c
 RAYCASTING_FILES = raycasting.c textures.c movement.c
 
