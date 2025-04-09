@@ -15,7 +15,7 @@
 # define WIN_HEIGHT 720
 # define TEX_WIDTH 64
 # define TEX_HEIGHT 64
-# define ROT_SPEED 0.05
+// Dans cub3d.h, ajoute ces définitions :
 
 typedef struct s_player
 {
@@ -59,6 +59,11 @@ typedef struct s_game
 
 	int			ceiling_color;
 	int			floor_color;
+	int			keys[256];
+	int			rotate_left;
+	int			rotate_right;
+	double		move_speed;
+	double		rot_speed;
 
 	// Image buffer
 	void		*img;
@@ -117,5 +122,6 @@ void			render_frame(t_game *game);
 int				load_all_textures(t_game *game);
 void			draw_minimap(t_game *game);
 void			draw_gun(t_game *game);
-
+int				game_loop(t_game *game);
+int				key_release(int keycode, t_game *game);
 #endif

@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:37:18 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/03 10:46:57 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/09 14:23:02 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,10 @@ int	main(int argc, char **argv)
 	if (argc != 2)
 		return (exit_error("Usage: ./cub3D map.cub"), 1);
 	ft_memset(&game, 0, sizeof(t_game));
+	game.rotate_left = 0;
+	game.rotate_right = 0;
+	game.move_speed = 0.13;
+	game.rot_speed = 0.03;
 	if (!parse_cub_file(argv[1], &game))
 		return (1);
 	game.mlx = mlx_init();
@@ -157,8 +161,10 @@ int	main(int argc, char **argv)
 			&game.size_line, &game.endian);
 	render_frame(&game);
 	mlx_put_image_to_window(game.mlx, game.win, game.img, 0, 0);
-	mlx_hook(game.win, 17, 0, close_window, &game);
 	mlx_hook(game.win, 2, 1L << 0, key_press, &game);
+	mlx_hook(game.win, 3, 1L << 1, key_release, &game);
+	mlx_hook(game.win, 17, 0, close_window, &game);
+	mlx_loop_hook(game.mlx, game_loop, &game);
 	mlx_loop(game.mlx);
 	return (0);
 }
