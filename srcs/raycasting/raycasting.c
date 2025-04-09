@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 14:08:46 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/01 14:36:57 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/09 15:06:16 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ void	init_ray(t_ray *ray, t_game *game, int x)
 	else
 		ray->delta_dist_y = fabs(1 / ray->dir_y);
 	ray->hit = 0;
+	ray->hit_type = 0;
 }
 
 /*

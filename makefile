@@ -6,7 +6,7 @@
 #    By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/28 14:37:22 by jmaizel           #+#    #+#              #
-#    Updated: 2025/04/09 13:39:10 by jmaizel          ###   ########.fr        #
+#    Updated: 2025/04/09 15:13:58 by jmaizel          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ INCLUDES = -I$(LIBFT_DIR) -I$(SRC_DIR) -I$(MLX_DIR) -I./includes
 MLX_FLAGS = $(MLX_DIR)/libmlx.a -lXext -lX11 -lm
 
 # Fichiers source
-MAIN_FILES = main.c draw1.c
+MAIN_FILES = main.c draw1.c doors.c
 PARSING_FILES = parsing_cub_file.c parsing_map.c is_map_valid.c utils.c
 RAYCASTING_FILES = raycasting.c textures.c movement.c
 

@@ -56,6 +56,9 @@ typedef struct s_game
 	t_texture	south_tex;
 	t_texture	east_tex;
 	t_texture	west_tex;
+	t_texture	door_tex;
+
+	char *door_path; // chemin vers la texture de porte
 
 	int			ceiling_color;
 	int			floor_color;
@@ -65,7 +68,15 @@ typedef struct s_game
 	double		move_speed;
 	double		rot_speed;
 
-	// Image buffer
+	// weapon
+	t_texture	weapon_tex;
+	char		*weapon_path;
+	// portes
+	int door_state[100]; // 0 = fermée, 1 = ouverte
+	int			door_count;
+	int door_positions[100][2]; // [y][x]
+
+	// buffer d'image
 	void		*img;
 	int			*img_data;
 	int			bpp;
@@ -93,6 +104,7 @@ typedef struct s_ray
 	int			line_height;
 	int			draw_start;
 	int			draw_end;
+	int			hit_type;
 }				t_ray;
 
 int				parse_cub_file(const char *filename, t_game *game);
@@ -121,7 +133,11 @@ int				close_window(t_game *game);
 void			render_frame(t_game *game);
 int				load_all_textures(t_game *game);
 void			draw_minimap(t_game *game);
-void			draw_gun(t_game *game);
+void			draw_weapon(t_game *game);
 int				game_loop(t_game *game);
 int				key_release(int keycode, t_game *game);
+void			init_doors(t_game *game);
+int				check_door_interaction(t_game *game);
+
+void			handle_movement(t_game *game);
 #endif

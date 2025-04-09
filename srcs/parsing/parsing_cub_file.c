@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:39:22 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/01 11:53:20 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/09 16:03:56 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,16 @@ int	parse_config(char **lines, t_game *game, int *map_start_index)
 			game->ceiling_color = parse_color_line(lines[i] + 2);
 			if (game->ceiling_color == -1)
 				return (0);
+			config_count++;
+		}
+		else if (ft_strncmp(lines[i], "PO ", 3) == 0)
+		{
+			game->door_path = ft_strdup(lines[i] + 3);
+			config_count++;
+		}
+		else if (ft_strncmp(lines[i], "WP ", 3) == 0)
+		{
+			game->weapon_path = ft_strdup(lines[i] + 3);
 			config_count++;
 		}
 		else if (ft_strchr("01NSEW", lines[i][0]))

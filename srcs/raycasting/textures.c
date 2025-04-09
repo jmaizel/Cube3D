@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 14:22:34 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/01 16:21:59 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/09 16:04:16 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,12 @@ int	load_all_textures(t_game *game)
 		return (0);
 	if (!load_texture(game, &game->west_tex, (char *)game->west_tex.img))
 		return (0);
+	if (!load_texture(game, &game->door_tex, game->door_path))
+		return (0);
+	if (!load_texture(game, &game->weapon_tex, game->weapon_path))
+		return (0);
+	free(game->weapon_path);
+	free(game->door_path); // libère une fois chargé
 	free(game->south_tex.img);
 	free(game->north_tex.img);
 	free(game->east_tex.img);
@@ -84,7 +90,10 @@ void	draw_textured_line(int x, t_ray *ray, t_game *game)
 
 	int tex_x, tex_y;
 	double step, tex_pos;
-	get_texture(ray, game, &tex);
+	if (ray->hit_type == 2)
+		tex = &game->door_tex;
+	else
+		get_texture(ray, game, &tex);
 	calculate_texture_x(ray, &wall_x, &tex_x, tex);
 	step = 1.0 * tex->height / ray->line_height;
 	tex_pos = (ray->draw_start - WIN_HEIGHT / 2 + ray->line_height / 2) * step;

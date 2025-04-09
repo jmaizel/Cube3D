@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:37:18 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/09 14:23:02 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/09 16:04:47 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ void	render_frame(t_game *game)
 	}
 	complete_raycasting(game);
 	draw_minimap(game);
-	draw_gun(game);
+	draw_weapon(game);
+
 }
 
 int	close_window(t_game *game)
@@ -66,11 +67,21 @@ int	close_window(t_game *game)
 	exit(0);
 	return (0);
 }
+int get_door_index(t_game *game, int x, int y)
+{
+	for (int i = 0; i < game->door_count; i++)
+	{
+		if (game->door_positions[i][0] == x && game->door_positions[i][1] == y)
+			return i;
+	}
+	return -1; // Pas trouvé
+}
 
 void	safe_perform_dda(t_ray *ray, t_game *game)
 {
 	int	max_iterations;
 	int	iterations;
+	int	door_index;
 
 	max_iterations = 100;
 	iterations = 0;
@@ -100,6 +111,16 @@ void	safe_perform_dda(t_ray *ray, t_game *game)
 		{
 			ray->hit = 1;
 		}
+		else if (game->map.grid[ray->map_y][ray->map_x] == 'P')
+		{
+			// Vérifier si la porte est fermée
+			door_index = get_door_index(game, ray->map_x, ray->map_y);
+			if (door_index >= 0 && game->door_state[door_index] == 0)
+			{
+				ray->hit = 1;
+				ray->hit_type = 2; // Porte
+			}
+		} 
 		iterations++;
 	}
 }
@@ -145,8 +166,10 @@ int	main(int argc, char **argv)
 	game.rotate_right = 0;
 	game.move_speed = 0.13;
 	game.rot_speed = 0.03;
+	game.door_count = 0;
 	if (!parse_cub_file(argv[1], &game))
 		return (1);
+	init_doors(&game);
 	game.mlx = mlx_init();
 	if (!game.mlx)
 		return (exit_error("Erreur init MLX"), 1);
