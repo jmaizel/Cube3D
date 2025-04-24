@@ -1,11 +1,11 @@
-NO ./textures/grass.xpm
-SO ./textures/purplestone.xpm
-WE ./textures/redbrick.xpm
-EA ./textures/wood.xpm
-PO ./textures/door.xpm
-WP ./textures/hache.xpm
+NO ./textures/ice_wall.xpm
+SO ./textures/ice_wall.xpm
+WE ./textures/ice_wall.xpm
+EA ./textures/ice_wall.xpm
+PO ./textures/valentin_trump_.xpm
+WP ./textures/carlin.xpm
 
-F 80,80,100
+F 153,204,255
 C 135,206,235
 
 11111111111111111111

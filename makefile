@@ -6,7 +6,7 @@
 #    By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/28 14:37:22 by jmaizel           #+#    #+#              #
-#    Updated: 2025/04/16 09:50:08 by cdedessu         ###   ########.fr        #
+#    Updated: 2025/04/16 10:29:42 by cdedessu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -64,7 +64,7 @@ $(LIBFT):
 	@make --no-print-directory -C $(LIBFT_DIR)
 
 $(MLX):
-	@make --no-print-directory -C $(MLX_DIR)
+	@make -s --no-print-directory -C $(MLX_DIR)
 
 clean:
 	@rm -rf $(OBJ_DIR)
