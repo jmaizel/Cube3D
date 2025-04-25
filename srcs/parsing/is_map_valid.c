@@ -6,21 +6,21 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 13:12:10 by jacobmaizel       #+#    #+#             */
-/*   Updated: 2025/04/09 15:00:15 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/25 13:23:26 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/*
-dans cette fonction on regarde pour chaque 0 N/S/E/W si ce n est pa au bord
-donc on regarde si il n y a pas un espace ou au bord ca veut dire que la map n est pas fermee
-*/
+/* Vérifie si la map est fermée en contrôlant les espaces autour des zones jouables */
 int	is_map_closed(char **map, int width, int height)
 {
 	char	c;
+	int		x;
+	int		y;
+	int		start;
+	int		end;
 
-	int x, y;
 	(void)width;
 	y = 0;
 	while (y < height)
@@ -29,14 +29,25 @@ int	is_map_closed(char **map, int width, int height)
 		while (map[y][x])
 		{
 			c = map[y][x];
-			if (c == '0' || ft_strchr("NSEW", c))
+			if (c == '0' || ft_strchr("PNSEW", c))
 			{
-				if (y == 0 || x == 0 || y == height - 1
-					|| x >= (int)ft_strlen(map[y]) - 1)
+				if (y == 0 || y == height - 1)
 					return (0);
-				if (map[y - 1][x] == ' ' || map[y + 1][x] == ' ' || map[y][x
-					- 1] == ' ' || map[y][x + 1] == ' ' || map[y - 1][x] == '\0'
-					|| map[y + 1][x] == '\0')
+				start = 0;
+				end = ft_strlen(map[y]) - 1;
+				while (map[y][start] == ' ')
+					start++;
+				while (end > 0 && map[y][end] == ' ')
+					end--;
+				if (x == start || x == end)
+					return (0);
+				if (y > 0 && (x >= (int)ft_strlen(map[y - 1]) || map[y - 1][x] == ' '))
+					return (0);
+				if (y < height - 1 && (x >= (int)ft_strlen(map[y + 1]) || map[y + 1][x] == ' '))
+					return (0);
+				if (x > 0 && map[y][x - 1] == ' ')
+					return (0);
+				if (x < (int)ft_strlen(map[y]) - 1 && map[y][x + 1] == ' ')
 					return (0);
 			}
 			x++;
@@ -46,6 +57,7 @@ int	is_map_closed(char **map, int width, int height)
 	return (1);
 }
 
+/* Initialise la position et l'orientation du joueur selon la direction spécifiée */
 void	init_player(t_game *game, int x, int y, char dir)
 {
 	game->player.x = x + 0.5;
@@ -80,21 +92,24 @@ void	init_player(t_game *game, int x, int y, char dir)
 	}
 }
 
-/*
-fonction qui va regarder si la map est valide maintenant, on regarde :
-1. si les caracteres sont valides
-2. si il y a bien un joueur et si il a ete trouve
-3. qui la map soit bien fernee
-*/
+/* Valide la map en vérifiant les caractères, le nombre de joueurs et si elle est fermée */
 int	validate_map(t_game *game)
 {
 	int		player_count;
 	char	**map;
 	char	c;
+	int		y;
+	int		x;
 
-	int y, x;
 	player_count = 0;
 	map = game->map.grid;
+	y = 0;
+	while (map[y])
+	{
+		if (map[y][0] == '\0')
+			return (exit_error("Error\nLigne vide dans la map"), 0);
+		y++;
+	}
 	y = 0;
 	while (map[y])
 	{

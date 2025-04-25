@@ -138,6 +138,10 @@ int				game_loop(t_game *game);
 int				key_release(int keycode, t_game *game);
 void			init_doors(t_game *game);
 int				check_door_interaction(t_game *game);
-
+void			complete_raycasting(t_game *game);
+void			render_frame(t_game *game);
 void			handle_movement(t_game *game);
+void			safe_perform_dda(t_ray *ray, t_game *game);
+void			safe_draw_textured_line(int x, t_ray *ray, t_game *game);
+int				get_door_index(t_game *game, int x, int y);
 #endif

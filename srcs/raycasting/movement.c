@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 16:45:10 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/09 14:56:07 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/25 13:28:09 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define MOVE_SPEED 0.1
 #define ROT_SPEED 0.05
 
+/* Vérifie si une position sur la map est valide (pas de mur ni hors limites) */
 int	is_valid_position(t_game *game, double x, double y)
 {
 	if (x < 0 || y < 0 || (int)x >= game->map.width
@@ -24,6 +25,7 @@ int	is_valid_position(t_game *game, double x, double y)
 	return (1);
 }
 
+/* Déplace le joueur vers l'avant */
 void	move_forward(t_game *game)
 {
 	double	new_x;
@@ -37,6 +39,7 @@ void	move_forward(t_game *game)
 		game->player.y = new_y;
 }
 
+/* Déplace le joueur vers l'arrière */
 void	move_backward(t_game *game)
 {
 	double	new_x;
@@ -50,6 +53,7 @@ void	move_backward(t_game *game)
 		game->player.y = new_y;
 }
 
+/* Déplace le joueur vers la gauche */
 void	move_left(t_game *game)
 {
 	double	new_x;
@@ -63,6 +67,7 @@ void	move_left(t_game *game)
 		game->player.y = new_y;
 }
 
+/* Déplace le joueur vers la droite */
 void	move_right(t_game *game)
 {
 	double	new_x;
@@ -76,6 +81,7 @@ void	move_right(t_game *game)
 		game->player.y = new_y;
 }
 
+/* Fait pivoter le joueur vers la gauche */
 void	rotate_left(t_game *game)
 {
 	double	old_dir_x;
@@ -93,6 +99,7 @@ void	rotate_left(t_game *game)
 		* cos(-ROT_SPEED);
 }
 
+/* Fait pivoter le joueur vers la droite */
 void	rotate_right(t_game *game)
 {
 	double	old_dir_x;
@@ -109,64 +116,56 @@ void	rotate_right(t_game *game)
 	game->player.plane_y = old_plane_x * sin(ROT_SPEED) + game->player.plane_y
 		* cos(ROT_SPEED);
 }
+
+/* Gère l'appui sur une touche */
 int	key_press(int keycode, t_game *game)
 {
 	if (keycode >= 0 && keycode < 256)
 		game->keys[keycode] = 1;
-	// Gestion spécifique des touches flèches
-	if (keycode == 65361 || keycode == 123) // Flèche gauche
+	if (keycode == 65361 || keycode == 123)
 		game->rotate_left = 1;
-	// Nouvelle variable dans t_game
-	else if (keycode == 65363 || keycode == 124) // Flèche droite
+	else if (keycode == 65363 || keycode == 124)
 		game->rotate_right = 1;
-	// Nouvelle variable dans t_game
-	else if (keycode == 65307 || keycode == 53) // ESC key
+	else if (keycode == 65307 || keycode == 53)
 		close_window(game);
 	return (0);
 }
 
+/* Gère le relâchement d'une touche */
 int	key_release(int keycode, t_game *game)
 {
 	if (keycode >= 0 && keycode < 256)
 		game->keys[keycode] = 0;
-	// Gestion spécifique des touches flèches
-	if (keycode == 65361 || keycode == 123) // Flèche gauche
+	if (keycode == 65361 || keycode == 123)
 		game->rotate_left = 0;
-	else if (keycode == 65363 || keycode == 124) // Flèche droite
+	else if (keycode == 65363 || keycode == 124)
 		game->rotate_right = 0;
 	return (0);
 }
 
+/* Gère tous les mouvements actifs du joueur */
 void	handle_movement(t_game *game)
 {
-	// Mouvements avant/arrière (W/S)
-	if (game->keys[119] || game->keys[13]) // W
+	if (game->keys[119] || game->keys[13])
 		move_forward(game);
-	if (game->keys[115] || game->keys[1]) // S
+	if (game->keys[115] || game->keys[1])
 		move_backward(game);
-	// Mouvements latéraux (A/D)
-	if (game->keys[97] || game->keys[0]) // A
+	if (game->keys[97] || game->keys[0])
 		move_left(game);
-	if (game->keys[100] || game->keys[2]) // D
+	if (game->keys[100] || game->keys[2])
 		move_right(game);
-	// Rotations (flèches gauche/droite)
 	if (game->rotate_left)
 		rotate_left(game);
 	if (game->rotate_right)
 		rotate_right(game);
 }
 
+/* Boucle principale du jeu */
 int	game_loop(t_game *game)
 {
-	// Traiter tous les mouvements actifs
 	handle_movement(game);
-
-	// Mettre à jour l'image
 	render_frame(game);
 	mlx_put_image_to_window(game->mlx, game->win, game->img, 0, 0);
-
-	// Petit délai pour ralentir la boucle (en millisecondes)
-	usleep(16000); // Environ 60 FPS (1000ms/60 ≈ 16.7ms)
-
+	usleep(16000);
 	return (0);
 }

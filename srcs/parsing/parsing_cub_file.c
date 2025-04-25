@@ -6,48 +6,51 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:39:22 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/09 16:03:56 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/25 13:23:37 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/*
-en gros ce que je fais dans cette fonctione :
-- j essaye d ouvrir le fichier .cub et si ca echoue e renvoie null
-- je concatene chaque lignes lue avec ft_join , qu on rajoute a joined
--  je free mis ligne et ma variable temporaire apres utilisation
-- et apres on decoupe chaque lignes avec ft_split
-*/
+/* Lit toutes les lignes d'un fichier et les retourne dans un tableau */
 char	**read_files_lines(const char *filename)
 {
 	int		fd;
 	char	*line;
-	char	*joined;
-	char	*tmp;
 	char	**lines;
+	int		count;
+	int		i;
+	int		len;
 
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 		return (NULL);
-	joined = ft_calloc(1, 1);
-	if (!joined)
-		return (NULL);
+	count = 0;
 	while ((line = get_next_line(fd)))
 	{
-		tmp = joined;
-		joined = ft_strjoin(tmp, line);
-		free(tmp);
+		count++;
 		free(line);
-		if (!joined)
-			return (NULL);
 	}
 	close(fd);
-	lines = ft_split(joined, '\n');
-	free(joined);
+	lines = malloc(sizeof(char *) * (count + 1));
+	if (!lines)
+		return (NULL);
+	fd = open(filename, O_RDONLY);
+	i = 0;
+	while ((line = get_next_line(fd)))
+	{
+		len = ft_strlen(line);
+		if (len > 0 && line[len - 1] == '\n')
+			line[len - 1] = '\0';
+		lines[i] = line;
+		i++;
+	}
+	lines[i] = NULL;
+	close(fd);
 	return (lines);
 }
 
+/* Libère la mémoire d'un tableau de chaînes */
 void	free_split(char **split)
 {
 	int	i;
@@ -63,22 +66,15 @@ void	free_split(char **split)
 	free(split);
 }
 
-/*
-fonction pour parser la couleur, en gros je repere ma ligne ,
-	ou je traite une couleur
-je la split a ;
-een gros ,
-	le but c est de convertir une couleur exprimee en RGB comme "200,100,0"
-en un int que je vais pouvoir renvoyer a la mlx pour qu il fasse ne couleur
-je te montrerai avec une exemple
-
-*/
+/* Parse une ligne de couleur RGB et la convertit en un entier */
 int	parse_color_line(char *line)
 {
 	char	**parts;
 	int		color;
+	int		r;
+	int		g;
+	int		b;
 
-	int r, g, b;
 	parts = ft_split(line, ',');
 	if (!parts || !parts[0] || !parts[1] || !parts[2] || parts[3])
 		return (exit_error("Error\nCouleur invalide"), -1);
@@ -92,18 +88,26 @@ int	parse_color_line(char *line)
 	return (color);
 }
 
-/*
-alors dans cette fonction zeubi , le but c est de parser le .CUb
- - je vais commencer par skip les espaces
- - si je tomber sur une ligne de map , je m arrrete
- - je definie les textures et les couleurs
-*/
+/* Parse les lignes de configuration (textures et couleurs) du fichier .cub */
 int	parse_config(char **lines, t_game *game, int *map_start_index)
 {
 	int	i;
 	int	config_count;
+	int	no_set;
+	int	so_set;
+	int	we_set;
+	int	ea_set;
+	int	f_set;
+	int	c_set;
+	int	j;
 
 	config_count = 0;
+	no_set = 0;
+	so_set = 0;
+	we_set = 0;
+	ea_set = 0;
+	f_set = 0;
+	c_set = 0;
 	i = 0;
 	while (lines[i])
 	{
@@ -114,57 +118,80 @@ int	parse_config(char **lines, t_game *game, int *map_start_index)
 		}
 		if (ft_strncmp(lines[i], "NO ", 3) == 0)
 		{
+			if (no_set)
+				return (exit_error("Error\nDuplication texture NO"), 0);
 			game->north_tex.img = (void *)ft_strdup(lines[i] + 3);
+			no_set = 1;
 			config_count++;
 		}
 		else if (ft_strncmp(lines[i], "SO ", 3) == 0)
 		{
+			if (so_set)
+				return (exit_error("Error\nDuplication texture SO"), 0);
 			game->south_tex.img = (void *)ft_strdup(lines[i] + 3);
+			so_set = 1;
 			config_count++;
 		}
 		else if (ft_strncmp(lines[i], "WE ", 3) == 0)
 		{
+			if (we_set)
+				return (exit_error("Error\nDuplication texture WE"), 0);
 			game->west_tex.img = (void *)ft_strdup(lines[i] + 3);
+			we_set = 1;
 			config_count++;
 		}
 		else if (ft_strncmp(lines[i], "EA ", 3) == 0)
 		{
+			if (ea_set)
+				return (exit_error("Error\nDuplication texture EA"), 0);
 			game->east_tex.img = (void *)ft_strdup(lines[i] + 3);
+			ea_set = 1;
 			config_count++;
 		}
 		else if (ft_strncmp(lines[i], "F ", 2) == 0)
 		{
+			if (f_set)
+				return (exit_error("Error\nDuplication couleur F"), 0);
 			game->floor_color = parse_color_line(lines[i] + 2);
 			if (game->floor_color == -1)
 				return (0);
+			f_set = 1;
 			config_count++;
 		}
 		else if (ft_strncmp(lines[i], "C ", 2) == 0)
 		{
+			if (c_set)
+				return (exit_error("Error\nDuplication couleur C"), 0);
 			game->ceiling_color = parse_color_line(lines[i] + 2);
 			if (game->ceiling_color == -1)
 				return (0);
+			c_set = 1;
 			config_count++;
 		}
 		else if (ft_strncmp(lines[i], "PO ", 3) == 0)
 		{
 			game->door_path = ft_strdup(lines[i] + 3);
-			config_count++;
 		}
 		else if (ft_strncmp(lines[i], "WP ", 3) == 0)
 		{
 			game->weapon_path = ft_strdup(lines[i] + 3);
-			config_count++;
-		}
-		else if (ft_strchr("01NSEW", lines[i][0]))
-		{
-			*map_start_index = i;
-			break ;
 		}
 		else
 		{
-			printf("  -> Ligne de config inconnue\n");
-			return (exit_error("Error\nLigne de config inconnue"), 0);
+			j = 0;
+			while (lines[i][j] && (lines[i][j] == ' ' || lines[i][j] == '\t'))
+				j++;
+			if (lines[i][j] && ft_strchr("01PNSEW", lines[i][j]))
+			{
+				if (config_count < 6)
+					return (exit_error("Error\nConfiguration incomplète avant la map"), 0);
+				*map_start_index = i;
+				break ;
+			}
+			else
+			{
+				return (exit_error("Error\nLigne de config inconnue"), 0);
+			}
 		}
 		i++;
 	}
@@ -173,6 +200,7 @@ int	parse_config(char **lines, t_game *game, int *map_start_index)
 	return (1);
 }
 
+/* Parse le fichier .cub complet (configuration et map) */
 int	parse_cub_file(const char *filename, t_game *game)
 {
 	char	**lines;
