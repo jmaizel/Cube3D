@@ -6,14 +6,14 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 14:22:34 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/25 13:58:43 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/25 16:39:52 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
 /* Déclaration forward de load_texture */
-int	load_texture(t_game *game, t_texture *texture, char *path);
+int		load_texture(t_game *game, t_texture *texture, char *path);
 
 /* Détermine quelle texture utiliser selon le côté du mur touché */
 void	get_texture(t_ray *ray, t_game *game, t_texture **tex)
@@ -74,32 +74,43 @@ int	load_all_textures(t_game *game)
 		return (0);
 	if (!load_texture(game, &game->west_tex, (char *)game->west_tex.img))
 		return (0);
-	if (game->door_path && !load_texture(game, &game->door_tex, game->door_path))
+	if (game->door_path && !load_texture(game, &game->door_tex,
+			game->door_path))
 		return (0);
-	if (game->weapon_path && !load_texture(game, &game->weapon_tex, game->weapon_path))
+	if (game->weapon_path && !load_texture(game, &game->weapon_tex,
+			game->weapon_path))
+		return (0);
+	if (game->monster_path && !load_texture(game, &game->monster_tex,
+			game->monster_path))
 		return (0);
 	if (game->weapon_path)
 		free(game->weapon_path);
 	if (game->door_path)
 		free(game->door_path);
-	free(game->south_tex.img);
-	free(game->north_tex.img);
-	free(game->east_tex.img);
-	free(game->west_tex.img);
+	if (game->south_tex.img)
+		free(game->south_tex.img);
+	if (game->north_tex.img)
+		free(game->north_tex.img);
+	if (game->east_tex.img)
+		free(game->east_tex.img);
+	if (game->west_tex.img)
+		free(game->west_tex.img);
+	if (game->monster_path)
+		free(game->monster_path);
 	return (1);
 }
 
 /* Dessine une ligne texturée verticale pour une colonne de l'écran */
 void	draw_textured_line(int x, t_ray *ray, t_game *game)
 {
-	t_texture	*tex;
-	double		wall_x;
-	int			color;
-	int			y;
-	int			tex_x;
-	int			tex_y;
-	double		step;
-	double		tex_pos;
+	t_texture *tex;
+	double wall_x;
+	int color;
+	int y;
+	int tex_x;
+	int tex_y;
+	double step;
+	double tex_pos;
 
 	if (ray->hit_type == 2)
 		tex = &game->door_tex;

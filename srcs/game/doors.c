@@ -6,12 +6,11 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:04:32 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/25 14:13:52 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/25 14:19:57 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
-
 
 /* Trouve l'index d'une porte à partir de ses coordonnées */
 int	get_door_index(t_game *game, int x, int y)
@@ -44,8 +43,8 @@ int	check_door_interaction(t_game *game)
 /* Initialise toutes les portes de la map */
 void	init_doors(t_game *game)
 {
-	int	x;
-	int	y;
+	int x;
+	int y;
 
 	game->door_count = 0;
 	y = 0;

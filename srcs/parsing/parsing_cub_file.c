@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:39:22 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/25 13:56:06 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/25 16:37:49 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,6 +176,10 @@ int	parse_config(char **lines, t_game *game, int *map_start_index)
 		{
 			game->weapon_path = ft_strdup(lines[i] + 3);
 		}
+		else if (ft_strncmp(lines[i], "MT ", 3) == 0)
+		{
+			game->monster_path = ft_strdup(lines[i] + 3);
+		}
 		else
 		{
 			j = 0;
@@ -184,7 +188,8 @@ int	parse_config(char **lines, t_game *game, int *map_start_index)
 			if (lines[i][j] && ft_strchr("01PNSEW", lines[i][j]))
 			{
 				if (config_count < 6)
-					return (exit_error("Error\nConfiguration incomplète avant la map"), 0);
+					return (exit_error("Error\nConfiguration incomplète avant la map"),
+						0);
 				*map_start_index = i;
 				break ;
 			}
@@ -203,8 +208,8 @@ int	parse_config(char **lines, t_game *game, int *map_start_index)
 /* Parse le fichier .cub complet (configuration et map) */
 int	parse_cub_file(const char *filename, t_game *game)
 {
-	char	**lines;
-	int		map_start_index;
+	char **lines;
+	int map_start_index;
 
 	lines = read_files_lines(filename);
 	if (!lines)

@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:10:35 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/25 13:58:13 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/25 14:20:07 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ void	draw_minimap_square(t_game *game, int pixel_x, int pixel_y, int color)
 		while (x < size)
 		{
 			if (pixel_y + y < WIN_HEIGHT && pixel_x + x < WIN_WIDTH)
-				game->img_data[(pixel_y + y) * (game->size_line / 4)
-					+ (pixel_x + x)] = color;
+				game->img_data[(pixel_y + y) * (game->size_line / 4) + (pixel_x
+						+ x)] = color;
 			x++;
 		}
 		y++;
@@ -66,13 +66,13 @@ void	draw_minimap_player(t_game *game, int offset_x, int offset_y)
 /* Dessine la minimap dans le coin supérieur gauche de l'écran */
 void	draw_minimap(t_game *game)
 {
-	int	offset_y;
-	int	map_x;
-	int	map_y;
-	int	pixel_x;
-	int	pixel_y;
-	int	size;
-	int	offset_x;
+	int offset_y;
+	int map_x;
+	int map_y;
+	int pixel_x;
+	int pixel_y;
+	int size;
+	int offset_x;
 
 	size = 5;
 	offset_x = 20;

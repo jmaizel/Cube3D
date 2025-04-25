@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 14:08:46 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/25 14:00:03 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/25 14:20:36 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,10 +78,10 @@ void	perform_dda(t_ray *ray, t_game *game)
 			ray->map_y += ray->step_y;
 			ray->side = 1;
 		}
-		if (ray->map_y < 0 || ray->map_y >= game->map.height || 
-		    ray->map_x < 0 || ray->map_x >= (int)ft_strlen(game->map.grid[ray->map_y]) || 
-		    game->map.grid[ray->map_y][ray->map_x] == '1' || 
-		    game->map.grid[ray->map_y][ray->map_x] == ' ')
+		if (ray->map_y < 0 || ray->map_y >= game->map.height || ray->map_x < 0
+			|| ray->map_x >= (int)ft_strlen(game->map.grid[ray->map_y])
+			|| game->map.grid[ray->map_y][ray->map_x] == '1'
+			|| game->map.grid[ray->map_y][ray->map_x] == ' ')
 			ray->hit = 1;
 	}
 }
@@ -105,8 +105,8 @@ void	calculate_line_height(t_ray *ray)
 /* Fonction principale de raycasting pour toute la largeur de l'écran */
 void	raycasting(t_game *game)
 {
-	t_ray	ray;
-	int		x;
+	t_ray ray;
+	int x;
 
 	x = 0;
 	while (x < WIN_WIDTH)

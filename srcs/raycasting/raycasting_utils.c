@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 14:00:00 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/25 14:00:35 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/25 16:34:37 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void	complete_raycasting(t_game *game)
 		calculate_step_and_side_dist(&ray);
 		safe_perform_dda(&ray, game);
 		calculate_line_height(&ray);
+		game->z_buffer[x] = ray.perp_wall_dist;  // Stocke la distance pour les sprites
 		draw_textured_line(x, &ray, game);
 		x++;
 	}
@@ -82,8 +83,8 @@ void	safe_perform_dda(t_ray *ray, t_game *game)
 /* Version de test qui dessine des lignes colorées sans textures */
 void	safe_draw_textured_line(int x, t_ray *ray, t_game *game)
 {
-	int	color;
-	int	y;
+	int color;
+	int y;
 
 	color = 0;
 	if (ray->side == 0)

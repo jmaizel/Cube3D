@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:37:18 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/25 13:54:53 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/25 16:40:18 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 /* Point d'entrée principal du programme */
 int	main(int argc, char **argv)
 {
-	t_game	game;
+	t_game game;
 
 	if (argc != 2)
 		return (exit_error("Usage: ./cub3D map.cub"), 1);
@@ -28,6 +28,7 @@ int	main(int argc, char **argv)
 	if (!parse_cub_file(argv[1], &game))
 		return (1);
 	init_doors(&game);
+	init_monsters(&game);
 	game.mlx = mlx_init();
 	if (!game.mlx)
 		return (exit_error("Erreur init MLX"), 1);

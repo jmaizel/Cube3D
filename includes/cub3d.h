@@ -1,6 +1,5 @@
 #ifndef CUB3D_H
 # define CUB3D_H
-
 # include "../libft/includes/ft_printf.h"
 # include "../libft/includes/get_next_line.h"
 # include "../libft/includes/libft.h"
@@ -10,12 +9,11 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
-
 # define WIN_WIDTH 1280
 # define WIN_HEIGHT 720
 # define TEX_WIDTH 64
 # define TEX_HEIGHT 64
-// Dans cub3d.h, ajoute ces définitions :
+# define MAX_MONSTERS 20
 
 typedef struct s_player
 {
@@ -45,21 +43,38 @@ typedef struct s_texture
 	int			endian;
 }				t_texture;
 
+typedef struct s_monster
+{
+	double		x;
+	double		y;
+	int			alive;
+}				t_monster;
+
+typedef struct s_sprite
+{
+	double		x;
+	double		y;
+	int			width;
+	int			height;
+}				t_sprite;
+
 typedef struct s_game
 {
 	void		*mlx;
 	void		*win;
 	t_map		map;
 	t_player	player;
-
+	
 	t_texture	north_tex;
 	t_texture	south_tex;
 	t_texture	east_tex;
 	t_texture	west_tex;
 	t_texture	door_tex;
-
-	char *door_path; // chemin vers la texture de porte
-
+	t_texture	monster_tex;
+	
+	char		*door_path;
+	char		*monster_path;
+	
 	int			ceiling_color;
 	int			floor_color;
 	int			keys[256];
@@ -67,15 +82,21 @@ typedef struct s_game
 	int			rotate_right;
 	double		move_speed;
 	double		rot_speed;
-
+	
 	// weapon
 	t_texture	weapon_tex;
 	char		*weapon_path;
+	
+	// monsters
+	t_monster	monsters[MAX_MONSTERS];
+	int			monster_count;
+	double		z_buffer[WIN_WIDTH];
+	
 	// portes
-	int door_state[100]; // 0 = fermée, 1 = ouverte
+	int			door_state[100];
 	int			door_count;
-	int door_positions[100][2]; // [y][x]
-
+	int			door_positions[100][2];
+	
 	// buffer d'image
 	void		*img;
 	int			*img_data;
@@ -118,7 +139,6 @@ void			raycasting(t_game *game);
 void			calculate_step_and_side_dist(t_ray *ray);
 void			init_ray(t_ray *ray, t_game *game, int x);
 void			calculate_line_height(t_ray *ray);
-
 void			safe_perform_dda(t_ray *ray, t_game *game);
 void			safe_draw_textured_line(int x, t_ray *ray, t_game *game);
 int				key_press(int keycode, t_game *game);
@@ -139,9 +159,11 @@ int				key_release(int keycode, t_game *game);
 void			init_doors(t_game *game);
 int				check_door_interaction(t_game *game);
 void			complete_raycasting(t_game *game);
-void			render_frame(t_game *game);
 void			handle_movement(t_game *game);
-void			safe_perform_dda(t_ray *ray, t_game *game);
-void			safe_draw_textured_line(int x, t_ray *ray, t_game *game);
 int				get_door_index(t_game *game, int x, int y);
+
+// Fonctions pour les monstres
+void			init_monsters(t_game *game);
+void			render_monsters(t_game *game);
+
 #endif

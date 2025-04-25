@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pare_map.c                                         :+:      :+:    :+:   */
+/*   parse_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 12:11:54 by jacobmaizel       #+#    #+#             */
-/*   Updated: 2025/04/25 13:56:23 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/25 16:47:59 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	is_map_line(char *line)
 	found_valid_char = 0;
 	while (line[i])
 	{
-		if (ft_strchr("01PNSEW", line[i]))
+		if (ft_strchr("01PNSEWM", line[i]))
 			found_valid_char = 1;
 		else if (line[i] != ' ' && line[i] != '\t')
 			return (0);
@@ -53,12 +53,12 @@ int	is_map_line(char *line)
 /* Parse la map à partir des lignes du fichier */
 int	parse_map(char **lines, t_game *game, int start_index)
 {
-	int	i;
-	int	start;
-	int	map_lines;
-	int	j;
-	int	found_map;
-	int	in_map;
+	int i;
+	int start;
+	int map_lines;
+	int j;
+	int found_map;
+	int in_map;
 
 	i = start_index;
 	start = -1;

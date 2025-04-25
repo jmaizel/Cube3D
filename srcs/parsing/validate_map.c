@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 13:12:10 by jacobmaizel       #+#    #+#             */
-/*   Updated: 2025/04/25 13:56:49 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/25 16:50:30 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,11 @@ int	is_map_closed(char **map, int width, int height)
 					end--;
 				if (x == start || x == end)
 					return (0);
-				if (y > 0 && (x >= (int)ft_strlen(map[y - 1]) || map[y - 1][x] == ' '))
+				if (y > 0 && (x >= (int)ft_strlen(map[y - 1]) || map[y
+						- 1][x] == ' '))
 					return (0);
-				if (y < height - 1 && (x >= (int)ft_strlen(map[y + 1]) || map[y + 1][x] == ' '))
+				if (y < height - 1 && (x >= (int)ft_strlen(map[y + 1]) || map[y
+						+ 1][x] == ' '))
 					return (0);
 				if (x > 0 && map[y][x - 1] == ' ')
 					return (0);
@@ -92,24 +94,25 @@ void	init_player(t_game *game, int x, int y, char dir)
 	}
 }
 
-/* Valide la map en vérifiant les caractères, le nombre de joueurs et si elle est fermée */
+/* Valide la map en vérifiant les caractères,
+	le nombre de joueurs et si elle est fermée */
 int	validate_map(t_game *game)
 {
-	int		player_count;
-	char	**map;
-	char	c;
-	int		y;
-	int		x;
+	int player_count;
+	char **map;
+	char c;
+	int y;
+	int x;
 
 	player_count = 0;
 	map = game->map.grid;
+
 	y = 0;
 	while (map[y])
 	{
-		if (map[y][0] == '\0')
-			return (exit_error("Error\nLigne vide dans la map"), 0);
 		y++;
 	}
+
 	y = 0;
 	while (map[y])
 	{
@@ -117,7 +120,8 @@ int	validate_map(t_game *game)
 		while (map[y][x])
 		{
 			c = map[y][x];
-			if (!ft_strchr("01PNSEW ", c))
+
+			if (!ft_strchr("01PNSEWM ", c))
 				return (exit_error("Error\nCaractère invalide dans la map"), 0);
 			if (ft_strchr("NSEW", c))
 			{
@@ -129,6 +133,7 @@ int	validate_map(t_game *game)
 		}
 		y++;
 	}
+
 	if (player_count != 1)
 		return (exit_error("Error\nAucun joueur trouvé"), 0);
 	if (!is_map_closed(game->map.grid, game->map.width, game->map.height))

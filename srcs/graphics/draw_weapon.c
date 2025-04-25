@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:10:35 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/25 13:59:52 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/25 16:57:23 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,13 @@
 /* Dessine l'arme en bas de l'écran */
 void	draw_weapon(t_game *game)
 {
-	int	x;
-	int	y;
-	int	draw_x;
-	int	draw_y;
-	int	color;
-	int	start_x;
-	int	start_y;
+	int x;
+	int y;
+	int draw_x;
+	int draw_y;
+	int color;
+	int start_x;
+	int start_y;
 
 	if (!game->weapon_tex.data)
 		return ;
