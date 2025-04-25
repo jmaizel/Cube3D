@@ -6,7 +6,7 @@
 #    By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/28 14:37:22 by jmaizel           #+#    #+#              #
-#    Updated: 2025/04/25 13:51:39 by jmaizel          ###   ########.fr        #
+#    Updated: 2025/04/25 14:11:28 by jmaizel          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,21 +22,24 @@ OBJ_DIR = objs
 MAIN_DIR = ./srcs/main
 PARSING_DIR = ./srcs/parsing
 RAYCASTING_DIR = ./srcs/raycasting
-MAP_DIR = ./srcs/map
+GAME_DIR = ./srcs/game
+GRAPHICS_DIR = ./srcs/graphics
 
 LIBS = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -L$(LIBFT_DIR) -lft
 LIBFT = $(LIBFT_DIR)/libft.a
 MLX = $(MLX_DIR)/libmlx.a
 
-MAIN_FILES = main.c
-PARSING_FILES = parsing_cub_file.c parsing_map.c is_map_valid.c utils.c
-RAYCASTING_FILES = raycasting.c movement.c raycastingv2.c
-MAP_FILES = doors.c draw1.c textures.c
+MAIN_FILES = main.c utils.c
+PARSING_FILES = parse_map.c parsing_cub_file.c validate_map.c
+RAYCASTING_FILES = raycasting.c raycasting_utils.c
+GAME_FILES = doors.c movement.c
+GRAPHICS_FILES = draw_minimap.c draw_weapon.c render_frame.c textures.c
 
 SRC_FILES = $(addprefix $(MAIN_DIR)/, $(MAIN_FILES)) \
             $(addprefix $(PARSING_DIR)/, $(PARSING_FILES)) \
             $(addprefix $(RAYCASTING_DIR)/, $(RAYCASTING_FILES)) \
-            $(addprefix $(MAP_DIR)/, $(MAP_FILES))
+            $(addprefix $(GRAPHICS_DIR)/, $(GRAPHICS_FILES)) \
+			$(addprefix $(GAME_DIR)/, $(GAME_FILES))
 
 OBJS = $(SRC_FILES:./srcs/%.c=$(OBJ_DIR)/%.o)
 
@@ -64,7 +67,8 @@ $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)/main
 	@mkdir -p $(OBJ_DIR)/parsing
 	@mkdir -p $(OBJ_DIR)/raycasting
-	@mkdir -p $(OBJ_DIR)/map
+	@mkdir -p $(OBJ_DIR)/game
+	@mkdir -p $(OBJ_DIR)/graphics
 
 $(LIBFT):
 	@make --no-print-directory -C $(LIBFT_DIR)

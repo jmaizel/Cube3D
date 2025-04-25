@@ -6,11 +6,23 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:04:32 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/25 13:26:07 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/25 14:13:52 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
+
+
+/* Trouve l'index d'une porte à partir de ses coordonnées */
+int	get_door_index(t_game *game, int x, int y)
+{
+	for (int i = 0; i < game->door_count; i++)
+	{
+		if (game->door_positions[i][0] == x && game->door_positions[i][1] == y)
+			return (i);
+	}
+	return (-1);
+}
 
 /* Vérifie si le joueur peut interagir avec une porte devant lui */
 int	check_door_interaction(t_game *game)

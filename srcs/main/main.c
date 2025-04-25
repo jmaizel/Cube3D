@@ -6,36 +6,11 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:37:18 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/25 13:23:09 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/25 13:54:53 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
-
-/* Ferme la fenêtre et libère toutes les ressources allouées */
-int	close_window(t_game *game)
-{
-	if (game->img)
-		mlx_destroy_image(game->mlx, game->img);
-	if (game->win)
-		mlx_destroy_window(game->mlx, game->win);
-	if (game->mlx)
-		mlx_destroy_display(game->mlx);
-	free_map(game->map.grid);
-	exit(0);
-	return (0);
-}
-
-/* Trouve l'index d'une porte à partir de ses coordonnées */
-int	get_door_index(t_game *game, int x, int y)
-{
-	for (int i = 0; i < game->door_count; i++)
-	{
-		if (game->door_positions[i][0] == x && game->door_positions[i][1] == y)
-			return (i);
-	}
-	return (-1);
-}
 
 /* Point d'entrée principal du programme */
 int	main(int argc, char **argv)

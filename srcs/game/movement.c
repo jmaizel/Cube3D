@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 16:45:10 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/25 13:28:09 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/25 14:13:07 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,6 @@ void	handle_movement(t_game *game)
 	if (game->rotate_right)
 		rotate_right(game);
 }
-
 /* Boucle principale du jeu */
 int	game_loop(t_game *game)
 {

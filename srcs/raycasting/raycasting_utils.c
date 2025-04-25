@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   raycastingv2.c                                     :+:      :+:    :+:   */
+/*   raycasting_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/25 13:16:57 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/25 13:28:47 by jmaizel          ###   ########.fr       */
+/*   Created: 2025/04/25 14:00:00 by jmaizel           #+#    #+#             */
+/*   Updated: 2025/04/25 14:00:35 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/cub3d.h"
+#include "../includes/cub3d.h"
 
 /* Lance un rayon pour chaque colonne de l'écran */
 void	complete_raycasting(t_game *game)
@@ -29,33 +29,6 @@ void	complete_raycasting(t_game *game)
 		draw_textured_line(x, &ray, game);
 		x++;
 	}
-}
-
-/* Dessine une frame complète avec sol, plafond, murs, minimap et arme */
-void	render_frame(t_game *game)
-{
-	int	x;
-	int	y;
-
-	y = 0;
-	while (y < WIN_HEIGHT)
-	{
-		x = 0;
-		while (x < WIN_WIDTH)
-		{
-			if (y < WIN_HEIGHT / 2)
-				game->img_data[y * (game->size_line / 4)
-					+ x] = game->ceiling_color;
-			else
-				game->img_data[y * (game->size_line / 4)
-					+ x] = game->floor_color;
-			x++;
-		}
-		y++;
-	}
-	complete_raycasting(game);
-	draw_minimap(game);
-	draw_weapon(game);
 }
 
 /* Version sécurisée du DDA avec gestion des portes */
