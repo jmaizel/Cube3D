@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 16:31:16 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/27 17:04:15 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/27 17:06:21 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,19 +114,14 @@ while (y < draw_end_y)
 	{
 		color = game->monster_frames[frame].data[game->monster_frames[frame].width * tex_y
 			+ tex_x];
-		
-		// Vérifier si le pixel n'est pas transparent (noir)
+
 		if ((color & 0x00FFFFFF) != 0x000000)
 		{
-			// Effet de clignotement rouge quand touché
 			if (game->monsters[monster_index].hit_animation)
 			{
-				// Préserver les composantes alpha
-				
 				int red = (color >> 16) & 0xFF;
-                red = fmin(255, red + 100);  // Ajouter du rouge
-                
-                // Reconstruire la couleur
+                red = fmin(255, red + 100);
+  
                 color = (red << 16) | (color & 0x00FFFF);
 			}
 			
