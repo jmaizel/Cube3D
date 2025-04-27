@@ -72,13 +72,11 @@ typedef struct s_game
     t_texture   south_tex;
     t_texture   east_tex;
     t_texture   west_tex;
-    t_texture   door_tex;
     
     // Frames d'animation des monstres
     t_texture   monster_frames[4];
     int         monster_frame_count;
 
-    char        *door_path;
     char        *monster_paths[4];
 
     int         ceiling_color;
@@ -101,11 +99,6 @@ typedef struct s_game
     t_monster   monsters[MAX_MONSTERS];
     int         monster_count;
     double      z_buffer[WIN_WIDTH];
-    
-    // portes
-    int         door_state[100];
-    int         door_count;
-    int         door_positions[100][2];
     
     // buffer d'image
     void        *img;
@@ -166,11 +159,8 @@ void			draw_minimap(t_game *game);
 void			draw_weapon(t_game *game);
 int				game_loop(t_game *game);
 int				key_release(int keycode, t_game *game);
-void			init_doors(t_game *game);
-int				check_door_interaction(t_game *game);
 void			complete_raycasting(t_game *game);
 void			handle_movement(t_game *game);
-int				get_door_index(t_game *game, int x, int y);
 
 // Fonctions pour les monstres
 void			init_monsters(t_game *game);

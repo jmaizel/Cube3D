@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 14:22:34 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/27 14:05:20 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/27 15:41:09 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,6 @@ int load_all_textures(t_game *game)
         return (0);
     if (!load_texture(game, &game->west_tex, (char *)game->west_tex.img))
         return (0);
-    if (game->door_path && !load_texture(game, &game->door_tex, game->door_path))
-        return (0);
     if (game->weapon_path && !load_texture(game, &game->weapon_tex, game->weapon_path))
         return (0);
     
@@ -93,8 +91,6 @@ int load_all_textures(t_game *game)
     // Libérer les chemins
     if (game->weapon_path)
         free(game->weapon_path);
-    if (game->door_path)
-        free(game->door_path);
     if (game->south_tex.img)
         free(game->south_tex.img);
     if (game->north_tex.img)
@@ -128,10 +124,8 @@ void	draw_textured_line(int x, t_ray *ray, t_game *game)
 	double step;
 	double tex_pos;
 
-	if (ray->hit_type == 2)
-		tex = &game->door_tex;
-	else
-		get_texture(ray, game, &tex);
+
+	get_texture(ray, game, &tex);
 	calculate_texture_x(ray, &wall_x, &tex_x, tex);
 	step = 1.0 * tex->height / ray->line_height;
 	tex_pos = (ray->draw_start - WIN_HEIGHT / 2 + ray->line_height / 2) * step;

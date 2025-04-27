@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raycasting_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 14:00:00 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/25 16:34:37 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/27 15:41:32 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,51 +33,41 @@ void	complete_raycasting(t_game *game)
 }
 
 /* Version sécurisée du DDA avec gestion des portes */
-void	safe_perform_dda(t_ray *ray, t_game *game)
+void safe_perform_dda(t_ray *ray, t_game *game)
 {
-	int	max_iterations;
-	int	iterations;
-	int	door_index;
+    int max_iterations;
+    int iterations;
 
-	max_iterations = 100;
-	iterations = 0;
-	while (ray->hit == 0 && iterations < max_iterations)
-	{
-		if (ray->side_dist_x < ray->side_dist_y)
-		{
-			ray->side_dist_x += ray->delta_dist_x;
-			ray->map_x += ray->step_x;
-			ray->side = 0;
-		}
-		else
-		{
-			ray->side_dist_y += ray->delta_dist_y;
-			ray->map_y += ray->step_y;
-			ray->side = 1;
-		}
-		if (ray->map_y < 0 || ray->map_y >= game->map.height || ray->map_x < 0)
-		{
-			ray->hit = 1;
-		}
-		else if (ray->map_x >= (int)ft_strlen(game->map.grid[ray->map_y]))
-		{
-			ray->hit = 1;
-		}
-		else if (game->map.grid[ray->map_y][ray->map_x] == '1')
-		{
-			ray->hit = 1;
-		}
-		else if (game->map.grid[ray->map_y][ray->map_x] == 'P')
-		{
-			door_index = get_door_index(game, ray->map_x, ray->map_y);
-			if (door_index >= 0 && game->door_state[door_index] == 0)
-			{
-				ray->hit = 1;
-				ray->hit_type = 2;
-			}
-		}
-		iterations++;
-	}
+    max_iterations = 100;
+    iterations = 0;
+    while (ray->hit == 0 && iterations < max_iterations)
+    {
+        if (ray->side_dist_x < ray->side_dist_y)
+        {
+            ray->side_dist_x += ray->delta_dist_x;
+            ray->map_x += ray->step_x;
+            ray->side = 0;
+        }
+        else
+        {
+            ray->side_dist_y += ray->delta_dist_y;
+            ray->map_y += ray->step_y;
+            ray->side = 1;
+        }
+        if (ray->map_y < 0 || ray->map_y >= game->map.height || ray->map_x < 0)
+        {
+            ray->hit = 1;
+        }
+        else if (ray->map_x >= (int)ft_strlen(game->map.grid[ray->map_y]))
+        {
+            ray->hit = 1;
+        }
+        else if (game->map.grid[ray->map_y][ray->map_x] == '1')
+        {
+            ray->hit = 1;
+        }
+        iterations++;
+    }
 }
 
 /* Version de test qui dessine des lignes colorées sans textures */

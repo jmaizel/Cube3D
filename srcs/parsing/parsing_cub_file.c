@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:39:22 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/27 13:54:41 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/27 15:37:33 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,10 +167,6 @@ int parse_config(char **lines, t_game *game, int *map_start_index)
                 return (0);
             c_set = 1;
             config_count++;
-        }
-        else if (ft_strncmp(lines[i], "PO ", 3) == 0)
-        {
-            game->door_path = ft_strdup(lines[i] + 3);
         }
         else if (ft_strncmp(lines[i], "WP ", 3) == 0)
         {

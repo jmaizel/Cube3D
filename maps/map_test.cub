@@ -2,7 +2,6 @@ NO ./textures/ice_wall.xpm
 SO ./textures/ice_wall.xpm
 WE ./textures/ice_wall.xpm
 EA ./textures/ice_wall.xpm
-PO ./textures/valentin_trump_.xpm
 WP ./textures/carlin.xpm
 MT0 ./textures/animation_pixel_frame_1.xpm
 MT1 ./textures/animation_pixel_frame_2.xpm
@@ -13,7 +12,7 @@ F 153,204,255
 C 135,206,235
 
 11111111111111111111
-1N0000000M000000P001
+1N0000000M0000000001
 10000M00000000001001
 10000000000000010001
 100000000M0000000001

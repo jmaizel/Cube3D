@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:37:18 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/27 14:00:12 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/27 15:37:53 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ int main(int argc, char **argv)
     game.rotate_right = 0;
     game.move_speed = 0.13;
     game.rot_speed = 0.03;
-    game.door_count = 0;
     game.monster_frame_count = 0;
     game.last_frame_time = 0.0;
     game.delta_time = 0.0;
@@ -34,8 +33,7 @@ int main(int argc, char **argv)
     // Parsing et initialisation
     if (!parse_cub_file(argv[1], &game))
         return (1);
-    
-    init_doors(&game);
+
     init_monsters(&game);
     
     // Initialisation de la MLX
