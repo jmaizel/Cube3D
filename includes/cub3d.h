@@ -167,9 +167,6 @@ int				game_loop(t_game *game);
 int				key_release(int keycode, t_game *game);
 void			complete_raycasting(t_game *game);
 void			handle_movement(t_game *game);
-
-
-
 int				mouse_move(int x, int y, t_game *game);
 void			toggle_mouse(t_game *game);
 
