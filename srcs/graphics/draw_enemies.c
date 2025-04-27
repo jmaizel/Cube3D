@@ -6,47 +6,48 @@
 /*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 16:31:16 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/27 13:58:59 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/27 17:04:15 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
 /* Initialise les monstres dans la map */
-void init_monsters(t_game *game)
+void	init_monsters(t_game *game)
 {
-    int x, y;
-    
-    game->monster_count = 0;
-    y = 0;
-    while (y < game->map.height)
-    {
-        x = 0;
-        while (x < (int)ft_strlen(game->map.grid[y]))
-        {
-            if (game->map.grid[y][x] == 'M')
-            {
-                if (game->monster_frame_count == 0)
-                {
-                    ft_printf("Warning: Monstre trouvé mais pas de texture d'animation\n");
-                }
-                
-                game->monsters[game->monster_count].x = x + 0.5;
-                game->monsters[game->monster_count].y = y + 0.5;
-                game->monsters[game->monster_count].alive = 1;
-                
-                // Initialiser les paramètres d'animation
-                game->monsters[game->monster_count].frame = 0;
-                game->monsters[game->monster_count].anim_time = 0.0;
-                game->monsters[game->monster_count].anim_speed = 0.2; // 5 frames par seconde
-                
-                game->monster_count++;
-                game->map.grid[y][x] = '0'; // Remplacer par un espace vide
-            }
-            x++;
-        }
-        y++;
-    }
+	int x, y;
+	game->monster_count = 0;
+	y = 0;
+	while (y < game->map.height)
+	{
+		x = 0;
+		while (x < (int)ft_strlen(game->map.grid[y]))
+		{
+			if (game->map.grid[y][x] == 'M')
+			{
+				if (game->monster_frame_count == 0)
+				{
+					ft_printf("Warning: Monstre trouvé mais pas de texture d'animation\n");
+				}
+				game->monsters[game->monster_count].x = x + 0.5;
+				game->monsters[game->monster_count].y = y + 0.5;
+				game->monsters[game->monster_count].alive = 1;
+				// Initialiser les paramètres d'animation
+				game->monsters[game->monster_count].frame = 0;
+				game->monsters[game->monster_count].anim_time = 0.0;
+				game->monsters[game->monster_count].anim_speed = 0.2;
+					// 5 frames par seconde
+				game->monsters[game->monster_count].health = 100;
+				game->monsters[game->monster_count].max_health = 100;
+				game->monsters[game->monster_count].hit_animation = 0;
+				game->monsters[game->monster_count].hit_timer = 0.0;
+				game->monster_count++;
+				game->map.grid[y][x] = '0'; // Remplacer par un espace vide
+			}
+			x++;
+		}
+		y++;
+	}
 }
 
 /* Trie les monstres par distance pour le rendu */
@@ -113,8 +114,22 @@ while (y < draw_end_y)
 	{
 		color = game->monster_frames[frame].data[game->monster_frames[frame].width * tex_y
 			+ tex_x];
+		
+		// Vérifier si le pixel n'est pas transparent (noir)
 		if ((color & 0x00FFFFFF) != 0x000000)
 		{
+			// Effet de clignotement rouge quand touché
+			if (game->monsters[monster_index].hit_animation)
+			{
+				// Préserver les composantes alpha
+				
+				int red = (color >> 16) & 0xFF;
+                red = fmin(255, red + 100);  // Ajouter du rouge
+                
+                // Reconstruire la couleur
+                color = (red << 16) | (color & 0x00FFFF);
+			}
+			
 			game->img_data[y * (game->size_line / 4) + stripe] = color;
 		}
 	}
@@ -122,73 +137,72 @@ while (y < draw_end_y)
 }
 }
 
-void render_monsters(t_game *game)
+void	render_monsters(t_game *game)
 {
-int         i;
-int         order[MAX_MONSTERS];
-double      distances[MAX_MONSTERS];
-t_sprite    sprite;
-int         stripe;
-int         tex_x;
-double      inv_det;
-double      transform_x;
-double      transform_y;
-int         sprite_screen_x;
-int         draw_start_y;
-int         draw_end_y;
-int         draw_start_x;
-int         draw_end_x;
+	int			i;
+	int			order[MAX_MONSTERS];
+	double		distances[MAX_MONSTERS];
+	t_sprite	sprite;
+	int			stripe;
+	int			tex_x;
+	double		inv_det;
+	double		transform_x;
+	double		transform_y;
+	int			sprite_screen_x;
+	int			draw_start_y;
+	int			draw_end_y;
+	int			draw_start_x;
+	int			draw_end_x;
 
-// Si pas de frames d'animation, on sort
-if (game->monster_frame_count == 0)
-	return;
-
-sort_monsters(game, distances, order);
-i = 0;
-while (i < game->monster_count)
-{
-	if (!game->monsters[order[i]].alive)
+	// Si pas de frames d'animation, on sort
+	if (game->monster_frame_count == 0)
+		return ;
+	sort_monsters(game, distances, order);
+	i = 0;
+	while (i < game->monster_count)
 	{
-		i++;
-		continue;
-	}
-	sprite.x = game->monsters[order[i]].x - game->player.x;
-	sprite.y = game->monsters[order[i]].y - game->player.y;
-	inv_det = 1.0 / (game->player.plane_x * game->player.dir_y
-			- game->player.dir_x * game->player.plane_y);
-	transform_x = inv_det * (game->player.dir_y * sprite.x
-			- game->player.dir_x * sprite.y);
-	transform_y = inv_det * (-game->player.plane_y * sprite.x
-			+ game->player.plane_x * sprite.y);
-	sprite_screen_x = (int)((WIN_WIDTH / 2) * (1 + transform_x
-				/ transform_y));
-	sprite.height = abs((int)(WIN_HEIGHT / transform_y));
-	sprite.width = sprite.height;
-	draw_start_y = -sprite.height / 2 + WIN_HEIGHT / 2;
-	if (draw_start_y < 0)
-		draw_start_y = 0;
-	draw_end_y = sprite.height / 2 + WIN_HEIGHT / 2;
-	if (draw_end_y >= WIN_HEIGHT)
-		draw_end_y = WIN_HEIGHT - 1;
-	draw_start_x = -sprite.width / 2 + sprite_screen_x;
-	if (draw_start_x < 0)
-		draw_start_x = 0;
-	draw_end_x = sprite.width / 2 + sprite_screen_x;
-	if (draw_end_x >= WIN_WIDTH)
-		draw_end_x = WIN_WIDTH - 1;
-	stripe = draw_start_x;
-	while (stripe < draw_end_x)
-	{
-		tex_x = (int)(256 * (stripe - (-sprite.width / 2 + sprite_screen_x))
-				* game->monster_frames[0].width / sprite.width) / 256;
-		if (transform_y > 0 && stripe > 0 && stripe < WIN_WIDTH
-			&& transform_y < game->z_buffer[stripe])
+		if (!game->monsters[order[i]].alive)
 		{
-			draw_monster_column(game, stripe, draw_start_y, draw_end_y,
-				&sprite, tex_x, order[i]);
+			i++;
+			continue ;
 		}
-		stripe++;
+		sprite.x = game->monsters[order[i]].x - game->player.x;
+		sprite.y = game->monsters[order[i]].y - game->player.y;
+		inv_det = 1.0 / (game->player.plane_x * game->player.dir_y
+				- game->player.dir_x * game->player.plane_y);
+		transform_x = inv_det * (game->player.dir_y * sprite.x
+				- game->player.dir_x * sprite.y);
+		transform_y = inv_det * (-game->player.plane_y * sprite.x
+				+ game->player.plane_x * sprite.y);
+		sprite_screen_x = (int)((WIN_WIDTH / 2) * (1 + transform_x
+					/ transform_y));
+		sprite.height = abs((int)(WIN_HEIGHT / transform_y));
+		sprite.width = sprite.height;
+		draw_start_y = -sprite.height / 2 + WIN_HEIGHT / 2;
+		if (draw_start_y < 0)
+			draw_start_y = 0;
+		draw_end_y = sprite.height / 2 + WIN_HEIGHT / 2;
+		if (draw_end_y >= WIN_HEIGHT)
+			draw_end_y = WIN_HEIGHT - 1;
+		draw_start_x = -sprite.width / 2 + sprite_screen_x;
+		if (draw_start_x < 0)
+			draw_start_x = 0;
+		draw_end_x = sprite.width / 2 + sprite_screen_x;
+		if (draw_end_x >= WIN_WIDTH)
+			draw_end_x = WIN_WIDTH - 1;
+		stripe = draw_start_x;
+		while (stripe < draw_end_x)
+		{
+			tex_x = (int)(256 * (stripe - (-sprite.width / 2 + sprite_screen_x))
+					* game->monster_frames[0].width / sprite.width) / 256;
+			if (transform_y > 0 && stripe > 0 && stripe < WIN_WIDTH
+				&& transform_y < game->z_buffer[stripe])
+			{
+				draw_monster_column(game, stripe, draw_start_y, draw_end_y,
+					&sprite, tex_x, order[i]);
+			}
+			stripe++;
+		}
+		i++;
 	}
-	i++;
-}
 }

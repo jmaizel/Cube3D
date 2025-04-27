@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/27 15:46:34 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/04/27 16:15:59 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/27 16:52:10 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,4 +76,81 @@ void toggle_mouse(t_game *game)
         // Afficher le curseur
         mlx_mouse_show(game->mlx, game->win);
     }
+}
+void attack(t_game *game)
+{
+    int i;
+    double distance;
+    double dx, dy;
+    
+    // Vérifier si l'arme est prête
+    if (game->weapon_timer > 0)
+        return;
+    
+    game->firing = 1;
+    game->weapon_timer = game->weapon_cooldown;
+    
+    // Parcourir tous les monstres
+    for (i = 0; i < game->monster_count; i++)
+    {
+        if (!game->monsters[i].alive)
+            continue;
+        
+        // Calculer la distance au monstre
+        dx = game->monsters[i].x - game->player.x;
+        dy = game->monsters[i].y - game->player.y;
+        distance = sqrt(dx * dx + dy * dy);
+        
+        if (distance > game->weapon_range)
+            continue;  // Trop loin
+        
+        // Calculer l'angle vers le monstre
+        double angle = atan2(dy, dx);
+        
+        // Angle du joueur
+        double player_angle = atan2(game->player.dir_y, game->player.dir_x);
+        
+        // Normaliser les angles entre -PI et PI
+        while (angle > M_PI) angle -= 2 * M_PI;
+        while (angle < -M_PI) angle += 2 * M_PI;
+        while (player_angle > M_PI) player_angle -= 2 * M_PI;
+        while (player_angle < -M_PI) player_angle += 2 * M_PI;
+        
+        // Calculer la différence d'angle
+        double angle_diff = fabs(angle - player_angle);
+        while (angle_diff > M_PI) angle_diff = 2 * M_PI - angle_diff;
+        
+        // Vérifier si le monstre est dans le champ de vision (60 degrés)
+        if (angle_diff < (M_PI / 3))  // 60 degrés = PI/3 radians
+        {
+            // Touché! Réduire la santé du monstre
+            game->monsters[i].health -= game->weapon_damage;
+            
+            // Activer l'animation de coup
+            game->monsters[i].hit_animation = 1;
+            game->monsters[i].hit_timer = 0.2;  // 0.2 secondes d'effet
+            
+            // Vérifier si le monstre est mort
+            if (game->monsters[i].health <= 0)
+            {
+                game->monsters[i].alive = 0;
+                
+                // Éventuellement jouer un son ou ajouter un effet
+                ft_printf("Monstre %d tué!\n", i);
+            }
+        }
+    }
+}
+
+int mouse_click(int button, int x, int y, t_game *game)
+{
+    (void)x;
+    (void)y;
+    
+    if (button == 1)  // Clic gauche
+    {
+        attack(game);
+    }
+    
+    return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:37:18 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/27 15:49:46 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/27 16:29:56 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,11 @@ int main(int argc, char **argv)
     game.mouse_sensitivity = 0.002; // Ajustez selon vos préférences
     game.mouse_x = WIN_WIDTH / 2;
     game.mouse_prev_x = WIN_WIDTH / 2;
+	game.firing = 0;
+    game.weapon_cooldown = 0.5;  // Une attaque toutes les 0.5 secondes
+    game.weapon_timer = 0.0;
+    game.weapon_damage = 25;     // 4 coups pour tuer un monstre avec 100PV
+    game.weapon_range = 3.0;     // Porté d'attaque de 3 unités
     
     // Parsing et initialisation
     if (!parse_cub_file(argv[1], &game))
@@ -69,6 +74,7 @@ int main(int argc, char **argv)
     mlx_hook(game.win, 3, 1L << 1, key_release, &game);
     mlx_hook(game.win, 17, 0, close_window, &game);
 	mlx_hook(game.win, 6, 1L << 6, mouse_move, &game);
+	mlx_mouse_hook(game.win, mouse_click, &game);
     mlx_loop_hook(game.mlx, game_loop, &game);
     
     // Lancement de la boucle principale

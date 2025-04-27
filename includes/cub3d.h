@@ -14,6 +14,7 @@
 # define TEX_WIDTH 64
 # define TEX_HEIGHT 64
 # define MAX_MONSTERS 20
+# define M_PI 3.14159265358979323846
 
 typedef struct s_player
 {
@@ -45,13 +46,17 @@ typedef struct s_texture
 
 typedef struct s_monster
 {
-	double		x;
-	double		y;
-	int			alive;
-	int frame;         // Frame d'animation actuelle
-	double anim_time;  // Temps accumulé pour l'animation
-	double anim_speed; // Vitesse d'animation en secondes
-}				t_monster;
+    double      x;
+    double      y;
+    int         alive;
+    int         frame;
+    double      anim_time;
+    double      anim_speed;
+    int         health;           // Points de vie actuels
+    int         max_health;       // Points de vie maximum
+    int         hit_animation;    // Pour un effet de clignotement quand touché
+    double      hit_timer;        // Durée de l'effet de coup
+} t_monster;
 
 typedef struct s_sprite
 {
@@ -112,6 +117,12 @@ typedef struct s_game
 	int mouse_prev_x;         // Position précédente de la souris en X
 	int mouse_enabled;        // Si la rotation par souris est activée
 	double mouse_sensitivity; // Sensibilité de la souris
+
+	int         firing;           // Si le joueur est en train de tirer
+    double      weapon_cooldown;  // Temps entre deux attaques
+    double      weapon_timer;     // Compteur pour le cooldown
+    int         weapon_damage;    // Dégâts infligés par l'arme
+    double      weapon_range;     // Portée de l'arme
 }				t_game;
 
 typedef struct s_ray
@@ -169,6 +180,8 @@ void			complete_raycasting(t_game *game);
 void			handle_movement(t_game *game);
 int				mouse_move(int x, int y, t_game *game);
 void			toggle_mouse(t_game *game);
+int				mouse_click(int button, int x, int y, t_game *game);
+void			attack(t_game *game);
 
 
 

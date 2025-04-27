@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 16:45:10 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/27 15:48:33 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/27 16:41:11 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,8 @@ int key_press(int keycode, t_game *game)
         close_window(game);
     else if (keycode == 109 || keycode == 46)
         toggle_mouse(game);
+	else if (keycode == 32 || keycode == 1)  // 32 = espace
+        attack(game);
     
     return (0);
 }
@@ -184,7 +186,7 @@ void update_monster_animations(t_game *game)
         if (game->monsters[i].alive)
         {
             // Ajouter le temps écoulé
-            game->monsters[i].anim_time += game->delta_time;
+            game->monsters[i].anim_time += game->delta_time;  // Utilise game->delta_time
             
             // Changer de frame si nécessaire
             if (game->monsters[i].anim_time >= game->monsters[i].anim_speed)
@@ -210,6 +212,31 @@ int game_loop(t_game *game)
     game->delta_time = current_time - game->last_frame_time;
     game->last_frame_time = current_time;
     
+    // Mettre à jour le timer de l'arme
+    if (game->weapon_timer > 0)
+    {
+        game->weapon_timer -= game->delta_time;
+        if (game->weapon_timer <= 0)
+        {
+            game->weapon_timer = 0;
+            game->firing = 0;
+        }
+    }
+    
+    // Mettre à jour les effets de coup pour les monstres
+    for (int i = 0; i < game->monster_count; i++)
+    {
+        if (game->monsters[i].hit_timer > 0)
+        {
+            game->monsters[i].hit_timer -= game->delta_time;
+            if (game->monsters[i].hit_timer <= 0)
+            {
+                game->monsters[i].hit_timer = 0;
+                game->monsters[i].hit_animation = 0;
+            }
+        }
+    }
+    
     // Mise à jour des animations
     update_monster_animations(game);
     
@@ -217,8 +244,6 @@ int game_loop(t_game *game)
     handle_movement(game);
     render_frame(game);
     mlx_put_image_to_window(game->mlx, game->win, game->img, 0, 0);
-    
-    usleep(16000); // ~60 FPS
     
     return (0);
 }
