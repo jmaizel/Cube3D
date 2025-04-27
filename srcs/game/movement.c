@@ -135,7 +135,8 @@ int	key_press(int keycode, t_game *game)
 	else if (keycode == 32 || keycode == 1) // Touche espace ou clic gauche
 		attack(game);
 	else if (keycode == 101 || keycode == 14) // Touche E pour interaction
-		check_special_door_interaction(game);
+        check_special_door_interaction(game);
+		
 	return (0);
 }
 

@@ -29,7 +29,7 @@ int	is_map_closed(char **map, int width, int height)
 		while (map[y][x])
 		{
 			c = map[y][x];
-			if (c == '0' || ft_strchr("PNSEW", c))
+			if (c == '0' || ft_strchr("PNSEWLM", c))
 			{
 				if (y == 0 || y == height - 1)
 					return (0);
@@ -121,7 +121,7 @@ int	validate_map(t_game *game)
 		{
 			c = map[y][x];
 
-			if (!ft_strchr("01PNSEWM ", c))
+			if (!ft_strchr("01PNSEWLM ", c))
 				return (exit_error("Error\nCaractère invalide dans la map"), 0);
 			if (ft_strchr("NSEW", c))
 			{

@@ -61,3 +61,26 @@ void update_special_door(t_game *game)
         ft_printf("La porte verrouillée s'est ouverte!\n");
     }
 }
+
+void check_special_door_interaction(t_game *game)
+{
+    int check_x, check_y;
+    
+    // Position devant le joueur
+    check_x = (int)(game->player.x + game->player.dir_x);
+    check_y = (int)(game->player.y + game->player.dir_y);
+    
+    // Vérifier si c'est la porte spéciale
+    if (game->has_special_door && check_x == game->special_door_x && check_y == game->special_door_y)
+    {
+        if (game->special_door_open)
+            ft_printf("La porte est déjà ouverte.\n");
+        else if (all_monsters_dead(game))
+        {
+            game->special_door_open = 1;
+            ft_printf("La porte s'ouvre!\n");
+        }
+        else
+            ft_printf("Cette porte semble verrouillée. Peut-être que l'élimination de tous les ennemis la débloquera?\n");
+    }
+}
