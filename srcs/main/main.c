@@ -43,10 +43,9 @@ int	main(int argc, char **argv)
 	game.weapon_animating = 0;
 	game.weapon_anim_time = 0;
 	game.weapon_anim_speed = 0.1; // 10 frames par seconde pour l'animation
-	game.door_count = 0;
-	game.special_door_count = 0;
-	game.door_path = NULL;
-	game.special_door_path = NULL;
+	game.has_special_door = 0;
+    game.special_door_open = 0;
+    game.special_door_path = NULL;
 
 	// Parsing et initialisation
 	if (!parse_cub_file(argv[1], &game))
@@ -74,7 +73,7 @@ int	main(int argc, char **argv)
 	game.img_data = (int *)mlx_get_data_addr(game.img, &game.bpp,
 			&game.size_line, &game.endian);
 
-	init_doors(&game);
+	init_special_door(&game);
 
 	// Première frame
 	render_frame(&game);

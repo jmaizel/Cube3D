@@ -37,8 +37,6 @@ void safe_perform_dda(t_ray *ray, t_game *game)
 {
     int max_iterations;
     int iterations;
-    int door_index;
-    int special_door_index;
 
     max_iterations = 100;
     iterations = 0;
@@ -70,21 +68,13 @@ void safe_perform_dda(t_ray *ray, t_game *game)
         {
             ray->hit = 1;
         }
-        else if (game->map.grid[ray->map_y][ray->map_x] == 'D')
-        {
-            // Vérifier l'état de la porte normale
-            door_index = get_door_index(game, ray->map_x, ray->map_y);
-            if (door_index >= 0 && game->door_state[door_index] == 0)
-            {
-                ray->hit = 1;
-                ray->hit_type = 2;  // Type pour porte normale
-            }
-        }
         else if (game->map.grid[ray->map_y][ray->map_x] == 'L')
         {
-            // Vérifier l'état de la porte spéciale
-            special_door_index = get_special_door_index(game, ray->map_x, ray->map_y);
-            if (special_door_index >= 0 && game->special_door_state[special_door_index] == 0)
+            // Vérifier si c'est la porte spéciale et si elle est fermée
+            if (game->has_special_door && 
+                ray->map_x == game->special_door_x && 
+                ray->map_y == game->special_door_y && 
+                !game->special_door_open)
             {
                 ray->hit = 1;
                 ray->hit_type = 3;  // Type pour porte spéciale

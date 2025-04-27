@@ -13,14 +13,14 @@
 #include "../includes/cub3d.h"
 
 /* Lit toutes les lignes d'un fichier et les retourne dans un tableau */
-char	**read_files_lines(const char *filename)
+char **read_files_lines(const char *filename)
 {
-	int		fd;
-	char	*line;
-	char	**lines;
-	int		count;
-	int		i;
-	int		len;
+	int fd;
+	char *line;
+	char **lines;
+	int count;
+	int i;
+	int len;
 
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
@@ -51,13 +51,13 @@ char	**read_files_lines(const char *filename)
 }
 
 /* Libère la mémoire d'un tableau de chaînes */
-void	free_split(char **split)
+void free_split(char **split)
 {
-	int	i;
+	int i;
 
 	i = 0;
 	if (!split)
-		return ;
+		return;
 	while (split[i])
 	{
 		free(split[i]);
@@ -67,13 +67,13 @@ void	free_split(char **split)
 }
 
 /* Parse une ligne de couleur RGB et la convertit en un entier */
-int	parse_color_line(char *line)
+int parse_color_line(char *line)
 {
-	char	**parts;
-	int		color;
-	int		r;
-	int		g;
-	int		b;
+	char **parts;
+	int color;
+	int r;
+	int g;
+	int b;
 
 	parts = ft_split(line, ',');
 	if (!parts || !parts[0] || !parts[1] || !parts[2] || parts[3])
@@ -89,17 +89,17 @@ int	parse_color_line(char *line)
 }
 
 /* Parse les lignes de configuration (textures et couleurs) du fichier .cub */
-int	parse_config(char **lines, t_game *game, int *map_start_index)
+int parse_config(char **lines, t_game *game, int *map_start_index)
 {
-	int	i;
-	int	config_count;
-	int	no_set;
-	int	so_set;
-	int	we_set;
-	int	ea_set;
-	int	f_set;
-	int	c_set;
-	int	j;
+	int i;
+	int config_count;
+	int no_set;
+	int so_set;
+	int we_set;
+	int ea_set;
+	int f_set;
+	int c_set;
+	int j;
 
 	config_count = 0;
 	no_set = 0;
@@ -114,7 +114,7 @@ int	parse_config(char **lines, t_game *game, int *map_start_index)
 		if (lines[i][0] == '\0')
 		{
 			i++;
-			continue ;
+			continue;
 		}
 		if (ft_strncmp(lines[i], "NO ", 3) == 0)
 		{
@@ -167,10 +167,6 @@ int	parse_config(char **lines, t_game *game, int *map_start_index)
 				return (0);
 			c_set = 1;
 			config_count++;
-		}
-		else if (ft_strncmp(lines[i], "DO ", 3) == 0)
-		{
-			game->door_path = ft_strdup(lines[i] + 3);
 		}
 		else if (ft_strncmp(lines[i], "SD ", 3) == 0)
 		{
@@ -231,9 +227,9 @@ int	parse_config(char **lines, t_game *game, int *map_start_index)
 			{
 				if (config_count < 6)
 					return (exit_error("Error\nConfiguration incomplète avant la map"),
-						0);
+							0);
 				*map_start_index = i;
-				break ;
+				break;
 			}
 			else
 			{
@@ -248,7 +244,7 @@ int	parse_config(char **lines, t_game *game, int *map_start_index)
 }
 
 /* Parse le fichier .cub complet (configuration et map) */
-int	parse_cub_file(const char *filename, t_game *game)
+int parse_cub_file(const char *filename, t_game *game)
 {
 	char **lines;
 	int map_start_index;
