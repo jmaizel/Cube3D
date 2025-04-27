@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 16:45:10 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/27 14:02:12 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/27 15:48:33 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,17 +122,20 @@ void	rotate_right(t_game *game)
 }
 
 /* Gère l'appui sur une touche */
-int	key_press(int keycode, t_game *game)
+int key_press(int keycode, t_game *game)
 {
-	if (keycode >= 0 && keycode < 256)
-		game->keys[keycode] = 1;
-	if (keycode == 65361 || keycode == 123)
-		game->rotate_left = 1;
-	else if (keycode == 65363 || keycode == 124)
-		game->rotate_right = 1;
-	else if (keycode == 65307 || keycode == 53)
-		close_window(game);
-	return (0);
+    if (keycode >= 0 && keycode < 256)
+        game->keys[keycode] = 1;
+    if (keycode == 65361 || keycode == 123)
+        game->rotate_left = 1;
+    else if (keycode == 65363 || keycode == 124)
+        game->rotate_right = 1;
+    else if (keycode == 65307 || keycode == 53)
+        close_window(game);
+    else if (keycode == 109 || keycode == 46)
+        toggle_mouse(game);
+    
+    return (0);
 }
 
 /* Gère le relâchement d'une touche */

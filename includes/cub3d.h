@@ -45,13 +45,13 @@ typedef struct s_texture
 
 typedef struct s_monster
 {
-    double      x;
-    double      y;
-    int         alive;
-    int         frame;          // Frame d'animation actuelle
-    double      anim_time;      // Temps accumulé pour l'animation
-    double      anim_speed;     // Vitesse d'animation en secondes
-}              t_monster;
+	double		x;
+	double		y;
+	int			alive;
+	int frame;         // Frame d'animation actuelle
+	double anim_time;  // Temps accumulé pour l'animation
+	double anim_speed; // Vitesse d'animation en secondes
+}				t_monster;
 
 typedef struct s_sprite
 {
@@ -63,50 +63,56 @@ typedef struct s_sprite
 
 typedef struct s_game
 {
-    void        *mlx;
-    void        *win;
-    t_map       map;
-    t_player    player;
+	void		*mlx;
+	void		*win;
+	t_map		map;
+	t_player	player;
 
-    t_texture   north_tex;
-    t_texture   south_tex;
-    t_texture   east_tex;
-    t_texture   west_tex;
-    
-    // Frames d'animation des monstres
-    t_texture   monster_frames[4];
-    int         monster_frame_count;
+	t_texture	north_tex;
+	t_texture	south_tex;
+	t_texture	east_tex;
+	t_texture	west_tex;
 
-    char        *monster_paths[4];
+	// Frames d'animation des monstres
+	t_texture	monster_frames[4];
+	int			monster_frame_count;
 
-    int         ceiling_color;
-    int         floor_color;
-    int         keys[256];
-    int         rotate_left;
-    int         rotate_right;
-    double      move_speed;
-    double      rot_speed;
-    
-    // Gestion du temps
-    double      last_frame_time;
-    double      delta_time;
+	char		*monster_paths[4];
 
-    // weapon
-    t_texture   weapon_tex;
-    char        *weapon_path;
-    
-    // monsters
-    t_monster   monsters[MAX_MONSTERS];
-    int         monster_count;
-    double      z_buffer[WIN_WIDTH];
-    
-    // buffer d'image
-    void        *img;
-    int         *img_data;
-    int         bpp;
-    int         size_line;
-    int         endian;
-}              t_game;
+	int			ceiling_color;
+	int			floor_color;
+	int			keys[256];
+	int			rotate_left;
+	int			rotate_right;
+	double		move_speed;
+	double		rot_speed;
+
+	// Gestion du temps
+	double		last_frame_time;
+	double		delta_time;
+
+	// weapon
+	t_texture	weapon_tex;
+	char		*weapon_path;
+
+	// monsters
+	t_monster	monsters[MAX_MONSTERS];
+	int			monster_count;
+	double		z_buffer[WIN_WIDTH];
+
+	// buffer d'image
+	void		*img;
+	int			*img_data;
+	int			bpp;
+	int			size_line;
+	int			endian;
+
+	// Pour la souris
+	int mouse_x;              // Position actuelle de la souris en X
+	int mouse_prev_x;         // Position précédente de la souris en X
+	int mouse_enabled;        // Si la rotation par souris est activée
+	double mouse_sensitivity; // Sensibilité de la souris
+}				t_game;
 
 typedef struct s_ray
 {
@@ -161,6 +167,13 @@ int				game_loop(t_game *game);
 int				key_release(int keycode, t_game *game);
 void			complete_raycasting(t_game *game);
 void			handle_movement(t_game *game);
+
+
+
+int				mouse_move(int x, int y, t_game *game);
+void			toggle_mouse(t_game *game);
+
+
 
 // Fonctions pour les monstres
 void			init_monsters(t_game *game);
