@@ -3,14 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   movement.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 16:45:10 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/25 14:13:07 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/27 14:02:12 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
+
+#include <sys/time.h>
+
+
 #define MOVE_SPEED 0.1
 #define ROT_SPEED 0.05
 
@@ -159,12 +163,59 @@ void	handle_movement(t_game *game)
 	if (game->rotate_right)
 		rotate_right(game);
 }
-/* Boucle principale du jeu */
-int	game_loop(t_game *game)
+double get_time(void)
 {
-	handle_movement(game);
-	render_frame(game);
-	mlx_put_image_to_window(game->mlx, game->win, game->img, 0, 0);
-	usleep(16000);
-	return (0);
+    struct timeval tv;
+    
+    gettimeofday(&tv, NULL);
+    return ((double)tv.tv_sec + (double)tv.tv_usec / 1000000.0);
+}
+
+void update_monster_animations(t_game *game)
+{
+    int i;
+    
+    i = 0;
+    while (i < game->monster_count)
+    {
+        if (game->monsters[i].alive)
+        {
+            // Ajouter le temps écoulé
+            game->monsters[i].anim_time += game->delta_time;
+            
+            // Changer de frame si nécessaire
+            if (game->monsters[i].anim_time >= game->monsters[i].anim_speed)
+            {
+                game->monsters[i].anim_time -= game->monsters[i].anim_speed;
+                game->monsters[i].frame = (game->monsters[i].frame + 1) % game->monster_frame_count;
+            }
+        }
+        i++;
+    }
+}
+
+/* boucle principale du jeu */
+int game_loop(t_game *game)
+{
+    double current_time;
+    
+    // Calculer le delta time
+    current_time = get_time();
+    if (game->last_frame_time == 0.0)
+        game->last_frame_time = current_time;
+    
+    game->delta_time = current_time - game->last_frame_time;
+    game->last_frame_time = current_time;
+    
+    // Mise à jour des animations
+    update_monster_animations(game);
+    
+    // Reste de la boucle de jeu
+    handle_movement(game);
+    render_frame(game);
+    mlx_put_image_to_window(game->mlx, game->win, game->img, 0, 0);
+    
+    usleep(16000); // ~60 FPS
+    
+    return (0);
 }

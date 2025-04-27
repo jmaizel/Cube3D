@@ -45,10 +45,13 @@ typedef struct s_texture
 
 typedef struct s_monster
 {
-	double		x;
-	double		y;
-	int			alive;
-}				t_monster;
+    double      x;
+    double      y;
+    int         alive;
+    int         frame;          // Frame d'animation actuelle
+    double      anim_time;      // Temps accumulé pour l'animation
+    double      anim_speed;     // Vitesse d'animation en secondes
+}              t_monster;
 
 typedef struct s_sprite
 {
@@ -60,50 +63,57 @@ typedef struct s_sprite
 
 typedef struct s_game
 {
-	void		*mlx;
-	void		*win;
-	t_map		map;
-	t_player	player;
-	
-	t_texture	north_tex;
-	t_texture	south_tex;
-	t_texture	east_tex;
-	t_texture	west_tex;
-	t_texture	door_tex;
-	t_texture	monster_tex;
-	
-	char		*door_path;
-	char		*monster_path;
-	
-	int			ceiling_color;
-	int			floor_color;
-	int			keys[256];
-	int			rotate_left;
-	int			rotate_right;
-	double		move_speed;
-	double		rot_speed;
-	
-	// weapon
-	t_texture	weapon_tex;
-	char		*weapon_path;
-	
-	// monsters
-	t_monster	monsters[MAX_MONSTERS];
-	int			monster_count;
-	double		z_buffer[WIN_WIDTH];
-	
-	// portes
-	int			door_state[100];
-	int			door_count;
-	int			door_positions[100][2];
-	
-	// buffer d'image
-	void		*img;
-	int			*img_data;
-	int			bpp;
-	int			size_line;
-	int			endian;
-}				t_game;
+    void        *mlx;
+    void        *win;
+    t_map       map;
+    t_player    player;
+
+    t_texture   north_tex;
+    t_texture   south_tex;
+    t_texture   east_tex;
+    t_texture   west_tex;
+    t_texture   door_tex;
+    
+    // Frames d'animation des monstres
+    t_texture   monster_frames[4];
+    int         monster_frame_count;
+
+    char        *door_path;
+    char        *monster_paths[4];
+
+    int         ceiling_color;
+    int         floor_color;
+    int         keys[256];
+    int         rotate_left;
+    int         rotate_right;
+    double      move_speed;
+    double      rot_speed;
+    
+    // Gestion du temps
+    double      last_frame_time;
+    double      delta_time;
+
+    // weapon
+    t_texture   weapon_tex;
+    char        *weapon_path;
+    
+    // monsters
+    t_monster   monsters[MAX_MONSTERS];
+    int         monster_count;
+    double      z_buffer[WIN_WIDTH];
+    
+    // portes
+    int         door_state[100];
+    int         door_count;
+    int         door_positions[100][2];
+    
+    // buffer d'image
+    void        *img;
+    int         *img_data;
+    int         bpp;
+    int         size_line;
+    int         endian;
+}              t_game;
 
 typedef struct s_ray
 {

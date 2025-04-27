@@ -1,0 +1,1724 @@
+#ifndef CUB3D_H
+# define CUB3D_H
+# include "../libft/includes/ft_printf.h"
+# include "../libft/includes/get_next_line.h"
+# include "../libft/includes/libft.h"
+# include "../minilibx-linux/mlx.h"
+# include <fcntl.h>
+# include <math.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
+# define WIN_WIDTH 1280
+# define WIN_HEIGHT 720
+# define TEX_WIDTH 64
+# define TEX_HEIGHT 64
+# define MAX_MONSTERS 20
+
+typedef struct s_player
+{
+	double		x;
+	double		y;
+	double		dir_x;
+	double		dir_y;
+	double		plane_x;
+	double		plane_y;
+}				t_player;
+
+typedef struct s_map
+{
+	char		**grid;
+	int			width;
+	int			height;
+}				t_map;
+
+typedef struct s_texture
+{
+	void		*img;
+	int			*data;
+	int			width;
+	int			height;
+	int			bpp;
+	int			size_line;
+	int			endian;
+}				t_texture;
+
+typedef struct s_monster
+{
+	double		x;
+	double		y;
+	int			alive;
+}				t_monster;
+
+typedef struct s_sprite
+{
+	double		x;
+	double		y;
+	int			width;
+	int			height;
+}				t_sprite;
+
+typedef struct s_game
+{
+	void		*mlx;
+	void		*win;
+	t_map		map;
+	t_player	player;
+	
+	t_texture	north_tex;
+	t_texture	south_tex;
+	t_texture	east_tex;
+	t_texture	west_tex;
+	t_texture	door_tex;
+	t_texture	monster_tex;
+	
+	char		*door_path;
+	char		*monster_path;
+	
+	int			ceiling_color;
+	int			floor_color;
+	int			keys[256];
+	int			rotate_left;
+	int			rotate_right;
+	double		move_speed;
+	double		rot_speed;
+	
+	// weapon
+	t_texture	weapon_tex;
+	char		*weapon_path;
+	
+	// monsters
+	t_monster	monsters[MAX_MONSTERS];
+	int			monster_count;
+	double		z_buffer[WIN_WIDTH];
+	
+	// portes
+	int			door_state[100];
+	int			door_count;
+	int			door_positions[100][2];
+	
+	// buffer d'image
+	void		*img;
+	int			*img_data;
+	int			bpp;
+	int			size_line;
+	int			endian;
+}				t_game;
+
+typedef struct s_ray
+{
+	double		pos_x;
+	double		pos_y;
+	double		dir_x;
+	double		dir_y;
+	double		delta_dist_x;
+	double		delta_dist_y;
+	double		side_dist_x;
+	double		side_dist_y;
+	double		perp_wall_dist;
+	int			map_x;
+	int			map_y;
+	int			step_x;
+	int			step_y;
+	int			hit;
+	int			side;
+	int			line_height;
+	int			draw_start;
+	int			draw_end;
+	int			hit_type;
+}				t_ray;
+
+int				parse_cub_file(const char *filename, t_game *game);
+void			free_map(char **map);
+int				exit_error(char *msg);
+int				parse_map(char **lines, t_game *game, int start_index);
+int				validate_map(t_game *game);
+void			get_texture(t_ray *ray, t_game *game, t_texture **tex);
+void			draw_textured_line(int x, t_ray *ray, t_game *game);
+void			raycasting(t_game *game);
+void			calculate_step_and_side_dist(t_ray *ray);
+void			init_ray(t_ray *ray, t_game *game, int x);
+void			calculate_line_height(t_ray *ray);
+void			safe_perform_dda(t_ray *ray, t_game *game);
+void			safe_draw_textured_line(int x, t_ray *ray, t_game *game);
+int				key_press(int keycode, t_game *game);
+int				is_valid_position(t_game *game, double x, double y);
+void			move_forward(t_game *game);
+void			move_backward(t_game *game);
+void			move_left(t_game *game);
+void			move_right(t_game *game);
+void			rotate_left(t_game *game);
+void			rotate_right(t_game *game);
+int				close_window(t_game *game);
+void			render_frame(t_game *game);
+int				load_all_textures(t_game *game);
+void			draw_minimap(t_game *game);
+void			draw_weapon(t_game *game);
+int				game_loop(t_game *game);
+int				key_release(int keycode, t_game *game);
+void			init_doors(t_game *game);
+int				check_door_interaction(t_game *game);
+void			complete_raycasting(t_game *game);
+void			handle_movement(t_game *game);
+int				get_door_index(t_game *game, int x, int y);
+
+// Fonctions pour les monstres
+void			init_monsters(t_game *game);
+void			render_monsters(t_game *game);
+
+#endif/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   doors.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/09 15:04:32 by jmaizel           #+#    #+#             */
+/*   Updated: 2025/04/25 14:19:57 by jmaizel          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/cub3d.h"
+
+/* Trouve l'index d'une porte à partir de ses coordonnées */
+int	get_door_index(t_game *game, int x, int y)
+{
+	for (int i = 0; i < game->door_count; i++)
+	{
+		if (game->door_positions[i][0] == x && game->door_positions[i][1] == y)
+			return (i);
+	}
+	return (-1);
+}
+
+/* Vérifie si le joueur peut interagir avec une porte devant lui */
+int	check_door_interaction(t_game *game)
+{
+	int	check_x;
+	int	check_y;
+
+	check_x = (int)(game->player.x + game->player.dir_x);
+	check_y = (int)(game->player.y + game->player.dir_y);
+	if (check_x >= 0 && check_y >= 0 && check_y < game->map.height
+		&& check_x < (int)ft_strlen(game->map.grid[check_y])
+		&& game->map.grid[check_y][check_x] == 'P')
+	{
+		return (1);
+	}
+	return (0);
+}
+
+/* Initialise toutes les portes de la map */
+void	init_doors(t_game *game)
+{
+	int x;
+	int y;
+
+	game->door_count = 0;
+	y = 0;
+	while (y < game->map.height)
+	{
+		x = 0;
+		while (x < (int)ft_strlen(game->map.grid[y]))
+		{
+			if (game->map.grid[y][x] == 'P')
+			{
+				if (!game->door_path)
+					return (exit_error("Error\nPorte trouvée mais pas de texture PO"),
+						(void)0);
+				game->door_positions[game->door_count][0] = x;
+				game->door_positions[game->door_count][1] = y;
+				game->door_state[game->door_count] = 0;
+				game->door_count++;
+			}
+			x++;
+		}
+		y++;
+	}
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   movement.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/01 16:45:10 by jmaizel           #+#    #+#             */
+/*   Updated: 2025/04/25 14:13:07 by jmaizel          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/cub3d.h"
+#define MOVE_SPEED 0.1
+#define ROT_SPEED 0.05
+
+/* Vérifie si une position sur la map est valide (pas de mur ni hors limites) */
+int	is_valid_position(t_game *game, double x, double y)
+{
+	if (x < 0 || y < 0 || (int)x >= game->map.width
+		|| (int)y >= game->map.height)
+		return (0);
+	if (game->map.grid[(int)y][(int)x] == '1')
+		return (0);
+	return (1);
+}
+
+/* Déplace le joueur vers l'avant */
+void	move_forward(t_game *game)
+{
+	double	new_x;
+	double	new_y;
+
+	new_x = game->player.x + game->player.dir_x * game->move_speed;
+	new_y = game->player.y + game->player.dir_y * game->move_speed;
+	if (is_valid_position(game, new_x, game->player.y))
+		game->player.x = new_x;
+	if (is_valid_position(game, game->player.x, new_y))
+		game->player.y = new_y;
+}
+
+/* Déplace le joueur vers l'arrière */
+void	move_backward(t_game *game)
+{
+	double	new_x;
+	double	new_y;
+
+	new_x = game->player.x - game->player.dir_x * MOVE_SPEED;
+	new_y = game->player.y - game->player.dir_y * MOVE_SPEED;
+	if (is_valid_position(game, new_x, game->player.y))
+		game->player.x = new_x;
+	if (is_valid_position(game, game->player.x, new_y))
+		game->player.y = new_y;
+}
+
+/* Déplace le joueur vers la gauche */
+void	move_left(t_game *game)
+{
+	double	new_x;
+	double	new_y;
+
+	new_x = game->player.x - game->player.plane_x * MOVE_SPEED;
+	new_y = game->player.y - game->player.plane_y * MOVE_SPEED;
+	if (is_valid_position(game, new_x, game->player.y))
+		game->player.x = new_x;
+	if (is_valid_position(game, game->player.x, new_y))
+		game->player.y = new_y;
+}
+
+/* Déplace le joueur vers la droite */
+void	move_right(t_game *game)
+{
+	double	new_x;
+	double	new_y;
+
+	new_x = game->player.x + game->player.plane_x * MOVE_SPEED;
+	new_y = game->player.y + game->player.plane_y * MOVE_SPEED;
+	if (is_valid_position(game, new_x, game->player.y))
+		game->player.x = new_x;
+	if (is_valid_position(game, game->player.x, new_y))
+		game->player.y = new_y;
+}
+
+/* Fait pivoter le joueur vers la gauche */
+void	rotate_left(t_game *game)
+{
+	double	old_dir_x;
+	double	old_plane_x;
+
+	old_dir_x = game->player.dir_x;
+	old_plane_x = game->player.plane_x;
+	game->player.dir_x = game->player.dir_x * cos(-ROT_SPEED)
+		- game->player.dir_y * sin(-ROT_SPEED);
+	game->player.dir_y = old_dir_x * sin(-ROT_SPEED) + game->player.dir_y
+		* cos(-ROT_SPEED);
+	game->player.plane_x = game->player.plane_x * cos(-ROT_SPEED)
+		- game->player.plane_y * sin(-ROT_SPEED);
+	game->player.plane_y = old_plane_x * sin(-ROT_SPEED) + game->player.plane_y
+		* cos(-ROT_SPEED);
+}
+
+/* Fait pivoter le joueur vers la droite */
+void	rotate_right(t_game *game)
+{
+	double	old_dir_x;
+	double	old_plane_x;
+
+	old_dir_x = game->player.dir_x;
+	old_plane_x = game->player.plane_x;
+	game->player.dir_x = game->player.dir_x * cos(ROT_SPEED)
+		- game->player.dir_y * sin(ROT_SPEED);
+	game->player.dir_y = old_dir_x * sin(ROT_SPEED) + game->player.dir_y
+		* cos(ROT_SPEED);
+	game->player.plane_x = game->player.plane_x * cos(ROT_SPEED)
+		- game->player.plane_y * sin(ROT_SPEED);
+	game->player.plane_y = old_plane_x * sin(ROT_SPEED) + game->player.plane_y
+		* cos(ROT_SPEED);
+}
+
+/* Gère l'appui sur une touche */
+int	key_press(int keycode, t_game *game)
+{
+	if (keycode >= 0 && keycode < 256)
+		game->keys[keycode] = 1;
+	if (keycode == 65361 || keycode == 123)
+		game->rotate_left = 1;
+	else if (keycode == 65363 || keycode == 124)
+		game->rotate_right = 1;
+	else if (keycode == 65307 || keycode == 53)
+		close_window(game);
+	return (0);
+}
+
+/* Gère le relâchement d'une touche */
+int	key_release(int keycode, t_game *game)
+{
+	if (keycode >= 0 && keycode < 256)
+		game->keys[keycode] = 0;
+	if (keycode == 65361 || keycode == 123)
+		game->rotate_left = 0;
+	else if (keycode == 65363 || keycode == 124)
+		game->rotate_right = 0;
+	return (0);
+}
+
+/* Gère tous les mouvements actifs du joueur */
+void	handle_movement(t_game *game)
+{
+	if (game->keys[119] || game->keys[13])
+		move_forward(game);
+	if (game->keys[115] || game->keys[1])
+		move_backward(game);
+	if (game->keys[97] || game->keys[0])
+		move_left(game);
+	if (game->keys[100] || game->keys[2])
+		move_right(game);
+	if (game->rotate_left)
+		rotate_left(game);
+	if (game->rotate_right)
+		rotate_right(game);
+}
+/* Boucle principale du jeu */
+int	game_loop(t_game *game)
+{
+	handle_movement(game);
+	render_frame(game);
+	mlx_put_image_to_window(game->mlx, game->win, game->img, 0, 0);
+	usleep(16000);
+	return (0);
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   draw_enemies.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/25 16:31:16 by jmaizel           #+#    #+#             */
+/*   Updated: 2025/04/25 17:00:57 by jmaizel          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/cub3d.h"
+
+/* Initialise les monstres dans la map */
+void	init_monsters(t_game *game)
+{
+	int	x;
+	int	y;
+
+	game->monster_count = 0;
+	y = 0;
+	while (y < game->map.height)
+	{
+		x = 0;
+		while (x < (int)ft_strlen(game->map.grid[y]))
+		{
+			if (game->map.grid[y][x] == 'M')
+			{
+				game->monsters[game->monster_count].x = x + 0.5;
+				game->monsters[game->monster_count].y = y + 0.5;
+				game->monsters[game->monster_count].alive = 1;
+				game->monster_count++;
+				game->map.grid[y][x] = '0';
+			}
+			x++;
+		}
+		y++;
+	}
+}
+
+/* Trie les monstres par distance pour le rendu */
+void	sort_monsters(t_game *game, double *distances, int *order)
+{
+	int		i;
+	int		j;
+	int		tmp;
+	double	tmp_dist;
+
+	i = 0;
+	while (i < game->monster_count)
+	{
+		order[i] = i;
+		distances[i] = ((game->player.x - game->monsters[i].x) * (game->player.x
+					- game->monsters[i].x) + (game->player.y
+					- game->monsters[i].y) * (game->player.y
+					- game->monsters[i].y));
+		i++;
+	}
+	i = 0;
+	while (i < game->monster_count - 1)
+	{
+		j = 0;
+		while (j < game->monster_count - i - 1)
+		{
+			if (distances[j] < distances[j + 1])
+			{
+				tmp_dist = distances[j];
+				distances[j] = distances[j + 1];
+				distances[j + 1] = tmp_dist;
+				tmp = order[j];
+				order[j] = order[j + 1];
+				order[j + 1] = tmp;
+			}
+			j++;
+		}
+		i++;
+	}
+}
+
+/* Dessine un monstre avec transparence */
+void	draw_monster_column(t_game *game, int stripe, int draw_start_y,
+		int draw_end_y, t_sprite *sprite, int tex_x)
+{
+	int	y;
+	int	d;
+	int	tex_y;
+	int	color;
+
+	y = draw_start_y;
+	while (y < draw_end_y)
+	{
+		d = (y)*256 - WIN_HEIGHT * 128 + sprite->height * 128;
+		tex_y = ((d * game->monster_tex.height) / sprite->height) / 256;
+		if (tex_y >= 0 && tex_y < game->monster_tex.height && tex_x >= 0
+			&& tex_x < game->monster_tex.width)
+		{
+			color = game->monster_tex.data[game->monster_tex.width * tex_y
+				+ tex_x];
+			if ((color & 0x00FFFFFF) != 0x000000)
+			{
+				game->img_data[y * (game->size_line / 4) + stripe] = color;
+			}
+		}
+		y++;
+	}
+}
+
+/* Rend les monstres visibles à l'écran */
+void	render_monsters(t_game *game)
+{
+	int			i;
+	int			order[MAX_MONSTERS];
+	double		distances[MAX_MONSTERS];
+	t_sprite	sprite;
+	int			stripe;
+	int			tex_x;
+	double		inv_det;
+	double		transform_x;
+	double		transform_y;
+	int			sprite_screen_x;
+	int			draw_start_y;
+	int			draw_end_y;
+	int			draw_start_x;
+	int			draw_end_x;
+
+	sort_monsters(game, distances, order);
+	i = 0;
+	while (i < game->monster_count)
+	{
+		if (!game->monsters[order[i]].alive)
+		{
+			i++;
+			continue ;
+		}
+		sprite.x = game->monsters[order[i]].x - game->player.x;
+		sprite.y = game->monsters[order[i]].y - game->player.y;
+		inv_det = 1.0 / (game->player.plane_x * game->player.dir_y
+				- game->player.dir_x * game->player.plane_y);
+		transform_x = inv_det * (game->player.dir_y * sprite.x
+				- game->player.dir_x * sprite.y);
+		transform_y = inv_det * (-game->player.plane_y * sprite.x
+				+ game->player.plane_x * sprite.y);
+		sprite_screen_x = (int)((WIN_WIDTH / 2) * (1 + transform_x
+					/ transform_y));
+		sprite.height = abs((int)(WIN_HEIGHT / transform_y));
+		sprite.width = sprite.height;
+		draw_start_y = -sprite.height / 2 + WIN_HEIGHT / 2;
+		if (draw_start_y < 0)
+			draw_start_y = 0;
+		draw_end_y = sprite.height / 2 + WIN_HEIGHT / 2;
+		if (draw_end_y >= WIN_HEIGHT)
+			draw_end_y = WIN_HEIGHT - 1;
+		draw_start_x = -sprite.width / 2 + sprite_screen_x;
+		if (draw_start_x < 0)
+			draw_start_x = 0;
+		draw_end_x = sprite.width / 2 + sprite_screen_x;
+		if (draw_end_x >= WIN_WIDTH)
+			draw_end_x = WIN_WIDTH - 1;
+		stripe = draw_start_x;
+		while (stripe < draw_end_x)
+		{
+			tex_x = (int)(256 * (stripe - (-sprite.width / 2 + sprite_screen_x))
+					* game->monster_tex.width / sprite.width) / 256;
+			if (transform_y > 0 && stripe > 0 && stripe < WIN_WIDTH
+				&& transform_y < game->z_buffer[stripe])
+			{
+				draw_monster_column(game, stripe, draw_start_y, draw_end_y,
+					&sprite, tex_x);
+			}
+			stripe++;
+		}
+		i++;
+	}
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   draw_minimap.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/02 14:10:35 by jmaizel           #+#    #+#             */
+/*   Updated: 2025/04/25 14:20:07 by jmaizel          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/cub3d.h"
+
+/* Dessine un carré sur la minimap */
+void	draw_minimap_square(t_game *game, int pixel_x, int pixel_y, int color)
+{
+	int	x;
+	int	y;
+	int	size;
+
+	size = 5;
+	y = 0;
+	while (y < size)
+	{
+		x = 0;
+		while (x < size)
+		{
+			if (pixel_y + y < WIN_HEIGHT && pixel_x + x < WIN_WIDTH)
+				game->img_data[(pixel_y + y) * (game->size_line / 4) + (pixel_x
+						+ x)] = color;
+			x++;
+		}
+		y++;
+	}
+}
+
+/* Dessine la position du joueur sur la minimap */
+void	draw_minimap_player(t_game *game, int offset_x, int offset_y)
+{
+	int	x;
+	int	y;
+	int	player_pixel_x;
+	int	player_pixel_y;
+	int	size;
+
+	size = 5;
+	player_pixel_x = offset_x + (int)(game->player.x) * size;
+	player_pixel_y = offset_y + (int)(game->player.y) * size;
+	y = -1;
+	while (y <= 1)
+	{
+		x = -1;
+		while (x <= 1)
+		{
+			if (player_pixel_y + y < WIN_HEIGHT && player_pixel_x
+				+ x < WIN_WIDTH)
+				game->img_data[(player_pixel_y + y) * (game->size_line / 4)
+					+ (player_pixel_x + x)] = 0xFF0000;
+			x++;
+		}
+		y++;
+	}
+}
+
+/* Dessine la minimap dans le coin supérieur gauche de l'écran */
+void	draw_minimap(t_game *game)
+{
+	int offset_y;
+	int map_x;
+	int map_y;
+	int pixel_x;
+	int pixel_y;
+	int size;
+	int offset_x;
+
+	size = 5;
+	offset_x = 20;
+	offset_y = 20;
+	map_y = 0;
+	while (map_y < game->map.height)
+	{
+		map_x = 0;
+		while (map_x < (int)ft_strlen(game->map.grid[map_y]))
+		{
+			pixel_x = offset_x + map_x * size;
+			pixel_y = offset_y + map_y * size;
+			if (game->map.grid[map_y][map_x] == '1')
+				draw_minimap_square(game, pixel_x, pixel_y, 0xFFFFFF);
+			else if (game->map.grid[map_y][map_x] == '0' || ft_strchr("NSEW",
+					game->map.grid[map_y][map_x]))
+				draw_minimap_square(game, pixel_x, pixel_y, 0x444444);
+			map_x++;
+		}
+		map_y++;
+	}
+	draw_minimap_player(game, offset_x, offset_y);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   draw_weapon.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/02 14:10:35 by jmaizel           #+#    #+#             */
+/*   Updated: 2025/04/25 16:57:23 by jmaizel          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/cub3d.h"
+
+#define WEAPON_OFFSET_X 100
+#define WEAPON_OFFSET_Y 30
+
+/* Dessine l'arme en bas de l'écran */
+void	draw_weapon(t_game *game)
+{
+	int x;
+	int y;
+	int draw_x;
+	int draw_y;
+	int color;
+	int start_x;
+	int start_y;
+
+	if (!game->weapon_tex.data)
+		return ;
+	start_x = WIN_WIDTH / 2 - game->weapon_tex.width / 2 + 30;
+	start_y = WIN_HEIGHT - game->weapon_tex.height + 10;
+	y = 0;
+	while (y < game->weapon_tex.height)
+	{
+		x = 0;
+		while (x < game->weapon_tex.width)
+		{
+			color = game->weapon_tex.data[y * game->weapon_tex.width + x];
+			if ((color & 0x00FFFFFF) != 0x000000)
+			{
+				draw_x = start_x + x;
+				draw_y = start_y + y;
+				if (draw_x >= 0 && draw_x < WIN_WIDTH && draw_y >= 0
+					&& draw_y < WIN_HEIGHT)
+					game->img_data[draw_y * (game->size_line / 4)
+						+ draw_x] = color;
+			}
+			x++;
+		}
+		y++;
+	}
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   render_frame.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/25 14:00:00 by jmaizel           #+#    #+#             */
+/*   Updated: 2025/04/25 16:33:50 by jmaizel          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/cub3d.h"
+
+/* Dessine une frame complète avec sol, plafond, murs, minimap et arme */
+void	render_frame(t_game *game)
+{
+	int x;
+	int y;
+
+	y = 0;
+	while (y < WIN_HEIGHT)
+	{
+		x = 0;
+		while (x < WIN_WIDTH)
+		{
+			if (y < WIN_HEIGHT / 2)
+				game->img_data[y * (game->size_line / 4)
+					+ x] = game->ceiling_color;
+			else
+				game->img_data[y * (game->size_line / 4)
+					+ x] = game->floor_color;
+			x++;
+		}
+		y++;
+	}
+	complete_raycasting(game);
+    render_monsters(game);
+	draw_minimap(game);
+	draw_weapon(game);
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   textures.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/01 14:22:34 by jmaizel           #+#    #+#             */
+/*   Updated: 2025/04/25 16:39:52 by jmaizel          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/cub3d.h"
+
+/* Déclaration forward de load_texture */
+int		load_texture(t_game *game, t_texture *texture, char *path);
+
+/* Détermine quelle texture utiliser selon le côté du mur touché */
+void	get_texture(t_ray *ray, t_game *game, t_texture **tex)
+{
+	if (ray->side == 0)
+	{
+		if (ray->dir_x > 0)
+			*tex = &game->east_tex;
+		else
+			*tex = &game->west_tex;
+	}
+	else
+	{
+		if (ray->dir_y > 0)
+			*tex = &game->south_tex;
+		else
+			*tex = &game->north_tex;
+	}
+}
+
+/* Charge une texture XPM et récupère son pointeur de données */
+int	load_texture(t_game *game, t_texture *texture, char *path)
+{
+	while (*path && (*path == ' ' || *path == '\t'))
+		path++;
+	texture->img = mlx_xpm_file_to_image(game->mlx, path, &texture->width,
+			&texture->height);
+	if (!texture->img)
+		return (exit_error("Erreur: Impossible de charger la texture"), 0);
+	texture->data = (int *)mlx_get_data_addr(texture->img, &texture->bpp,
+			&texture->size_line, &texture->endian);
+	return (1);
+}
+
+/* Calcule la coordonnée x de la texture pour le mur touché */
+void	calculate_texture_x(t_ray *ray, double *wall_x, int *tex_x,
+		t_texture *tex)
+{
+	if (ray->side == 0)
+		*wall_x = ray->pos_y + ray->perp_wall_dist * ray->dir_y;
+	else
+		*wall_x = ray->pos_x + ray->perp_wall_dist * ray->dir_x;
+	*wall_x -= floor(*wall_x);
+	*tex_x = (int)(*wall_x * (double)tex->width);
+	if ((ray->side == 0 && ray->dir_x < 0) || (ray->side == 1
+			&& ray->dir_y > 0))
+		*tex_x = tex->width - *tex_x - 1;
+}
+
+/* Charge toutes les textures du jeu (obligatoires et optionnelles) */
+int	load_all_textures(t_game *game)
+{
+	if (!load_texture(game, &game->north_tex, (char *)game->north_tex.img))
+		return (0);
+	if (!load_texture(game, &game->south_tex, (char *)game->south_tex.img))
+		return (0);
+	if (!load_texture(game, &game->east_tex, (char *)game->east_tex.img))
+		return (0);
+	if (!load_texture(game, &game->west_tex, (char *)game->west_tex.img))
+		return (0);
+	if (game->door_path && !load_texture(game, &game->door_tex,
+			game->door_path))
+		return (0);
+	if (game->weapon_path && !load_texture(game, &game->weapon_tex,
+			game->weapon_path))
+		return (0);
+	if (game->monster_path && !load_texture(game, &game->monster_tex,
+			game->monster_path))
+		return (0);
+	if (game->weapon_path)
+		free(game->weapon_path);
+	if (game->door_path)
+		free(game->door_path);
+	if (game->south_tex.img)
+		free(game->south_tex.img);
+	if (game->north_tex.img)
+		free(game->north_tex.img);
+	if (game->east_tex.img)
+		free(game->east_tex.img);
+	if (game->west_tex.img)
+		free(game->west_tex.img);
+	if (game->monster_path)
+		free(game->monster_path);
+	return (1);
+}
+
+/* Dessine une ligne texturée verticale pour une colonne de l'écran */
+void	draw_textured_line(int x, t_ray *ray, t_game *game)
+{
+	t_texture *tex;
+	double wall_x;
+	int color;
+	int y;
+	int tex_x;
+	int tex_y;
+	double step;
+	double tex_pos;
+
+	if (ray->hit_type == 2)
+		tex = &game->door_tex;
+	else
+		get_texture(ray, game, &tex);
+	calculate_texture_x(ray, &wall_x, &tex_x, tex);
+	step = 1.0 * tex->height / ray->line_height;
+	tex_pos = (ray->draw_start - WIN_HEIGHT / 2 + ray->line_height / 2) * step;
+	y = ray->draw_start;
+	while (y < ray->draw_end)
+	{
+		tex_y = (int)tex_pos & (tex->height - 1);
+		tex_pos += step;
+		color = tex->data[tex_y * tex->width + tex_x];
+		if (ray->side == 1)
+			color = (color >> 1) & 0x7F7F7F;
+		game->img_data[y * (game->size_line / 4) + x] = color;
+		y++;
+	}
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/28 14:37:18 by jmaizel           #+#    #+#             */
+/*   Updated: 2025/04/25 16:40:18 by jmaizel          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/cub3d.h"
+
+/* Point d'entrée principal du programme */
+int	main(int argc, char **argv)
+{
+	t_game game;
+
+	if (argc != 2)
+		return (exit_error("Usage: ./cub3D map.cub"), 1);
+	ft_memset(&game, 0, sizeof(t_game));
+	game.rotate_left = 0;
+	game.rotate_right = 0;
+	game.move_speed = 0.13;
+	game.rot_speed = 0.03;
+	game.door_count = 0;
+	if (!parse_cub_file(argv[1], &game))
+		return (1);
+	init_doors(&game);
+	init_monsters(&game);
+	game.mlx = mlx_init();
+	if (!game.mlx)
+		return (exit_error("Erreur init MLX"), 1);
+	if (!load_all_textures(&game))
+		return (1);
+	game.win = mlx_new_window(game.mlx, WIN_WIDTH, WIN_HEIGHT,
+			"Cub3D avec raycasting");
+	if (!game.win)
+		return (exit_error("Erreur fenêtre"), 1);
+	game.img = mlx_new_image(game.mlx, WIN_WIDTH, WIN_HEIGHT);
+	game.img_data = (int *)mlx_get_data_addr(game.img, &game.bpp,
+			&game.size_line, &game.endian);
+	render_frame(&game);
+	mlx_put_image_to_window(game.mlx, game.win, game.img, 0, 0);
+	mlx_hook(game.win, 2, 1L << 0, key_press, &game);
+	mlx_hook(game.win, 3, 1L << 1, key_release, &game);
+	mlx_hook(game.win, 17, 0, close_window, &game);
+	mlx_loop_hook(game.mlx, game_loop, &game);
+	mlx_loop(game.mlx);
+	return (0);
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/01 11:12:03 by jmaizel           #+#    #+#             */
+/*   Updated: 2025/04/25 13:55:26 by jmaizel          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/cub3d.h"
+
+/* Libère la mémoire allouée pour la map */
+void	free_map(char **map)
+{
+	int	i;
+
+	i = 0;
+	if (!map)
+		return ;
+	while (map[i])
+	{
+		free(map[i]);
+		i++;
+	}
+	free(map);
+}
+
+/* Affiche un message d'erreur et retourne 0 */
+int	exit_error(char *msg)
+{
+	ft_printf("%s\n", msg);
+	return (0);
+}
+
+/* Ferme la fenêtre et libère toutes les ressources allouées */
+int	close_window(t_game *game)
+{
+	if (game->img)
+		mlx_destroy_image(game->mlx, game->img);
+	if (game->win)
+		mlx_destroy_window(game->mlx, game->win);
+	if (game->mlx)
+		mlx_destroy_display(game->mlx);
+	free_map(game->map.grid);
+	exit(0);
+	return (0);
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_map.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/31 12:11:54 by jacobmaizel       #+#    #+#             */
+/*   Updated: 2025/04/25 16:47:59 by jmaizel          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/cub3d.h"
+
+/* Trouve la largeur maximale dans un tableau de lignes de map */
+int	find_max_width(char **map_lines)
+{
+	int	i;
+	int	max;
+	int	len;
+
+	i = 0;
+	max = 0;
+	while (map_lines[i])
+	{
+		len = ft_strlen(map_lines[i]);
+		if (len > max)
+			max = len;
+		i++;
+	}
+	return (max);
+}
+
+/* Vérifie si une ligne est une ligne de map valide */
+int	is_map_line(char *line)
+{
+	int	i;
+	int	found_valid_char;
+
+	i = 0;
+	found_valid_char = 0;
+	while (line[i])
+	{
+		if (ft_strchr("01PNSEWM", line[i]))
+			found_valid_char = 1;
+		else if (line[i] != ' ' && line[i] != '\t')
+			return (0);
+		i++;
+	}
+	return (found_valid_char);
+}
+
+/* Parse la map à partir des lignes du fichier */
+int	parse_map(char **lines, t_game *game, int start_index)
+{
+	int i;
+	int start;
+	int map_lines;
+	int j;
+	int found_map;
+	int in_map;
+
+	i = start_index;
+	start = -1;
+	map_lines = 0;
+	found_map = 0;
+	in_map = 0;
+	while (lines[i])
+	{
+		if (is_map_line(lines[i]))
+		{
+			if (!found_map)
+			{
+				found_map = 1;
+				start = i;
+			}
+			in_map = 1;
+			map_lines++;
+		}
+		else if (lines[i][0] == '\0')
+		{
+			if (in_map)
+			{
+				j = i + 1;
+				while (lines[j])
+				{
+					if (is_map_line(lines[j]))
+						return (exit_error("Error\nLigne vide dans la map"), 0);
+					j++;
+				}
+				break ;
+			}
+		}
+		else
+		{
+			if (in_map)
+				break ;
+			else if (found_map)
+				return (exit_error("Error\nLigne invalide dans la map"), 0);
+		}
+		i++;
+	}
+	if (map_lines == 0)
+		return (exit_error("Error\nAucune map trouvée"), 0);
+	game->map.grid = malloc(sizeof(char *) * (map_lines + 1));
+	if (!game->map.grid)
+		return (0);
+	i = start;
+	j = 0;
+	while (j < map_lines && lines[i])
+	{
+		if (is_map_line(lines[i]))
+		{
+			game->map.grid[j] = ft_strdup(lines[i]);
+			j++;
+		}
+		i++;
+	}
+	game->map.grid[j] = NULL;
+	game->map.height = map_lines;
+	game->map.width = find_max_width(game->map.grid);
+	if (!validate_map(game))
+		return (0);
+	return (1);
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing_cub_file.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/28 14:39:22 by jmaizel           #+#    #+#             */
+/*   Updated: 2025/04/25 16:37:49 by jmaizel          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/cub3d.h"
+
+/* Lit toutes les lignes d'un fichier et les retourne dans un tableau */
+char	**read_files_lines(const char *filename)
+{
+	int		fd;
+	char	*line;
+	char	**lines;
+	int		count;
+	int		i;
+	int		len;
+
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
+		return (NULL);
+	count = 0;
+	while ((line = get_next_line(fd)))
+	{
+		count++;
+		free(line);
+	}
+	close(fd);
+	lines = malloc(sizeof(char *) * (count + 1));
+	if (!lines)
+		return (NULL);
+	fd = open(filename, O_RDONLY);
+	i = 0;
+	while ((line = get_next_line(fd)))
+	{
+		len = ft_strlen(line);
+		if (len > 0 && line[len - 1] == '\n')
+			line[len - 1] = '\0';
+		lines[i] = line;
+		i++;
+	}
+	lines[i] = NULL;
+	close(fd);
+	return (lines);
+}
+
+/* Libère la mémoire d'un tableau de chaînes */
+void	free_split(char **split)
+{
+	int	i;
+
+	i = 0;
+	if (!split)
+		return ;
+	while (split[i])
+	{
+		free(split[i]);
+		i++;
+	}
+	free(split);
+}
+
+/* Parse une ligne de couleur RGB et la convertit en un entier */
+int	parse_color_line(char *line)
+{
+	char	**parts;
+	int		color;
+	int		r;
+	int		g;
+	int		b;
+
+	parts = ft_split(line, ',');
+	if (!parts || !parts[0] || !parts[1] || !parts[2] || parts[3])
+		return (exit_error("Error\nCouleur invalide"), -1);
+	r = ft_atoi(parts[0]);
+	g = ft_atoi(parts[1]);
+	b = ft_atoi(parts[2]);
+	if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
+		return (exit_error("Error\nValeurs RGB hors limites"), -1);
+	color = (r << 16) | (g << 8) | b;
+	free_split(parts);
+	return (color);
+}
+
+/* Parse les lignes de configuration (textures et couleurs) du fichier .cub */
+int	parse_config(char **lines, t_game *game, int *map_start_index)
+{
+	int	i;
+	int	config_count;
+	int	no_set;
+	int	so_set;
+	int	we_set;
+	int	ea_set;
+	int	f_set;
+	int	c_set;
+	int	j;
+
+	config_count = 0;
+	no_set = 0;
+	so_set = 0;
+	we_set = 0;
+	ea_set = 0;
+	f_set = 0;
+	c_set = 0;
+	i = 0;
+	while (lines[i])
+	{
+		if (lines[i][0] == '\0')
+		{
+			i++;
+			continue ;
+		}
+		if (ft_strncmp(lines[i], "NO ", 3) == 0)
+		{
+			if (no_set)
+				return (exit_error("Error\nDuplication texture NO"), 0);
+			game->north_tex.img = (void *)ft_strdup(lines[i] + 3);
+			no_set = 1;
+			config_count++;
+		}
+		else if (ft_strncmp(lines[i], "SO ", 3) == 0)
+		{
+			if (so_set)
+				return (exit_error("Error\nDuplication texture SO"), 0);
+			game->south_tex.img = (void *)ft_strdup(lines[i] + 3);
+			so_set = 1;
+			config_count++;
+		}
+		else if (ft_strncmp(lines[i], "WE ", 3) == 0)
+		{
+			if (we_set)
+				return (exit_error("Error\nDuplication texture WE"), 0);
+			game->west_tex.img = (void *)ft_strdup(lines[i] + 3);
+			we_set = 1;
+			config_count++;
+		}
+		else if (ft_strncmp(lines[i], "EA ", 3) == 0)
+		{
+			if (ea_set)
+				return (exit_error("Error\nDuplication texture EA"), 0);
+			game->east_tex.img = (void *)ft_strdup(lines[i] + 3);
+			ea_set = 1;
+			config_count++;
+		}
+		else if (ft_strncmp(lines[i], "F ", 2) == 0)
+		{
+			if (f_set)
+				return (exit_error("Error\nDuplication couleur F"), 0);
+			game->floor_color = parse_color_line(lines[i] + 2);
+			if (game->floor_color == -1)
+				return (0);
+			f_set = 1;
+			config_count++;
+		}
+		else if (ft_strncmp(lines[i], "C ", 2) == 0)
+		{
+			if (c_set)
+				return (exit_error("Error\nDuplication couleur C"), 0);
+			game->ceiling_color = parse_color_line(lines[i] + 2);
+			if (game->ceiling_color == -1)
+				return (0);
+			c_set = 1;
+			config_count++;
+		}
+		else if (ft_strncmp(lines[i], "PO ", 3) == 0)
+		{
+			game->door_path = ft_strdup(lines[i] + 3);
+		}
+		else if (ft_strncmp(lines[i], "WP ", 3) == 0)
+		{
+			game->weapon_path = ft_strdup(lines[i] + 3);
+		}
+		else if (ft_strncmp(lines[i], "MT ", 3) == 0)
+		{
+			game->monster_path = ft_strdup(lines[i] + 3);
+		}
+		else
+		{
+			j = 0;
+			while (lines[i][j] && (lines[i][j] == ' ' || lines[i][j] == '\t'))
+				j++;
+			if (lines[i][j] && ft_strchr("01PNSEW", lines[i][j]))
+			{
+				if (config_count < 6)
+					return (exit_error("Error\nConfiguration incomplète avant la map"),
+						0);
+				*map_start_index = i;
+				break ;
+			}
+			else
+			{
+				return (exit_error("Error\nLigne de config inconnue"), 0);
+			}
+		}
+		i++;
+	}
+	if (config_count < 6)
+		return (exit_error("Error\nConfiguration incomplète"), 0);
+	return (1);
+}
+
+/* Parse le fichier .cub complet (configuration et map) */
+int	parse_cub_file(const char *filename, t_game *game)
+{
+	char **lines;
+	int map_start_index;
+
+	lines = read_files_lines(filename);
+	if (!lines)
+		return (exit_error("Error: Could not read .cub file"), 0);
+	map_start_index = 0;
+	if (!parse_config(lines, game, &map_start_index))
+		return (free_split(lines), 0);
+	if (!parse_map(lines, game, map_start_index))
+		return (free_split(lines), 0);
+	free_split(lines);
+	return (1);
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   validate_map.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/31 13:12:10 by jacobmaizel       #+#    #+#             */
+/*   Updated: 2025/04/25 16:50:30 by jmaizel          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/cub3d.h"
+
+/* Vérifie si la map est fermée en contrôlant les espaces autour des zones jouables */
+int	is_map_closed(char **map, int width, int height)
+{
+	char	c;
+	int		x;
+	int		y;
+	int		start;
+	int		end;
+
+	(void)width;
+	y = 0;
+	while (y < height)
+	{
+		x = 0;
+		while (map[y][x])
+		{
+			c = map[y][x];
+			if (c == '0' || ft_strchr("PNSEW", c))
+			{
+				if (y == 0 || y == height - 1)
+					return (0);
+				start = 0;
+				end = ft_strlen(map[y]) - 1;
+				while (map[y][start] == ' ')
+					start++;
+				while (end > 0 && map[y][end] == ' ')
+					end--;
+				if (x == start || x == end)
+					return (0);
+				if (y > 0 && (x >= (int)ft_strlen(map[y - 1]) || map[y
+						- 1][x] == ' '))
+					return (0);
+				if (y < height - 1 && (x >= (int)ft_strlen(map[y + 1]) || map[y
+						+ 1][x] == ' '))
+					return (0);
+				if (x > 0 && map[y][x - 1] == ' ')
+					return (0);
+				if (x < (int)ft_strlen(map[y]) - 1 && map[y][x + 1] == ' ')
+					return (0);
+			}
+			x++;
+		}
+		y++;
+	}
+	return (1);
+}
+
+/* Initialise la position et l'orientation du joueur selon la direction spécifiée */
+void	init_player(t_game *game, int x, int y, char dir)
+{
+	game->player.x = x + 0.5;
+	game->player.y = y + 0.5;
+	if (dir == 'N')
+	{
+		game->player.dir_x = 0;
+		game->player.dir_y = -1;
+		game->player.plane_x = 0.66;
+		game->player.plane_y = 0;
+	}
+	else if (dir == 'S')
+	{
+		game->player.dir_x = 0;
+		game->player.dir_y = 1;
+		game->player.plane_x = -0.66;
+		game->player.plane_y = 0;
+	}
+	else if (dir == 'E')
+	{
+		game->player.dir_x = 1;
+		game->player.dir_y = 0;
+		game->player.plane_x = 0;
+		game->player.plane_y = 0.66;
+	}
+	else if (dir == 'W')
+	{
+		game->player.dir_x = -1;
+		game->player.dir_y = 0;
+		game->player.plane_x = 0;
+		game->player.plane_y = -0.66;
+	}
+}
+
+/* Valide la map en vérifiant les caractères,
+	le nombre de joueurs et si elle est fermée */
+int	validate_map(t_game *game)
+{
+	int player_count;
+	char **map;
+	char c;
+	int y;
+	int x;
+
+	player_count = 0;
+	map = game->map.grid;
+
+	y = 0;
+	while (map[y])
+	{
+		y++;
+	}
+
+	y = 0;
+	while (map[y])
+	{
+		x = 0;
+		while (map[y][x])
+		{
+			c = map[y][x];
+
+			if (!ft_strchr("01PNSEWM ", c))
+				return (exit_error("Error\nCaractère invalide dans la map"), 0);
+			if (ft_strchr("NSEW", c))
+			{
+				if (player_count++)
+					return (exit_error("Error\nPlus d'un joueur trouvé"), 0);
+				init_player(game, x, y, c);
+			}
+			x++;
+		}
+		y++;
+	}
+
+	if (player_count != 1)
+		return (exit_error("Error\nAucun joueur trouvé"), 0);
+	if (!is_map_closed(game->map.grid, game->map.width, game->map.height))
+		return (exit_error("Error\nMap non fermée"), 0);
+	return (1);
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   raycasting.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/01 14:08:46 by jmaizel           #+#    #+#             */
+/*   Updated: 2025/04/25 14:20:36 by jmaizel          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/cub3d.h"
+
+/* Initialise les paramètres du rayon pour un x donné de l'écran */
+void	init_ray(t_ray *ray, t_game *game, int x)
+{
+	double	camera_x;
+
+	camera_x = 2 * x / (double)WIN_WIDTH - 1;
+	ray->dir_x = game->player.dir_x + game->player.plane_x * camera_x;
+	ray->dir_y = game->player.dir_y + game->player.plane_y * camera_x;
+	ray->pos_x = game->player.x;
+	ray->pos_y = game->player.y;
+	ray->map_x = (int)ray->pos_x;
+	ray->map_y = (int)ray->pos_y;
+	if (fabs(ray->dir_x) < 1e-10)
+		ray->delta_dist_x = 1e30;
+	else
+		ray->delta_dist_x = fabs(1 / ray->dir_x);
+	if (fabs(ray->dir_y) < 1e-10)
+		ray->delta_dist_y = 1e30;
+	else
+		ray->delta_dist_y = fabs(1 / ray->dir_y);
+	ray->hit = 0;
+	ray->hit_type = 0;
+}
+
+/* Calcule la direction du pas et la distance jusqu'à la prochaine intersection */
+void	calculate_step_and_side_dist(t_ray *ray)
+{
+	if (ray->dir_x < 0)
+	{
+		ray->step_x = -1;
+		ray->side_dist_x = (ray->pos_x - ray->map_x) * ray->delta_dist_x;
+	}
+	else
+	{
+		ray->step_x = 1;
+		ray->side_dist_x = (ray->map_x + 1.0 - ray->pos_x) * ray->delta_dist_x;
+	}
+	if (ray->dir_y < 0)
+	{
+		ray->step_y = -1;
+		ray->side_dist_y = (ray->pos_y - ray->map_y) * ray->delta_dist_y;
+	}
+	else
+	{
+		ray->step_y = 1;
+		ray->side_dist_y = (ray->map_y + 1.0 - ray->pos_y) * ray->delta_dist_y;
+	}
+}
+
+/* Exécute l'algorithme DDA pour trouver le mur touché */
+void	perform_dda(t_ray *ray, t_game *game)
+{
+	while (ray->hit == 0)
+	{
+		if (ray->side_dist_x < ray->side_dist_y)
+		{
+			ray->side_dist_x += ray->delta_dist_x;
+			ray->map_x += ray->step_x;
+			ray->side = 0;
+		}
+		else
+		{
+			ray->side_dist_y += ray->delta_dist_y;
+			ray->map_y += ray->step_y;
+			ray->side = 1;
+		}
+		if (ray->map_y < 0 || ray->map_y >= game->map.height || ray->map_x < 0
+			|| ray->map_x >= (int)ft_strlen(game->map.grid[ray->map_y])
+			|| game->map.grid[ray->map_y][ray->map_x] == '1'
+			|| game->map.grid[ray->map_y][ray->map_x] == ' ')
+			ray->hit = 1;
+	}
+}
+
+/* Calcule la hauteur de la ligne à dessiner à l'écran */
+void	calculate_line_height(t_ray *ray)
+{
+	if (ray->side == 0)
+		ray->perp_wall_dist = (ray->side_dist_x - ray->delta_dist_x);
+	else
+		ray->perp_wall_dist = (ray->side_dist_y - ray->delta_dist_y);
+	ray->line_height = (int)(WIN_HEIGHT / ray->perp_wall_dist);
+	ray->draw_start = -ray->line_height / 2 + WIN_HEIGHT / 2;
+	if (ray->draw_start < 0)
+		ray->draw_start = 0;
+	ray->draw_end = ray->line_height / 2 + WIN_HEIGHT / 2;
+	if (ray->draw_end >= WIN_HEIGHT)
+		ray->draw_end = WIN_HEIGHT - 1;
+}
+
+/* Fonction principale de raycasting pour toute la largeur de l'écran */
+void	raycasting(t_game *game)
+{
+	t_ray ray;
+	int x;
+
+	x = 0;
+	while (x < WIN_WIDTH)
+	{
+		init_ray(&ray, game, x);
+		calculate_step_and_side_dist(&ray);
+		perform_dda(&ray, game);
+		calculate_line_height(&ray);
+		draw_textured_line(x, &ray, game);
+		x++;
+	}
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   raycasting_utils.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/25 14:00:00 by jmaizel           #+#    #+#             */
+/*   Updated: 2025/04/25 16:34:37 by jmaizel          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/cub3d.h"
+
+/* Lance un rayon pour chaque colonne de l'écran */
+void	complete_raycasting(t_game *game)
+{
+	t_ray	ray;
+	int		x;
+
+	x = 0;
+	while (x < WIN_WIDTH)
+	{
+		ft_memset(&ray, 0, sizeof(t_ray));
+		init_ray(&ray, game, x);
+		calculate_step_and_side_dist(&ray);
+		safe_perform_dda(&ray, game);
+		calculate_line_height(&ray);
+		game->z_buffer[x] = ray.perp_wall_dist;  // Stocke la distance pour les sprites
+		draw_textured_line(x, &ray, game);
+		x++;
+	}
+}
+
+/* Version sécurisée du DDA avec gestion des portes */
+void	safe_perform_dda(t_ray *ray, t_game *game)
+{
+	int	max_iterations;
+	int	iterations;
+	int	door_index;
+
+	max_iterations = 100;
+	iterations = 0;
+	while (ray->hit == 0 && iterations < max_iterations)
+	{
+		if (ray->side_dist_x < ray->side_dist_y)
+		{
+			ray->side_dist_x += ray->delta_dist_x;
+			ray->map_x += ray->step_x;
+			ray->side = 0;
+		}
+		else
+		{
+			ray->side_dist_y += ray->delta_dist_y;
+			ray->map_y += ray->step_y;
+			ray->side = 1;
+		}
+		if (ray->map_y < 0 || ray->map_y >= game->map.height || ray->map_x < 0)
+		{
+			ray->hit = 1;
+		}
+		else if (ray->map_x >= (int)ft_strlen(game->map.grid[ray->map_y]))
+		{
+			ray->hit = 1;
+		}
+		else if (game->map.grid[ray->map_y][ray->map_x] == '1')
+		{
+			ray->hit = 1;
+		}
+		else if (game->map.grid[ray->map_y][ray->map_x] == 'P')
+		{
+			door_index = get_door_index(game, ray->map_x, ray->map_y);
+			if (door_index >= 0 && game->door_state[door_index] == 0)
+			{
+				ray->hit = 1;
+				ray->hit_type = 2;
+			}
+		}
+		iterations++;
+	}
+}
+
+/* Version de test qui dessine des lignes colorées sans textures */
+void	safe_draw_textured_line(int x, t_ray *ray, t_game *game)
+{
+	int color;
+	int y;
+
+	color = 0;
+	if (ray->side == 0)
+	{
+		if (ray->dir_x > 0)
+			color = 0xFF0000;
+		else
+			color = 0x00FF00;
+	}
+	else
+	{
+		if (ray->dir_y > 0)
+			color = 0x0000FF;
+		else
+			color = 0xFFFF00;
+	}
+	if (ray->side == 1)
+		color = (color >> 1) & 0x7F7F7F;
+	y = ray->draw_start;
+	while (y < ray->draw_end)
+	{
+		if (y >= 0 && y < WIN_HEIGHT && x >= 0 && x < WIN_WIDTH)
+			game->img_data[y * (game->size_line / 4) + x] = color;
+		y++;
+	}
+}

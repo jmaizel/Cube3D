@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   textures.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 14:22:34 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/25 16:39:52 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/27 14:05:20 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,20 +34,6 @@ void	get_texture(t_ray *ray, t_game *game, t_texture **tex)
 	}
 }
 
-/* Charge une texture XPM et récupère son pointeur de données */
-int	load_texture(t_game *game, t_texture *texture, char *path)
-{
-	while (*path && (*path == ' ' || *path == '\t'))
-		path++;
-	texture->img = mlx_xpm_file_to_image(game->mlx, path, &texture->width,
-			&texture->height);
-	if (!texture->img)
-		return (exit_error("Erreur: Impossible de charger la texture"), 0);
-	texture->data = (int *)mlx_get_data_addr(texture->img, &texture->bpp,
-			&texture->size_line, &texture->endian);
-	return (1);
-}
-
 /* Calcule la coordonnée x de la texture pour le mur touché */
 void	calculate_texture_x(t_ray *ray, double *wall_x, int *tex_x,
 		t_texture *tex)
@@ -64,40 +50,70 @@ void	calculate_texture_x(t_ray *ray, double *wall_x, int *tex_x,
 }
 
 /* Charge toutes les textures du jeu (obligatoires et optionnelles) */
-int	load_all_textures(t_game *game)
+int load_texture(t_game *game, t_texture *texture, char *path)
 {
-	if (!load_texture(game, &game->north_tex, (char *)game->north_tex.img))
-		return (0);
-	if (!load_texture(game, &game->south_tex, (char *)game->south_tex.img))
-		return (0);
-	if (!load_texture(game, &game->east_tex, (char *)game->east_tex.img))
-		return (0);
-	if (!load_texture(game, &game->west_tex, (char *)game->west_tex.img))
-		return (0);
-	if (game->door_path && !load_texture(game, &game->door_tex,
-			game->door_path))
-		return (0);
-	if (game->weapon_path && !load_texture(game, &game->weapon_tex,
-			game->weapon_path))
-		return (0);
-	if (game->monster_path && !load_texture(game, &game->monster_tex,
-			game->monster_path))
-		return (0);
-	if (game->weapon_path)
-		free(game->weapon_path);
-	if (game->door_path)
-		free(game->door_path);
-	if (game->south_tex.img)
-		free(game->south_tex.img);
-	if (game->north_tex.img)
-		free(game->north_tex.img);
-	if (game->east_tex.img)
-		free(game->east_tex.img);
-	if (game->west_tex.img)
-		free(game->west_tex.img);
-	if (game->monster_path)
-		free(game->monster_path);
-	return (1);
+    while (*path && (*path == ' ' || *path == '\t'))
+        path++;
+    texture->img = mlx_xpm_file_to_image(game->mlx, path, &texture->width,
+            &texture->height);
+    if (!texture->img)
+        return (exit_error("Erreur: Impossible de charger la texture"), 0);
+    texture->data = (int *)mlx_get_data_addr(texture->img, &texture->bpp,
+            &texture->size_line, &texture->endian);
+    return (1);
+}
+
+int load_all_textures(t_game *game)
+{
+    int i;
+
+    if (!load_texture(game, &game->north_tex, (char *)game->north_tex.img))
+        return (0);
+    if (!load_texture(game, &game->south_tex, (char *)game->south_tex.img))
+        return (0);
+    if (!load_texture(game, &game->east_tex, (char *)game->east_tex.img))
+        return (0);
+    if (!load_texture(game, &game->west_tex, (char *)game->west_tex.img))
+        return (0);
+    if (game->door_path && !load_texture(game, &game->door_tex, game->door_path))
+        return (0);
+    if (game->weapon_path && !load_texture(game, &game->weapon_tex, game->weapon_path))
+        return (0);
+    
+    // Charger les frames d'animation des monstres
+    i = 0;
+    while (i < game->monster_frame_count)
+    {
+        if (game->monster_paths[i] && !load_texture(game, &game->monster_frames[i], 
+                game->monster_paths[i]))
+            return (0);
+        i++;
+    }
+    
+    // Libérer les chemins
+    if (game->weapon_path)
+        free(game->weapon_path);
+    if (game->door_path)
+        free(game->door_path);
+    if (game->south_tex.img)
+        free(game->south_tex.img);
+    if (game->north_tex.img)
+        free(game->north_tex.img);
+    if (game->east_tex.img)
+        free(game->east_tex.img);
+    if (game->west_tex.img)
+        free(game->west_tex.img);
+    
+    // Libérer les chemins des frames de monstre
+    i = 0;
+    while (i < game->monster_frame_count)
+    {
+        if (game->monster_paths[i])
+            free(game->monster_paths[i]);
+        i++;
+    }
+    
+    return (1);
 }
 
 /* Dessine une ligne texturée verticale pour une colonne de l'écran */
