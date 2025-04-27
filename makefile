@@ -6,7 +6,7 @@
 #    By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/28 14:37:22 by jmaizel           #+#    #+#              #
-#    Updated: 2025/04/27 16:16:11 by cdedessu         ###   ########.fr        #
+#    Updated: 2025/04/27 17:55:34 by cdedessu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,7 @@ MAIN_FILES = main.c utils.c
 PARSING_FILES = parse_map.c parsing_cub_file.c validate_map.c
 RAYCASTING_FILES = raycasting.c raycasting_utils.c
 GAME_FILES = movement.c mouse.c
-GRAPHICS_FILES = draw_minimap.c draw_weapon.c render_frame.c textures.c draw_enemies.c
+GRAPHICS_FILES = draw_minimap.c draw_weapon.c render_frame.c textures.c draw_enemies.c draw_doors.c 
 
 SRC_FILES = $(addprefix $(MAIN_DIR)/, $(MAIN_FILES)) \
             $(addprefix $(PARSING_DIR)/, $(PARSING_FILES)) \

@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 14:00:00 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/27 15:41:32 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/27 17:51:40 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ void safe_perform_dda(t_ray *ray, t_game *game)
 {
     int max_iterations;
     int iterations;
+    int door_index;
+    int special_door_index;
 
     max_iterations = 100;
     iterations = 0;
@@ -54,6 +56,8 @@ void safe_perform_dda(t_ray *ray, t_game *game)
             ray->map_y += ray->step_y;
             ray->side = 1;
         }
+        
+        // Vérifications des limites et des murs
         if (ray->map_y < 0 || ray->map_y >= game->map.height || ray->map_x < 0)
         {
             ray->hit = 1;
@@ -65,6 +69,26 @@ void safe_perform_dda(t_ray *ray, t_game *game)
         else if (game->map.grid[ray->map_y][ray->map_x] == '1')
         {
             ray->hit = 1;
+        }
+        else if (game->map.grid[ray->map_y][ray->map_x] == 'D')
+        {
+            // Vérifier l'état de la porte normale
+            door_index = get_door_index(game, ray->map_x, ray->map_y);
+            if (door_index >= 0 && game->door_state[door_index] == 0)
+            {
+                ray->hit = 1;
+                ray->hit_type = 2;  // Type pour porte normale
+            }
+        }
+        else if (game->map.grid[ray->map_y][ray->map_x] == 'L')
+        {
+            // Vérifier l'état de la porte spéciale
+            special_door_index = get_special_door_index(game, ray->map_x, ray->map_y);
+            if (special_door_index >= 0 && game->special_door_state[special_door_index] == 0)
+            {
+                ray->hit = 1;
+                ray->hit_type = 3;  // Type pour porte spéciale
+            }
         }
         iterations++;
     }

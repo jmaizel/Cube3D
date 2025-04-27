@@ -46,17 +46,17 @@ typedef struct s_texture
 
 typedef struct s_monster
 {
-    double      x;
-    double      y;
-    int         alive;
-    int         frame;
-    double      anim_time;
-    double      anim_speed;
-    int         health;           // Points de vie actuels
-    int         max_health;       // Points de vie maximum
-    int         hit_animation;    // Pour un effet de clignotement quand touché
-    double      hit_timer;        // Durée de l'effet de coup
-} t_monster;
+	double		x;
+	double		y;
+	int			alive;
+	int			frame;
+	double		anim_time;
+	double		anim_speed;
+	int health;        // Points de vie actuels
+	int max_health;    // Points de vie maximum
+	int hit_animation; // Pour un effet de clignotement quand touché
+	double hit_timer;  // Durée de l'effet de coup
+}				t_monster;
 
 typedef struct s_sprite
 {
@@ -98,7 +98,7 @@ typedef struct s_game
 
 	// weapon
 	t_texture	weapon_tex;
-	char		*weapon_path;
+	char		*weapon_paths[4];
 
 	// monsters
 	t_monster	monsters[MAX_MONSTERS];
@@ -118,11 +118,32 @@ typedef struct s_game
 	int mouse_enabled;        // Si la rotation par souris est activée
 	double mouse_sensitivity; // Sensibilité de la souris
 
-	int         firing;           // Si le joueur est en train de tirer
-    double      weapon_cooldown;  // Temps entre deux attaques
-    double      weapon_timer;     // Compteur pour le cooldown
-    int         weapon_damage;    // Dégâts infligés par l'arme
-    double      weapon_range;     // Portée de l'arme
+	int firing;                 // Si le joueur est en train de tirer
+	double weapon_cooldown;     // Temps entre deux attaques
+	double weapon_timer;        // Compteur pour le cooldown
+	int weapon_damage;          // Dégâts infligés par l'arme
+	double weapon_range;        // Portée de l'arme
+	t_texture weapon_frames[4]; // Différentes frames pour l'animation de l'arme
+	int weapon_frame_count;     // Nombre de frames d'animation
+	int current_weapon_frame;   // Frame actuelle de l'animation
+	int weapon_animating;       // Si l'arme est en train de s'animer
+	double weapon_anim_time;    // Temps écoulé pour l'animation
+	double weapon_anim_speed;   // Vitesse de l'animation
+
+	// Pour les portes normales
+	int			door_count;
+	int door_positions[100][2]; // Coordonnées des portes [y][x]
+	int door_state[100];        // 0 = fermée, 1 = ouverte
+	t_texture door_tex;         // Texture des portes normales
+	char *door_path;            // Chemin vers la texture
+
+	// Pour les portes spéciales
+	int			special_door_count;
+	int			special_door_positions[10][2];
+	int			special_door_state[10];
+	t_texture	special_door_tex;
+	char		*special_door_path;
+
 }				t_game;
 
 typedef struct s_ray
@@ -182,8 +203,12 @@ int				mouse_move(int x, int y, t_game *game);
 void			toggle_mouse(t_game *game);
 int				mouse_click(int button, int x, int y, t_game *game);
 void			attack(t_game *game);
-
-
+void init_doors(t_game *game);
+int check_door_interaction(t_game *game);
+int get_door_index(t_game *game, int x, int y);
+int get_special_door_index(t_game *game, int x, int y);
+void update_special_doors(t_game *game);
+int all_monsters_dead(t_game *game);
 
 // Fonctions pour les monstres
 void			init_monsters(t_game *game);

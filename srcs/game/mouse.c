@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/27 15:46:34 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/04/27 16:52:10 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/27 17:15:38 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,8 +87,12 @@ void attack(t_game *game)
     if (game->weapon_timer > 0)
         return;
     
+    // Déclencher l'animation de l'arme
     game->firing = 1;
     game->weapon_timer = game->weapon_cooldown;
+    game->weapon_animating = 1;
+    game->current_weapon_frame = 0;
+    game->weapon_anim_time = 0;
     
     // Parcourir tous les monstres
     for (i = 0; i < game->monster_count; i++)

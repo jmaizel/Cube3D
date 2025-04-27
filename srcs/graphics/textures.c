@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 14:22:34 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/27 15:41:09 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/27 17:52:34 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ int load_all_textures(t_game *game)
 {
     int i;
 
+    // Chargement des textures de base
     if (!load_texture(game, &game->north_tex, (char *)game->north_tex.img))
         return (0);
     if (!load_texture(game, &game->south_tex, (char *)game->south_tex.img))
@@ -75,22 +76,38 @@ int load_all_textures(t_game *game)
         return (0);
     if (!load_texture(game, &game->west_tex, (char *)game->west_tex.img))
         return (0);
-    if (game->weapon_path && !load_texture(game, &game->weapon_tex, game->weapon_path))
+    
+    // Chargement des textures de portes
+    if (game->door_path && !load_texture(game, &game->door_tex, game->door_path))
+        return (0);
+    if (game->special_door_path && !load_texture(game, &game->special_door_tex, game->special_door_path))
         return (0);
     
-    // Charger les frames d'animation des monstres
+    // Chargement des frames d'animation pour l'arme
+    i = 0;
+    while (i < game->weapon_frame_count)
+    {
+        if (game->weapon_paths[i] && !load_texture(game, &game->weapon_frames[i], 
+                game->weapon_paths[i]))
+            return (0);
+        i++;
+    }
+    
+    // Chargement des frames d'animation pour les monstres
     i = 0;
     while (i < game->monster_frame_count)
     {
-        if (game->monster_paths[i] && !load_texture(game, &game->monster_frames[i], 
+        if (game->monster_paths[i] && !load_texture(game, &game->monster_frames[i],
                 game->monster_paths[i]))
             return (0);
         i++;
     }
     
-    // Libérer les chemins
-    if (game->weapon_path)
-        free(game->weapon_path);
+    // Libération des chemins des textures
+    if (game->door_path)
+        free(game->door_path);
+    if (game->special_door_path)
+        free(game->special_door_path);
     if (game->south_tex.img)
         free(game->south_tex.img);
     if (game->north_tex.img)
@@ -100,7 +117,16 @@ int load_all_textures(t_game *game)
     if (game->west_tex.img)
         free(game->west_tex.img);
     
-    // Libérer les chemins des frames de monstre
+    // Libération des chemins des frames d'arme
+    i = 0;
+    while (i < game->weapon_frame_count)
+    {
+        if (game->weapon_paths[i])
+            free(game->weapon_paths[i]);
+        i++;
+    }
+    
+    // Libération des chemins des frames de monstre
     i = 0;
     while (i < game->monster_frame_count)
     {
@@ -113,31 +139,39 @@ int load_all_textures(t_game *game)
 }
 
 /* Dessine une ligne texturée verticale pour une colonne de l'écran */
-void	draw_textured_line(int x, t_ray *ray, t_game *game)
+void draw_textured_line(int x, t_ray *ray, t_game *game)
 {
-	t_texture *tex;
-	double wall_x;
-	int color;
-	int y;
-	int tex_x;
-	int tex_y;
-	double step;
-	double tex_pos;
-
-
-	get_texture(ray, game, &tex);
-	calculate_texture_x(ray, &wall_x, &tex_x, tex);
-	step = 1.0 * tex->height / ray->line_height;
-	tex_pos = (ray->draw_start - WIN_HEIGHT / 2 + ray->line_height / 2) * step;
-	y = ray->draw_start;
-	while (y < ray->draw_end)
-	{
-		tex_y = (int)tex_pos & (tex->height - 1);
-		tex_pos += step;
-		color = tex->data[tex_y * tex->width + tex_x];
-		if (ray->side == 1)
-			color = (color >> 1) & 0x7F7F7F;
-		game->img_data[y * (game->size_line / 4) + x] = color;
-		y++;
-	}
+    t_texture *tex;
+    double wall_x;
+    int color;
+    int y;
+    int tex_x, tex_y;
+    double step, tex_pos;
+    
+    // Sélection de la texture selon le type d'objet touché
+    if (ray->hit_type == 2)
+        tex = &game->door_tex;
+    else if (ray->hit_type == 3)
+        tex = &game->special_door_tex;
+    else
+        get_texture(ray, game, &tex);
+    
+    calculate_texture_x(ray, &wall_x, &tex_x, tex);
+    step = 1.0 * tex->height / ray->line_height;
+    tex_pos = (ray->draw_start - WIN_HEIGHT / 2 + ray->line_height / 2) * step;
+    
+    y = ray->draw_start;
+    while (y < ray->draw_end)
+    {
+        tex_y = (int)tex_pos & (tex->height - 1);
+        tex_pos += step;
+        color = tex->data[tex_y * tex->width + tex_x];
+        
+        // Assombrissement pour les côtés Y
+        if (ray->side == 1)
+            color = (color >> 1) & 0x7F7F7F;
+        
+        game->img_data[y * (game->size_line / 4) + x] = color;
+        y++;
+    }
 }

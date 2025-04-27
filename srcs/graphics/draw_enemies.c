@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 16:31:16 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/27 17:06:21 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/27 17:50:49 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,4 +200,17 @@ void	render_monsters(t_game *game)
 		}
 		i++;
 	}
+}
+
+int all_monsters_dead(t_game *game)
+{
+    int i;
+    
+    for (i = 0; i < game->monster_count; i++)
+    {
+        if (game->monsters[i].alive)
+            return (0);  // Au moins un monstre est encore en vie
+    }
+    
+    return (1);  // Tous les monstres sont morts
 }
