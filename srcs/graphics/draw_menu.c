@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 17:34:40 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/04/28 17:41:54 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/28 17:43:25 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,12 @@ void draw_controls_menu(t_game *game)
     int line_height = 20;
     int i = 0;
     
-    // Couleurs différentes pour le texte
-    int title_color = 0xFFFF00;   // Jaune pour le titre
-    int key_color = 0x00FFFF;     // Cyan pour les touches
-    int action_color = 0xFFFFFF;  // Blanc pour les actions
+    int title_color = 0xFFFF00;
+    int key_color = 0x00FFFF;
+    int action_color = 0xFFFFFF;
     
-    // Après avoir mis à jour l'image
     mlx_string_put(game->mlx, game->win, x_start, y_start + line_height * i++, title_color, "CONTROLS:");
     
-    // Pour chaque ligne, affichez la touche et l'action avec des couleurs différentes
     mlx_string_put(game->mlx, game->win, x_start, y_start + line_height * i, key_color, "WASD:");
     mlx_string_put(game->mlx, game->win, x_start + 60, y_start + line_height * i++, action_color, "Move");
     
