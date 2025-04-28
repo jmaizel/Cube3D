@@ -54,9 +54,10 @@ define progress_bar
 endef
 
 all: $(NAME)
+	@echo ""
 
 $(NAME): $(OBJS) $(LIBFT) $(MLX)
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBS)
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBS) > /dev/null 2>&1
 
 $(OBJ_DIR)/%.o: ./srcs/%.c | $(OBJ_DIR)
 	@mkdir -p $(dir $@)
@@ -71,19 +72,19 @@ $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)/graphics
 
 $(LIBFT):
-	@make --no-print-directory -C $(LIBFT_DIR)
+	@make --no-print-directory -C $(LIBFT_DIR) > /dev/null
 
 $(MLX):
-	@make -s --no-print-directory -C $(MLX_DIR)
+	@make -s --no-print-directory -C $(MLX_DIR) > /dev/null 2>&1
 
 clean:
 	@rm -rf $(OBJ_DIR)
-	@make clean --no-print-directory -C $(LIBFT_DIR)
-	@make clean --no-print-directory -C $(MLX_DIR)
+	@make clean --no-print-directory -C $(LIBFT_DIR) > /dev/null
+	@make clean --no-print-directory -C $(MLX_DIR) > /dev/null 2>&1
 
 fclean: clean
 	@rm -f $(NAME)
-	@make fclean --no-print-directory -C $(LIBFT_DIR)
+	@make fclean --no-print-directory -C $(LIBFT_DIR) > /dev/null
 
 re: fclean all
 
