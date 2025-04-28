@@ -168,10 +168,6 @@ int parse_config(char **lines, t_game *game, int *map_start_index)
 			c_set = 1;
 			config_count++;
 		}
-		else if (ft_strncmp(lines[i], "SD ", 3) == 0)
-		{
-			game->special_door_path = ft_strdup(lines[i] + 3);
-		}
 		else if (ft_strncmp(lines[i], "WP0 ", 4) == 0)
 		{
 			game->weapon_paths[0] = ft_strdup(lines[i] + 4);

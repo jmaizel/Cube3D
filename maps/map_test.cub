@@ -2,7 +2,6 @@ NO ./textures/ice_wall.xpm
 SO ./textures/ice_wall.xpm
 WE ./textures/ice_wall.xpm
 EA ./textures/ice_wall.xpm
-SD ./textures/special_door.xpm
 MT0 ./textures/animation_pixel_frame_1.xpm
 MT1 ./textures/animation_pixel_frame_2.xpm
 MT2 ./textures/animation_pixel_frame_3.xpm

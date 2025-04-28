@@ -130,14 +130,6 @@ typedef struct s_game
 	double weapon_anim_time;    // Temps écoulé pour l'animation
 	double weapon_anim_speed;   // Vitesse de l'animation
 
-	    // Pour la porte spéciale
-		int         has_special_door;         // Indique si une porte spéciale existe
-		int         special_door_x;           // Position X de la porte
-		int         special_door_y;           // Position Y de la porte
-		int         special_door_open;        // 0 = fermée, 1 = ouverte
-		t_texture   special_door_tex;         // Texture de la porte
-		char        *special_door_path;       // Chemin vers la texture
-
 }				t_game;
 
 typedef struct s_ray
@@ -197,10 +189,7 @@ int				mouse_move(int x, int y, t_game *game);
 void			toggle_mouse(t_game *game);
 int				mouse_click(int button, int x, int y, t_game *game);
 void			attack(t_game *game);
-void			init_special_door(t_game *game);
 int				all_monsters_dead(t_game *game);
-void			update_special_door(t_game *game);
-void			check_special_door_interaction(t_game *game);
 
 // Fonctions pour les monstres
 void			init_monsters(t_game *game);

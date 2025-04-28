@@ -77,11 +77,6 @@ int load_all_textures(t_game *game)
     if (!load_texture(game, &game->west_tex, (char *)game->west_tex.img))
         return (0);
     
-    // Chargement de la texture de porte spéciale
-    if (game->has_special_door && game->special_door_path && 
-        !load_texture(game, &game->special_door_tex, game->special_door_path))
-        return (0);
-    
     // Chargement des frames d'animation pour l'arme
     i = 0;
     while (i < game->weapon_frame_count)
@@ -102,9 +97,6 @@ int load_all_textures(t_game *game)
         i++;
     }
     
-    // Libération des chemins des textures
-    if (game->special_door_path)
-        free(game->special_door_path);
     if (game->south_tex.img)
         free(game->south_tex.img);
     if (game->north_tex.img)
@@ -146,10 +138,7 @@ void draw_textured_line(int x, t_ray *ray, t_game *game)
     double step, tex_pos;
     
     // Sélection de la texture selon le type d'objet touché
-    if (ray->hit_type == 3)  // Porte spéciale
-        tex = &game->special_door_tex;
-    else
-        get_texture(ray, game, &tex);
+    get_texture(ray, game, &tex);
     
     calculate_texture_x(ray, &wall_x, &tex_x, tex);
     step = 1.0 * tex->height / ray->line_height;

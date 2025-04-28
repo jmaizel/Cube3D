@@ -134,8 +134,6 @@ int	key_press(int keycode, t_game *game)
 		toggle_mouse(game);
 	else if (keycode == 32 || keycode == 1) // Touche espace ou clic gauche
 		attack(game);
-	else if (keycode == 101 || keycode == 14) // Touche E pour interaction
-        check_special_door_interaction(game);
 		
 	return (0);
 }
@@ -261,9 +259,6 @@ int	game_loop(t_game *game)
 			}
 		}
 	}
-
-	// Vérifier si tous les monstres sont morts pour les portes spéciales
-	update_special_door(game);
 
 	// Mise à jour des animations des monstres
 	update_monster_animations(game);
