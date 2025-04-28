@@ -190,6 +190,7 @@ void			toggle_mouse(t_game *game);
 int				mouse_click(int button, int x, int y, t_game *game);
 void			attack(t_game *game);
 int				all_monsters_dead(t_game *game);
+void			draw_controls_menu(t_game *game);
 
 // Fonctions pour les monstres
 void			init_monsters(t_game *game);

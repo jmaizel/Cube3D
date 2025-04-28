@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_frame.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 14:00:00 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/25 16:33:50 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/28 17:37:34 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,4 +38,5 @@ void	render_frame(t_game *game)
     render_monsters(game);
 	draw_minimap(game);
 	draw_weapon(game);
+	draw_controls_menu(game);
 }

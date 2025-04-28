@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   movement.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 16:45:10 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/27 17:53:26 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/28 17:38:08 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,6 +271,8 @@ int	game_loop(t_game *game)
 
 	// Afficher la frame
 	mlx_put_image_to_window(game->mlx, game->win, game->img, 0, 0);
+
+	draw_controls_menu(game);
 
 	// Limiter le framerate à environ 60 FPS
 	usleep(16000);
