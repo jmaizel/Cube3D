@@ -1,12 +1,12 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    makefile                                           :+:      :+:    :+:    #
+#    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/28 14:37:22 by jmaizel           #+#    #+#              #
-#    Updated: 2025/04/28 17:38:39 by cdedessu         ###   ########.fr        #
+#    Updated: 2025/04/30 17:19:09 by cdedessu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,7 @@ MLX = $(MLX_DIR)/libmlx.a
 MAIN_FILES = main.c utils.c
 PARSING_FILES = parse_map.c parsing_cub_file.c validate_map.c
 RAYCASTING_FILES = raycasting.c raycasting_utils.c
-GAME_FILES = movement.c mouse.c
+GAME_FILES = movement.c mouse.c game_status_utils.c movement_utils.c
 GRAPHICS_FILES = draw_minimap.c draw_weapon.c render_frame.c textures.c draw_enemies.c draw_menu.c
 
 SRC_FILES = $(addprefix $(MAIN_DIR)/, $(MAIN_FILES)) \
