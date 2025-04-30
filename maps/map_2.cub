@@ -1,0 +1,22 @@
+NO ./textures/ice_wall.xpm
+SO ./textures/ice_wall.xpm
+WE ./textures/ice_wall.xpm
+EA ./textures/ice_wall.xpm
+DR ./textures/door.xpm
+MT0 ./textures/animation_pixel_frame_1.xpm
+MT1 ./textures/animation_pixel_frame_2.xpm
+MT2 ./textures/animation_pixel_frame_3.xpm
+MT3 ./textures/animation_pixel_frame_4.xpm
+WP0 ./textures/weapon_frame0.xpm
+WP1 ./textures/weapon_frame1.xpm
+WP2 ./textures/weapon_frame2.xpm
+WP3 ./textures/weapon_frame3.xpm
+
+F 153,204,255
+C 135,206,235
+
+111111111
+1N0000001
+111011101
+1000000D1
+111111111
