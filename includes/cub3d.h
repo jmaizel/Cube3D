@@ -168,8 +168,6 @@ typedef struct s_ray
 }				t_ray;
 
 int				parse_cub_file(const char *filename, t_game *game);
-void			free_map(char **map);
-int				exit_error(char *msg);
 int				parse_map(char **lines, t_game *game, int start_index);
 int				validate_map(t_game *game);
 
@@ -180,12 +178,8 @@ void			calculate_line_height(t_ray *ray);
 void			safe_perform_dda(t_ray *ray, t_game *game);
 void			safe_draw_textured_line(int x, t_ray *ray, t_game *game);
 
-int				close_window(t_game *game);
-
 
 void			complete_raycasting(t_game *game);
-
-void			draw_victory_message(t_game *game);
 
 
 /* Fonctions de movement.c */
@@ -277,6 +271,12 @@ int		apply_side_shading(int color);
 int		apply_transparency(int color);
 void	free_texture_paths(t_game *game);
 void	prepare_texture_params(t_ray *ray, t_texture *tex, t_tex_params *params);
+
+/* Fonctions de utils.c */
+void	free_map(char **map);
+int		exit_error(char *msg);
+int		close_window(t_game *game);
+void	draw_victory_message(t_game *game);
 
 
 #endif
