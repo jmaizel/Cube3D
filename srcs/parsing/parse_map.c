@@ -6,11 +6,11 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 12:11:54 by jacobmaizel       #+#    #+#             */
-/*   Updated: 2025/04/30 13:58:34 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/30 16:17:47 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/cub3d.h"
+#include "../../includes/cub3d.h"
 
 /* Trouve la largeur maximale dans un tableau de lignes de map */
 int	find_max_width(char **map_lines)
@@ -50,18 +50,17 @@ int	is_map_line(char *line)
 	return (found_valid_char);
 }
 
-/* Parse la map à partir des lignes du fichier */
-int	parse_map(char **lines, t_game *game, int start_index)
+/* Compte le nombre de lignes de map et vérifie qu'il n'y a pas de vide */
+int	count_map_lines(char **lines, int start_index, int *map_start)
 {
-	int i;
-	int start;
-	int map_lines;
-	int j;
-	int found_map;
-	int in_map;
+	int	i;
+	int	map_lines;
+	int	found_map;
+	int	in_map;
+	int	j;
 
 	i = start_index;
-	start = -1;
+	*map_start = -1;
 	map_lines = 0;
 	found_map = 0;
 	in_map = 0;
@@ -72,7 +71,7 @@ int	parse_map(char **lines, t_game *game, int start_index)
 			if (!found_map)
 			{
 				found_map = 1;
-				start = i;
+				*map_start = i;
 			}
 			in_map = 1;
 			map_lines++;
@@ -102,6 +101,15 @@ int	parse_map(char **lines, t_game *game, int start_index)
 	}
 	if (map_lines == 0)
 		return (exit_error("Error\nAucune map trouvée"), 0);
+	return (map_lines);
+}
+
+/* Copie les lignes de map dans game->map.grid */
+int	process_map_lines(char **lines, t_game *game, int start, int map_lines)
+{
+	int	i;
+	int	j;
+
 	game->map.grid = malloc(sizeof(char *) * (map_lines + 1));
 	if (!game->map.grid)
 		return (0);
@@ -120,6 +128,20 @@ int	parse_map(char **lines, t_game *game, int start_index)
 	game->map.height = map_lines;
 	game->map.width = find_max_width(game->map.grid);
 	if (!validate_map(game))
+		return (0);
+	return (1);
+}
+
+/* Parse la map à partir des lignes du fichier */
+int	parse_map(char **lines, t_game *game, int start_index)
+{
+	int	map_lines;
+	int	start;
+
+	map_lines = count_map_lines(lines, start_index, &start);
+	if (map_lines <= 0)
+		return (0);
+	if (!process_map_lines(lines, game, start, map_lines))
 		return (0);
 	return (1);
 }

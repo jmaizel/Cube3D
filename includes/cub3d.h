@@ -9,12 +9,18 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <sys/time.h>
+
 # define WIN_WIDTH 2000
 # define WIN_HEIGHT 1200
 # define TEX_WIDTH 64
 # define TEX_HEIGHT 64
 # define MAX_MONSTERS 20
 # define M_PI 3.14159265358979323846
+
+/*****************************
+ *          STRUCTURES       *
+ *****************************/
 
 typedef struct s_player
 {
@@ -52,10 +58,10 @@ typedef struct s_monster
 	int			frame;
 	double		anim_time;
 	double		anim_speed;
-	int health;        // Points de vie actuels
-	int max_health;    // Points de vie maximum
-	int hit_animation; // Pour un effet de clignotement quand touché
-	double hit_timer;  // Durée de l'effet de coup
+	int			health;
+	int			max_health;
+	int			hit_animation;
+	double		hit_timer;
 }				t_monster;
 
 typedef struct s_sprite
@@ -65,80 +71,6 @@ typedef struct s_sprite
 	int			width;
 	int			height;
 }				t_sprite;
-
-typedef struct s_game
-{
-	void		*mlx;
-	void		*win;
-	t_map		map;
-	t_player	player;
-
-	t_texture	north_tex;
-	t_texture	south_tex;
-	t_texture	east_tex;
-	t_texture	west_tex;
-
-	// Frames d'animation des monstres
-	t_texture	monster_frames[4];
-	int			monster_frame_count;
-
-	char		*monster_paths[4];
-
-	int			ceiling_color;
-	int			floor_color;
-	int			keys[256];
-	int			rotate_left;
-	int			rotate_right;
-	double		move_speed;
-	double		rot_speed;
-
-	// Gestion du temps
-	double		last_frame_time;
-	double		delta_time;
-
-	// portes
-	int door_opened;         // Indique si la porte est ouverte
-	int all_monsters_killed; // Indique si tous les monstres sont morts
-	int victory_displayed;   // Indique si le message de victoire est affiché
-	double victory_timer;
-	int     victory_final;   // Timer pour le message de victoire
-	t_texture door_tex;      // Texture de la porte fermée
-
-	// weapon
-	t_texture	weapon_tex;
-	char		*weapon_paths[4];
-
-	// monsters
-	t_monster	monsters[MAX_MONSTERS];
-	int			monster_count;
-	double		z_buffer[WIN_WIDTH];
-
-	// buffer d'image
-	void		*img;
-	int			*img_data;
-	int			bpp;
-	int			size_line;
-	int			endian;
-
-	// Pour la souris
-	int mouse_x;              // Position actuelle de la souris en X
-	int mouse_prev_x;         // Position précédente de la souris en X
-	int mouse_enabled;        // Si la rotation par souris est activée
-	double mouse_sensitivity; // Sensibilité de la souris
-
-	int firing;                 // Si le joueur est en train de tirer
-	double weapon_cooldown;     // Temps entre deux attaques
-	double weapon_timer;        // Compteur pour le cooldown
-	int weapon_damage;          // Dégâts infligés par l'arme
-	double weapon_range;        // Portée de l'arme
-	t_texture weapon_frames[4]; // Différentes frames pour l'animation de l'arme
-	int weapon_frame_count;     // Nombre de frames d'animation
-	int current_weapon_frame;   // Frame actuelle de l'animation
-	int weapon_animating;       // Si l'arme est en train de s'animer
-	double weapon_anim_time;    // Temps écoulé pour l'animation
-	double weapon_anim_speed;   // Vitesse de l'animation
-
-}				t_game;
 
 typedef struct s_ray
 {
@@ -163,46 +95,217 @@ typedef struct s_ray
 	int			hit_type;
 }				t_ray;
 
-int				parse_cub_file(const char *filename, t_game *game);
+typedef struct s_game
+{
+	void		*mlx;
+	void		*win;
+	t_map		map;
+	t_player	player;
+	t_texture	north_tex;
+	t_texture	south_tex;
+	t_texture	east_tex;
+	t_texture	west_tex;
+	t_texture	monster_frames[4];
+	int			monster_frame_count;
+	char		*monster_paths[4];
+	int			ceiling_color;
+	int			floor_color;
+	int			keys[256];
+	int			rotate_left;
+	int			rotate_right;
+	double		move_speed;
+	double		rot_speed;
+	double		last_frame_time;
+	double		delta_time;
+	int			door_opened;
+	int			all_monsters_killed;
+	int			victory_displayed;
+	double		victory_timer;
+	int			victory_final;
+	t_texture	door_tex;
+	t_texture	weapon_tex;
+	char		*weapon_paths[4];
+	t_monster	monsters[MAX_MONSTERS];
+	int			monster_count;
+	double		z_buffer[WIN_WIDTH];
+	void		*img;
+	int			*img_data;
+	int			bpp;
+	int			size_line;
+	int			endian;
+	int			mouse_x;
+	int			mouse_prev_x;
+	int			mouse_enabled;
+	double		mouse_sensitivity;
+	int			firing;
+	double		weapon_cooldown;
+	double		weapon_timer;
+	int			weapon_damage;
+	double		weapon_range;
+	t_texture	weapon_frames[4];
+	int			weapon_frame_count;
+	int			current_weapon_frame;
+	int			weapon_animating;
+	double		weapon_anim_time;
+	double		weapon_anim_speed;
+}				t_game;
+
+/*****************************
+ *         MAIN              *
+ *****************************/
+
+/* Fichier: main.c */
+int				main(int argc, char **argv);
+
+/* Fichier: utils.c */
 void			free_map(char **map);
 int				exit_error(char *msg);
+int				close_window(t_game *game);
+void			draw_victory_message(t_game *game);
+double			get_time(void);
+
+/*****************************
+ *         PARSING           *
+ *****************************/
+
+/* Fichier: parse_cub_file.c */
+int				parse_cub_file(const char *filename, t_game *game);
+char			**read_files_lines(const char *filename);
+void			free_split(char **split);
+
+/* Fichier: parse_config.c */
+int				parse_config(char **lines, t_game *game, int *map_start_index);
+int				parse_color_line(char *line);
+int				parse_config_textures(char **lines, t_game *game, int *i, int *config_count);
+int				parse_config_weapon(char **lines, t_game *game, int *i);
+int				parse_config_monster(char **lines, t_game *game, int *i);
+
+/* Fichier: parse_config_2.c */
+int				check_if_map_start(char *line, int config_count, int *map_start_index, int i);
+int				process_config_line(char **lines, t_game *game, int *i, int *config_count, 
+					int *map_start_index);
+int				parse_config_colors(char **lines, t_game *game, int *i, int *config_count);
+int				parse_config_door(char **lines, t_game *game, int *i);
+
+/* Fichier: parse_map.c */
 int				parse_map(char **lines, t_game *game, int start_index);
+int				find_max_width(char **map_lines);
+int				is_map_line(char *line);
+int				process_map_lines(char **lines, t_game *game, int start, int map_lines);
+
+/* Fichier: validate_map.c */
 int				validate_map(t_game *game);
-void			get_texture(t_ray *ray, t_game *game, t_texture **tex);
-void			draw_textured_line(int x, t_ray *ray, t_game *game);
+int				is_map_closed(char **map, int width, int height);
+void			init_player(t_game *game, int x, int y, char dir);
+int				is_position_valid_and_closed(char **map, int x, int y, int height);
+int				count_players(t_game *game, char **map);
+
+/*****************************
+ *       RAYCASTING          *
+ *****************************/
+
+/* Fichier: raycasting.c */
 void			raycasting(t_game *game);
-void			calculate_step_and_side_dist(t_ray *ray);
 void			init_ray(t_ray *ray, t_game *game, int x);
+void			calculate_step_and_side_dist(t_ray *ray);
+void			perform_dda(t_ray *ray, t_game *game);
 void			calculate_line_height(t_ray *ray);
+
+/* Fichier: raycasting_utils.c */
+void			complete_raycasting(t_game *game);
 void			safe_perform_dda(t_ray *ray, t_game *game);
+void			safe_perform_dda_part2(t_ray *ray, t_game *game);
 void			safe_draw_textured_line(int x, t_ray *ray, t_game *game);
-int				key_press(int keycode, t_game *game);
+
+/*****************************
+ *         TEXTURES          *
+ *****************************/
+
+/* Fichier: textures.c */
+int				load_texture(t_game *game, t_texture *texture, char *path);
+int				load_all_textures(t_game *game);
+void			load_base_textures(t_game *game);
+void			free_textures_memory(t_game *game);
+
+/* Fichier: textures_draw.c */
+void			draw_textured_line(int x, t_ray *ray, t_game *game);
+void			get_texture(t_ray *ray, t_game *game, t_texture **tex);
+void			calculate_texture_x(t_ray *ray, double *wall_x, int *tex_x, t_texture *tex);
+void			apply_texture_color(t_ray *ray, t_game *game, int x, t_texture *tex, int tex_x);
+
+/*****************************
+ *      MONSTER/ENEMIES      *
+ *****************************/
+
+/* Fichier: monsters_init.c */
+void			init_monsters(t_game *game);
+void			update_monster_animations(t_game *game);
+int				all_monsters_dead(t_game *game);
+
+/* Fichier: monsters_render.c */
+void			render_monsters(t_game *game);
+void			sort_monsters(t_game *game, double *distances, int *order);
+void			draw_monster_column(t_game *game, int stripe, int draw_start_y, 
+				int draw_end_y, t_sprite *sprite, int tex_x, int monster_index);
+void			prepare_sprite_drawing(t_game *game, t_sprite *sprite, int order_idx,
+				int *sprite_screen_x);
+void			calculate_sprite_dimensions(t_ray *ray, t_sprite *sprite, int sprite_screen_x,
+				int *draw_dims);
+
+/*****************************
+ *      PLAYER ACTIONS       *
+ *****************************/
+
+/* Fichier: movement.c */
 int				is_valid_position(t_game *game, double x, double y);
 void			move_forward(t_game *game);
 void			move_backward(t_game *game);
 void			move_left(t_game *game);
 void			move_right(t_game *game);
+void			handle_movement(t_game *game);
+
+/* Fichier: rotation.c */
 void			rotate_left(t_game *game);
 void			rotate_right(t_game *game);
-int				close_window(t_game *game);
-void			render_frame(t_game *game);
-int				load_all_textures(t_game *game);
-void			draw_minimap(t_game *game);
-void			draw_weapon(t_game *game);
-int				game_loop(t_game *game);
-int				key_release(int keycode, t_game *game);
-void			complete_raycasting(t_game *game);
-void			handle_movement(t_game *game);
-int				mouse_move(int x, int y, t_game *game);
-void			toggle_mouse(t_game *game);
-int				mouse_click(int button, int x, int y, t_game *game);
-void			attack(t_game *game);
-int				all_monsters_dead(t_game *game);
-void			draw_controls_menu(t_game *game);
-void	draw_victory_message(t_game *game);
 
-// Fonctions pour les monstres
-void			init_monsters(t_game *game);
-void			render_monsters(t_game *game);
+/* Fichier: attack.c */
+void			attack(t_game *game);
+void			attack_monster(t_game *game, int monster_idx, double distance);
+int				is_monster_in_range(t_game *game, int monster_idx, double max_range);
+double			calculate_monster_angle(t_game *game, int monster_idx);
+int				is_monster_in_view_angle(double angle_diff);
+
+/* Fichier: input.c */
+int				key_press(int keycode, t_game *game);
+int				key_release(int keycode, t_game *game);
+int				mouse_move(int x, int y, t_game *game);
+int				mouse_click(int button, int x, int y, t_game *game);
+void			toggle_mouse(t_game *game);
+
+/*****************************
+ *    RENDERING & GRAPHICS   *
+ *****************************/
+
+/* Fichier: render_frame.c */
+void			render_frame(t_game *game);
+int				game_loop(t_game *game);
+void			update_game_timers(t_game *game);
+void			update_weapon_animation(t_game *game);
+int	find_door_position(t_game *game, int *door_x, int *door_y);
+int	check_door_proximity(t_game *game, int door_x, int door_y);
+
+/* Fichier: draw_weapon.c */
+void			draw_weapon(t_game *game);
+
+/* Fichier: draw_minimap.c */
+void			draw_minimap(t_game *game);
+void			draw_minimap_background(t_game *game, int map_width, int map_height, int offset_x, int offset_y);
+void			draw_map_elements(t_game *game, int size, int offset_x, int offset_y);
+void			draw_player_on_minimap(t_game *game, int size, int offset_x, int offset_y);
+void			draw_minimap_border(t_game *game, int x, int y, int width, int height);
+
+/* Fichier: draw_ui.c */
+void			draw_controls_menu(t_game *game);
+void			draw_line(t_game *game, int x0, int y0, int x1, int y1, int color);
 
 #endif

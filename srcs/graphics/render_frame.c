@@ -6,17 +6,17 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 14:00:00 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/30 14:08:48 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/30 16:23:32 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/cub3d.h"
+#include "../../includes/cub3d.h"
 
-/* Dessine une frame complète avec sol, plafond, murs, minimap et arme */
-void	render_frame(t_game *game)
+/* Dessine le sol et le plafond */
+void	draw_floor_ceiling(t_game *game)
 {
-	int x;
-	int y;
+	int	x;
+	int	y;
 
 	y = 0;
 	while (y < WIN_HEIGHT)
@@ -34,11 +34,17 @@ void	render_frame(t_game *game)
 		}
 		y++;
 	}
+}
+
+/* Dessine une frame complète avec sol, plafond, murs, minimap et arme */
+void	render_frame(t_game *game)
+{
+	draw_floor_ceiling(game);
 	complete_raycasting(game);
-    render_monsters(game);
+	render_monsters(game);
 	draw_minimap(game);
 	draw_weapon(game);
 	draw_controls_menu(game);
 	if (game->victory_displayed || game->all_monsters_killed)
-        draw_victory_message(game);
+		draw_victory_message(game);
 }
