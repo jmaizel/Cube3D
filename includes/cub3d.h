@@ -167,21 +167,6 @@ typedef struct s_ray
 	int			hit_type;
 }				t_ray;
 
-int				parse_cub_file(const char *filename, t_game *game);
-int				parse_map(char **lines, t_game *game, int start_index);
-int				validate_map(t_game *game);
-
-void			raycasting(t_game *game);
-void			calculate_step_and_side_dist(t_ray *ray);
-void			init_ray(t_ray *ray, t_game *game, int x);
-void			calculate_line_height(t_ray *ray);
-void			safe_perform_dda(t_ray *ray, t_game *game);
-void			safe_draw_textured_line(int x, t_ray *ray, t_game *game);
-
-
-void			complete_raycasting(t_game *game);
-
-
 /* Fonctions de movement.c */
 int		is_valid_position(t_game *game, double x, double y);
 void	move_forward(t_game *game);
@@ -277,6 +262,34 @@ void	free_map(char **map);
 int		exit_error(char *msg);
 int		close_window(t_game *game);
 void	draw_victory_message(t_game *game);
+
+/* Fonctions de parse_map.c */
+int		find_max_width(char **map_lines);
+int		parse_map(char **lines, t_game *game, int start_index);
+
+/* Fonctions de parse_cub_file.c */
+char	**read_files_lines(const char *filename);
+void	free_split(char **split);
+int		parse_color_line(char *line);
+int		parse_config(char **lines, t_game *game, int *map_start_index);
+int		parse_cub_file(const char *filename, t_game *game);
+
+/* Fonctions de validate_map.c */
+int		is_map_closed(char **map, int width, int height);
+void	init_player(t_game *game, int x, int y, char dir);
+int		validate_map(t_game *game);
+
+/* Fonctions de raycasting.c */
+void	init_ray(t_ray *ray, t_game *game, int x);
+void	calculate_step_and_side_dist(t_ray *ray);
+void	perform_dda(t_ray *ray, t_game *game);
+void	calculate_line_height(t_ray *ray);
+void	raycasting(t_game *game);
+
+/* Fonctions de raycasting_utils.c */
+void	complete_raycasting(t_game *game);
+void	safe_perform_dda(t_ray *ray, t_game *game);
+void	safe_draw_textured_line(int x, t_ray *ray, t_game *game);
 
 
 #endif
