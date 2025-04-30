@@ -219,15 +219,26 @@ void	draw_controls_menu(t_game *game);
 /* Définitions de couleurs pour la minimap */
 #define MAP_WALL_COLOR 0xE0E0E0
 #define MAP_FLOOR_COLOR 0x303030
-#define MAP_PLAYER_COLOR 0xFF2020
-#define MAP_BORDER_COLOR 0x404040
+#define MAP_PLAYER_COLOR 0xFF2020 
+#define MAP_BORDER_COLOR 0xC0C0C0
+#define MAP_BG_COLOR 0x222222 
+
+/* Structure pour les dimensions de la minimap */
+typedef struct s_minimap_size
+{
+	int	width;
+	int	height;
+}				t_minimap_size;
 
 /* Fonctions de draw_minimap.c */
 void	draw_minimap(t_game *game);
 
 /* Fonctions de draw_minimap_utils.c */
 void	draw_line(t_game *game, int x0, int y0, int x1, int y1, int color);
+void	draw_cell(t_game *game, int x, int y, int size, int color);
+void	draw_player_dot(t_game *game, int x, int y, int color);
 void	draw_minimap_border(t_game *game, int x, int y, int width, int height);
+
 
 /* Fonctions de draw_weapon.c */
 void	draw_weapon(t_game *game);

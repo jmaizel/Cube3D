@@ -10,16 +10,28 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   draw_minimap_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/01 18:05:30 by cdedessu          #+#    #+#             */
+/*   Updated: 2025/05/01 18:05:33 by cdedessu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/cub3d.h"
 
 /**
  * Dessine une ligne entre deux points (algorithme de Bresenham)
  * 
  * @param game Structure principale du jeu
- * @param x0 Coordonnée X du premier point
- * @param y0 Coordonnée Y du premier point
- * @param x1 Coordonnée X du second point
- * @param y1 Coordonnée Y du second point
+ * @param x0 Coordonnée X du point de départ
+ * @param y0 Coordonnée Y du point de départ
+ * @param x1 Coordonnée X du point d'arrivée
+ * @param y1 Coordonnée Y du point d'arrivée
  * @param color Couleur de la ligne
  */
 void	draw_line(t_game *game, int x0, int y0, int x1, int y1, int color)
@@ -57,42 +69,28 @@ void	draw_line(t_game *game, int x0, int y0, int x1, int y1, int color)
 }
 
 /**
- * Dessine la bordure horizontale de la minimap
+ * Dessine une cellule de la minimap
  * 
  * @param game Structure principale du jeu
- * @param x Position X de la minimap
- * @param y Position Y de la minimap
- * @param width Largeur de la minimap
- * @param border_size Épaisseur de la bordure
- * @param border_color Couleur de la bordure
+ * @param x Position X de la cellule
+ * @param y Position Y de la cellule
+ * @param size Taille de la cellule
+ * @param color Couleur de la cellule
  */
-static void	draw_horizontal_borders(t_game *game, int x, int y,
-		int width, int border_size, int border_color)
+void	draw_cell(t_game *game, int x, int y, int size, int color)
 {
 	int	i;
 	int	j;
-	int	height;
 
-	height = game->map.height * 7;
-	i = -border_size;
-	while (i < width + border_size)
+	i = 1;
+	while (i < size - 1)
 	{
-		j = -border_size;
-		while (j < 0)
+		j = 1;
+		while (j < size - 1)
 		{
-			if (y + j >= 0 && x + i >= 0 && y + j < WIN_HEIGHT
-				&& x + i < WIN_WIDTH)
-				game->img_data[(y + j) * (game->size_line / 4)
-					+ (x + i)] = border_color;
-			j++;
-		}
-		j = height;
-		while (j < height + border_size)
-		{
-			if (y + j >= 0 && x + i >= 0 && y + j < WIN_HEIGHT
-				&& x + i < WIN_WIDTH)
-				game->img_data[(y + j) * (game->size_line / 4)
-					+ (x + i)] = border_color;
+			if (y + i < WIN_HEIGHT && x + j < WIN_WIDTH)
+				game->img_data[(y + i) * (game->size_line / 4)
+					+ (x + j)] = color;
 			j++;
 		}
 		i++;
@@ -100,45 +98,34 @@ static void	draw_horizontal_borders(t_game *game, int x, int y,
 }
 
 /**
- * Dessine la bordure verticale de la minimap
+ * Dessine un point représentant le joueur
  * 
  * @param game Structure principale du jeu
- * @param x Position X de la minimap
- * @param y Position Y de la minimap
- * @param height Hauteur de la minimap
- * @param border_size Épaisseur de la bordure
- * @param border_color Couleur de la bordure
+ * @param x Position X du joueur
+ * @param y Position Y du joueur
+ * @param color Couleur du joueur
  */
-static void	draw_vertical_borders(t_game *game, int x, int y,
-		int height, int border_size, int border_color)
+void	draw_player_dot(t_game *game, int x, int y, int color)
 {
 	int	i;
 	int	j;
-	int	width;
 
-	width = game->map.width * 7;
-	j = -border_size;
-	while (j < height + border_size)
+	i = -2;
+	while (i <= 2)
 	{
-		i = -border_size;
-		while (i < 0)
+		j = -2;
+		while (j <= 2)
 		{
-			if (y + j >= 0 && x + i >= 0 && y + j < WIN_HEIGHT
-				&& x + i < WIN_WIDTH)
-				game->img_data[(y + j) * (game->size_line / 4)
-					+ (x + i)] = border_color;
-			i++;
+			if (i * i + j * j <= 4)
+			{
+				if (y + i >= 0 && y + i < WIN_HEIGHT && x + j >= 0
+					&& x + j < WIN_WIDTH)
+					game->img_data[(y + i) * (game->size_line / 4)
+						+ (x + j)] = color;
+			}
+			j++;
 		}
-		i = width;
-		while (i < width + border_size)
-		{
-			if (y + j >= 0 && x + i >= 0 && y + j < WIN_HEIGHT
-				&& x + i < WIN_WIDTH)
-				game->img_data[(y + j) * (game->size_line / 4)
-					+ (x + i)] = border_color;
-			i++;
-		}
-		j++;
+		i++;
 	}
 }
 
@@ -153,11 +140,38 @@ static void	draw_vertical_borders(t_game *game, int x, int y,
  */
 void	draw_minimap_border(t_game *game, int x, int y, int width, int height)
 {
+	int	i;
 	int	border_size;
-	int	border_color;
+	int	color;
 
-	border_size = 2;
-	border_color = MAP_BORDER_COLOR;
-	draw_horizontal_borders(game, x, y, width, border_size, border_color);
-	draw_vertical_borders(game, x, y, height, border_size, border_color);
+	border_size = 1;
+	color = MAP_BORDER_COLOR;
+	// Bordures horizontales
+	i = -border_size;
+	while (i < width + border_size)
+	{
+		if (y - border_size >= 0 && x + i >= 0 && y - border_size < WIN_HEIGHT
+			&& x + i < WIN_WIDTH)
+			game->img_data[(y - border_size) * (game->size_line / 4)
+				+ (x + i)] = color;
+		if (y + height >= 0 && x + i >= 0 && y + height < WIN_HEIGHT
+			&& x + i < WIN_WIDTH)
+			game->img_data[(y + height) * (game->size_line / 4)
+				+ (x + i)] = color;
+		i++;
+	}
+	// Bordures verticales
+	i = -border_size;
+	while (i < height + border_size)
+	{
+		if (y + i >= 0 && x - border_size >= 0 && y + i < WIN_HEIGHT
+			&& x - border_size < WIN_WIDTH)
+			game->img_data[(y + i) * (game->size_line / 4)
+				+ (x - border_size)] = color;
+		if (y + i >= 0 && x + width >= 0 && y + i < WIN_HEIGHT
+			&& x + width < WIN_WIDTH)
+			game->img_data[(y + i) * (game->size_line / 4)
+				+ (x + width)] = color;
+		i++;
+	}
 }
