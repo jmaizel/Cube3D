@@ -6,152 +6,172 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:10:35 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/28 18:17:43 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/30 17:36:45 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-#define MAP_WALL_COLOR 0xE0E0E0    // Gris clair pour les murs
-#define MAP_FLOOR_COLOR 0x303030   // Gris foncé pour le sol
-#define MAP_PLAYER_COLOR 0xFF2020  // Rouge vif pour le joueur
-#define MAP_BORDER_COLOR 0x404040  // Couleur de bordure
-
-// Fonction pour dessiner une ligne (algorithme de Bresenham)
-void draw_line(t_game *game, int x0, int y0, int x1, int y1, int color)
+/**
+ * Dessine un fond uniforme pour la minimap
+ * 
+ * @param game Structure principale du jeu
+ * @param offset_x Position X de la minimap
+ * @param offset_y Position Y de la minimap
+ * @param map_width Largeur de la minimap en pixels
+ * @param map_height Hauteur de la minimap en pixels
+ */
+static void	draw_minimap_background(t_game *game, int offset_x, int offset_y,
+		int map_width, int map_height)
 {
-    int dx = abs(x1 - x0);
-    int dy = abs(y1 - y0);
-    int sx = (x0 < x1) ? 1 : -1;
-    int sy = (y0 < y1) ? 1 : -1;
-    int err = dx - dy;
-    int e2;
-    
-    while (1) {
-        if (x0 >= 0 && y0 >= 0 && x0 < WIN_WIDTH && y0 < WIN_HEIGHT)
-            game->img_data[y0 * (game->size_line / 4) + x0] = color;
-        
-        if (x0 == x1 && y0 == y1)
-            break;
-            
-        e2 = 2 * err;
-        if (e2 > -dy) {
-            err -= dy;
-            x0 += sx;
-        }
-        if (e2 < dx) {
-            err += dx;
-            y0 += sy;
-        }
-    }
+	int	x;
+	int	y;
+
+	y = 0;
+	while (y < map_height)
+	{
+		x = 0;
+		while (x < map_width)
+		{
+			if (offset_y + y < WIN_HEIGHT && offset_x + x < WIN_WIDTH)
+				game->img_data[(offset_y + y) * (game->size_line / 4)
+					+ (offset_x + x)] = 0x222222;
+			x++;
+		}
+		y++;
+	}
 }
 
-// Fonction pour dessiner un cadre autour de la minimap
-void draw_minimap_border(t_game *game, int x, int y, int width, int height)
+/**
+ * Dessine les cases (murs et sol) de la minimap
+ * 
+ * @param game Structure principale du jeu
+ * @param size Taille en pixels de chaque case
+ * @param offset_x Position X de la minimap
+ * @param offset_y Position Y de la minimap
+ */
+static void	draw_minimap_grid(t_game *game, int size, int offset_x, int offset_y)
 {
-    int border_size = 2;
-    int border_color = MAP_BORDER_COLOR;
-    
-    // Dessiner les bords horizontaux
-    for (int i = -border_size; i < width + border_size; i++) {
-        for (int j = -border_size; j < 0; j++) {
-            if (y + j >= 0 && x + i >= 0 && y + j < WIN_HEIGHT && x + i < WIN_WIDTH)
-                game->img_data[(y + j) * (game->size_line / 4) + (x + i)] = border_color;
-        }
-        for (int j = height; j < height + border_size; j++) {
-            if (y + j >= 0 && x + i >= 0 && y + j < WIN_HEIGHT && x + i < WIN_WIDTH)
-                game->img_data[(y + j) * (game->size_line / 4) + (x + i)] = border_color;
-        }
-    }
-    
-    // Dessiner les bords verticaux
-    for (int j = -border_size; j < height + border_size; j++) {
-        for (int i = -border_size; i < 0; i++) {
-            if (y + j >= 0 && x + i >= 0 && y + j < WIN_HEIGHT && x + i < WIN_WIDTH)
-                game->img_data[(y + j) * (game->size_line / 4) + (x + i)] = border_color;
-        }
-        for (int i = width; i < width + border_size; i++) {
-            if (y + j >= 0 && x + i >= 0 && y + j < WIN_HEIGHT && x + i < WIN_WIDTH)
-                game->img_data[(y + j) * (game->size_line / 4) + (x + i)] = border_color;
-        }
-    }
+	int	map_y;
+	int	map_x;
+	int	pixel_x;
+	int	pixel_y;
+	int	color;
+	int	x;
+	int	y;
+
+	map_y = 0;
+	while (map_y < game->map.height)
+	{
+		map_x = 0;
+		while (map_x < (int)ft_strlen(game->map.grid[map_y]))
+		{
+			pixel_x = offset_x + map_x * size;
+			pixel_y = offset_y + map_y * size;
+			if (game->map.grid[map_y][map_x] == '1')
+				color = MAP_WALL_COLOR;
+			else if (game->map.grid[map_y][map_x] == '0'
+				|| ft_strchr("NSEW", game->map.grid[map_y][map_x]))
+				color = MAP_FLOOR_COLOR;
+			else
+			{
+				map_x++;
+				continue ;
+			}
+			y = 1;
+			while (y < size - 1)
+			{
+				x = 1;
+				while (x < size - 1)
+				{
+					if (pixel_y + y < WIN_HEIGHT && pixel_x + x < WIN_WIDTH)
+						game->img_data[(pixel_y + y) * (game->size_line / 4)
+							+ (pixel_x + x)] = color;
+					x++;
+				}
+				y++;
+			}
+			map_x++;
+		}
+		map_y++;
+	}
 }
 
-// Fonction principale de la minimap
-void draw_minimap(t_game *game)
+/**
+ * Dessine la position et la direction du joueur sur la minimap
+ * 
+ * @param game Structure principale du jeu
+ * @param size Taille en pixels de chaque case
+ * @param offset_x Position X de la minimap
+ * @param offset_y Position Y de la minimap
+ */
+static void	draw_player_on_minimap(t_game *game, int size, int offset_x,
+		int offset_y)
 {
-    int size = 7;              // Taille de chaque case
-    int offset_x = 30;         // Position X de la minimap
-    int offset_y = 30;         // Position Y de la minimap
-    int map_width, map_height; // Dimensions de la minimap
-    
-    // Calculer la largeur et la hauteur de la minimap
-    map_width = game->map.width * size;
-    map_height = game->map.height * size;
-    
-    // Limiter la taille maximale de la minimap
-    int max_map_size = 200;
-    if (map_width > max_map_size) {
-        size = max_map_size / game->map.width;
-        map_width = game->map.width * size;
-        map_height = game->map.height * size;
-    }
-    
-    // Dessiner un fond pour la minimap
-    for (int y = 0; y < map_height; y++) {
-        for (int x = 0; x < map_width; x++) {
-            if (offset_y + y < WIN_HEIGHT && offset_x + x < WIN_WIDTH)
-                game->img_data[(offset_y + y) * (game->size_line / 4) + (offset_x + x)] = 0x222222;
-        }
-    }
-    
-    // Dessiner les murs et le sol
-    for (int map_y = 0; map_y < game->map.height; map_y++) {
-        for (int map_x = 0; map_x < (int)ft_strlen(game->map.grid[map_y]); map_x++) {
-            int pixel_x = offset_x + map_x * size;
-            int pixel_y = offset_y + map_y * size;
-            
-            // Couleur selon le type de case
-            int color;
-            if (game->map.grid[map_y][map_x] == '1')
-                color = MAP_WALL_COLOR;
-            else if (game->map.grid[map_y][map_x] == '0' || ft_strchr("NSEW", game->map.grid[map_y][map_x]))
-                color = MAP_FLOOR_COLOR;
-            else
-                continue; // Ignorer les autres caractères
-            
-            // Dessiner le carré avec un petit espace entre chaque case
-            for (int y = 1; y < size - 1; y++) {
-                for (int x = 1; x < size - 1; x++) {
-                    if (pixel_y + y < WIN_HEIGHT && pixel_x + x < WIN_WIDTH)
-                        game->img_data[(pixel_y + y) * (game->size_line / 4) + (pixel_x + x)] = color;
-                }
-            }
-        }
-    }
-    
-    // Dessiner la position du joueur (cercle)
-    int player_pixel_x = offset_x + (int)(game->player.x * size);
-    int player_pixel_y = offset_y + (int)(game->player.y * size);
-    int player_radius = 3;
-    
-    for (int y = -player_radius; y <= player_radius; y++) {
-        for (int x = -player_radius; x <= player_radius; x++) {
-            if (x*x + y*y <= player_radius*player_radius) {
-                if (player_pixel_y + y < WIN_HEIGHT && player_pixel_x + x < WIN_WIDTH && 
-                    player_pixel_y + y >= 0 && player_pixel_x + x >= 0)
-                    game->img_data[(player_pixel_y + y) * (game->size_line / 4) + (player_pixel_x + x)] = MAP_PLAYER_COLOR;
-            }
-        }
-    }
-    
-    // Dessiner la direction du joueur (ligne)
-    int dir_length = size * 2;
-    int dir_end_x = player_pixel_x + (int)(game->player.dir_x * dir_length);
-    int dir_end_y = player_pixel_y + (int)(game->player.dir_y * dir_length);
-    
-    draw_line(game, player_pixel_x, player_pixel_y, dir_end_x, dir_end_y, MAP_PLAYER_COLOR);
-    
-    // Dessiner un cadre autour de la minimap
-    draw_minimap_border(game, offset_x, offset_y, map_width, map_height);
+	int	player_pixel_x;
+	int	player_pixel_y;
+	int	player_radius;
+	int	dir_length;
+	int	dir_end_x;
+	int	dir_end_y;
+	int	x;
+	int	y;
+
+	player_pixel_x = offset_x + (int)(game->player.x * size);
+	player_pixel_y = offset_y + (int)(game->player.y * size);
+	player_radius = 3;
+	y = -player_radius;
+	while (y <= player_radius)
+	{
+		x = -player_radius;
+		while (x <= player_radius)
+		{
+			if (x * x + y * y <= player_radius * player_radius)
+			{
+				if (player_pixel_y + y < WIN_HEIGHT && player_pixel_x + x < WIN_WIDTH
+					&& player_pixel_y + y >= 0 && player_pixel_x + x >= 0)
+					game->img_data[(player_pixel_y + y) * (game->size_line / 4)
+						+ (player_pixel_x + x)] = MAP_PLAYER_COLOR;
+			}
+			x++;
+		}
+		y++;
+	}
+	dir_length = size * 2;
+	dir_end_x = player_pixel_x + (int)(game->player.dir_x * dir_length);
+	dir_end_y = player_pixel_y + (int)(game->player.dir_y * dir_length);
+	draw_line(game, player_pixel_x, player_pixel_y, dir_end_x, dir_end_y,
+		MAP_PLAYER_COLOR);
+}
+
+/**
+ * Dessine la minimap du jeu dans le coin supérieur gauche de l'écran
+ * 
+ * @param game Structure principale du jeu
+ */
+void	draw_minimap(t_game *game)
+{
+	int	size;
+	int	offset_x;
+	int	offset_y;
+	int	map_width;
+	int	map_height;
+	int	max_map_size;
+
+	size = 7;
+	offset_x = 30;
+	offset_y = 30;
+	map_width = game->map.width * size;
+	map_height = game->map.height * size;
+	max_map_size = 200;
+	if (map_width > max_map_size)
+	{
+		size = max_map_size / game->map.width;
+		map_width = game->map.width * size;
+		map_height = game->map.height * size;
+	}
+	draw_minimap_background(game, offset_x, offset_y, map_width, map_height);
+	draw_minimap_grid(game, size, offset_x, offset_y);
+	draw_player_on_minimap(game, size, offset_x, offset_y);
+	draw_minimap_border(game, offset_x, offset_y, map_width, map_height);
 }

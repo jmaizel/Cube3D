@@ -65,12 +65,15 @@ typedef struct s_monster
 	double hit_timer; 
 }				t_monster;
 
+/* Structure pour les sprites de monstres */
 typedef struct s_sprite
 {
 	double		x;
 	double		y;
 	int			width;
 	int			height;
+	int			screen_x;
+	double		transform_y;
 }				t_sprite;
 
 typedef struct s_game
@@ -169,8 +172,7 @@ void			free_map(char **map);
 int				exit_error(char *msg);
 int				parse_map(char **lines, t_game *game, int start_index);
 int				validate_map(t_game *game);
-void			get_texture(t_ray *ray, t_game *game, t_texture **tex);
-void			draw_textured_line(int x, t_ray *ray, t_game *game);
+
 void			raycasting(t_game *game);
 void			calculate_step_and_side_dist(t_ray *ray);
 void			init_ray(t_ray *ray, t_game *game, int x);
@@ -179,26 +181,11 @@ void			safe_perform_dda(t_ray *ray, t_game *game);
 void			safe_draw_textured_line(int x, t_ray *ray, t_game *game);
 
 int				close_window(t_game *game);
-void			render_frame(t_game *game);
-int				load_all_textures(t_game *game);
-void			draw_minimap(t_game *game);
-void			draw_weapon(t_game *game);
 
 
 void			complete_raycasting(t_game *game);
 
-
-int				all_monsters_dead(t_game *game);
-void			draw_controls_menu(t_game *game);
-void	draw_victory_message(t_game *game);
-
-// Fonctions pour les monstres
-void			init_monsters(t_game *game);
-void			render_monsters(t_game *game);
-
-
-
-
+void			draw_victory_message(t_game *game);
 
 
 /* Fonctions de movement.c */
@@ -220,8 +207,6 @@ void	toggle_mouse(t_game *game);
 void	attack(t_game *game);
 int		mouse_click(int button, int x, int y, t_game *game);
 
-
-
 /* Fonctions de movement_utils.c */
 double	get_time(void);
 void	calculate_delta_time(t_game *game);
@@ -235,5 +220,63 @@ int		find_door_position(t_game *game, int *door_x, int *door_y);
 int		display_victory(t_game *game);
 int		check_door_victory(t_game *game);
 void	update_victory_timer(t_game *game);
+
+/* Fonctions de draw_enemies.c */
+void	init_monsters(t_game *game);
+void	render_monsters(t_game *game);
+int		all_monsters_dead(t_game *game);
+
+/* Fonctions de draw_enemies_utils.c */
+void		sort_monsters(t_game *game, double *distances, int *order);
+void		draw_monster_column(t_game *game, int stripe, int draw_start_y,
+				int draw_end_y, t_sprite *sprite, int tex_x, int monster_index);
+t_sprite	calc_sprite_pos(t_game *game, int *order, int i, t_sprite *sprite);
+void		calc_sprite_draw_limits(t_sprite *sprite, int *draw_start_x,
+				int *draw_end_x, int *draw_start_y, int *draw_end_y);
+
+/* Fonctions de draw_menu.c */
+void	draw_controls_menu(t_game *game);
+
+/* Définitions de couleurs pour la minimap */
+#define MAP_WALL_COLOR 0xE0E0E0
+#define MAP_FLOOR_COLOR 0x303030
+#define MAP_PLAYER_COLOR 0xFF2020
+#define MAP_BORDER_COLOR 0x404040
+
+/* Fonctions de draw_minimap.c */
+void	draw_minimap(t_game *game);
+
+/* Fonctions de draw_minimap_utils.c */
+void	draw_line(t_game *game, int x0, int y0, int x1, int y1, int color);
+void	draw_minimap_border(t_game *game, int x, int y, int width, int height);
+
+/* Fonctions de draw_weapon.c */
+void	draw_weapon(t_game *game);
+
+/* Fonctions de render_frame.c */
+void	render_frame(t_game *game);
+
+/* Structure pour les paramètres de texture */
+typedef struct s_tex_params
+{
+	double	step;
+	double	tex_pos;
+	int		tex_x;
+}			t_tex_params;
+
+/* Fonctions de textures.c */
+void	get_texture(t_ray *ray, t_game *game, t_texture **tex);
+void	calculate_texture_x(t_ray *ray, double *wall_x, int *tex_x,
+	t_texture *tex);
+int		load_texture(t_game *game, t_texture *texture, char *path);
+int		load_all_textures(t_game *game);
+void	draw_textured_line(int x, t_ray *ray, t_game *game);
+
+/* Fonctions de textures_utils.c */
+int		apply_side_shading(int color);
+int		apply_transparency(int color);
+void	free_texture_paths(t_game *game);
+void	prepare_texture_params(t_ray *ray, t_texture *tex, t_tex_params *params);
+
 
 #endif
