@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 11:12:03 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/25 13:55:26 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/30 14:35:17 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,4 +47,44 @@ int	close_window(t_game *game)
 	free_map(game->map.grid);
 	exit(0);
 	return (0);
+}
+
+/* Affiche un message de victoire quand tous les monstres sont éliminés */
+void draw_victory_message(t_game *game)
+{
+    int msg_x;
+    int msg_y;
+    int color;
+
+    msg_x = WIN_WIDTH / 2 - 150;
+    msg_y = WIN_HEIGHT / 2;
+    color = 0x00FF00;  // Vert vif pour être bien visible
+
+    if (game->victory_displayed)
+    {
+        if (game->victory_final)
+        {
+            // Message de victoire finale
+            mlx_string_put(game->mlx, game->win, msg_x, msg_y - 40, 0xFFFF00,
+                "FÉLICITATIONS!");
+            mlx_string_put(game->mlx, game->win, msg_x, msg_y, 0xFFFF00,
+                "VOUS AVEZ TERMINÉ LE JEU!");
+            mlx_string_put(game->mlx, game->win, msg_x, msg_y + 40, color,
+                "Appuyez sur ESC pour quitter");
+        }
+        else
+        {
+            // Message quand les monstres sont tués
+            mlx_string_put(game->mlx, game->win, msg_x, msg_y, color,
+                "TOUS LES MONSTRES SONT ELIMINES!");
+            mlx_string_put(game->mlx, game->win, msg_x, msg_y + 30, color,
+                "LA PORTE EST OUVERTE!");
+        }
+    }
+    else if (game->all_monsters_killed && game->door_opened)
+    {
+        // Affiche un indicateur plus discret indiquant que la porte est ouverte
+        mlx_string_put(game->mlx, game->win, 30, WIN_HEIGHT - 30, color,
+            "Porte ouverte - Traversez-la pour terminer");
+    }
 }

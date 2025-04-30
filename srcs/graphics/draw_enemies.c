@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw_enemies.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 16:31:16 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/27 17:50:49 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/30 14:02:30 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,6 +202,7 @@ void	render_monsters(t_game *game)
 	}
 }
 
+// Dans draw_enemies.c, modifiez la fonction all_monsters_dead
 int all_monsters_dead(t_game *game)
 {
     int i;

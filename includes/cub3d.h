@@ -9,8 +9,8 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
-# define WIN_WIDTH 1280
-# define WIN_HEIGHT 720
+# define WIN_WIDTH 2000
+# define WIN_HEIGHT 1200
 # define TEX_WIDTH 64
 # define TEX_HEIGHT 64
 # define MAX_MONSTERS 20
@@ -95,6 +95,14 @@ typedef struct s_game
 	// Gestion du temps
 	double		last_frame_time;
 	double		delta_time;
+
+	// portes
+	int door_opened;         // Indique si la porte est ouverte
+	int all_monsters_killed; // Indique si tous les monstres sont morts
+	int victory_displayed;   // Indique si le message de victoire est affiché
+	double victory_timer;
+	int     victory_final;   // Timer pour le message de victoire
+	t_texture door_tex;      // Texture de la porte fermée
 
 	// weapon
 	t_texture	weapon_tex;
@@ -191,6 +199,7 @@ int				mouse_click(int button, int x, int y, t_game *game);
 void			attack(t_game *game);
 int				all_monsters_dead(t_game *game);
 void			draw_controls_menu(t_game *game);
+void	draw_victory_message(t_game *game);
 
 // Fonctions pour les monstres
 void			init_monsters(t_game *game);

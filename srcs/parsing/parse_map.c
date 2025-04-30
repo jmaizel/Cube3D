@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 12:11:54 by jacobmaizel       #+#    #+#             */
-/*   Updated: 2025/04/25 16:47:59 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/30 13:58:34 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	is_map_line(char *line)
 	found_valid_char = 0;
 	while (line[i])
 	{
-		if (ft_strchr("01PNSEWM", line[i]))
+		if (ft_strchr("01PNSEWMD", line[i]))
 			found_valid_char = 1;
 		else if (line[i] != ' ' && line[i] != '\t')
 			return (0);

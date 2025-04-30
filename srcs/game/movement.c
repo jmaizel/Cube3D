@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   movement.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 16:45:10 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/28 17:38:08 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/30 14:39:48 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,17 @@
 #define ROT_SPEED 0.05
 
 /* Vérifie si une position sur la map est valide (pas de mur ni hors limites) */
-int	is_valid_position(t_game *game, double x, double y)
+int is_valid_position(t_game *game, double x, double y)
 {
-	if (x < 0 || y < 0 || (int)x >= game->map.width
-		|| (int)y >= game->map.height)
-		return (0);
-	if (game->map.grid[(int)y][(int)x] == '1')
-		return (0);
-	return (1);
+    if (x < 0 || y < 0 || (int)x >= game->map.width
+        || (int)y >= game->map.height)
+        return (0);
+    if (game->map.grid[(int)y][(int)x] == '1')
+        return (0);
+    // Vérifier si c'est une porte fermée
+    if (game->map.grid[(int)y][(int)x] == 'D' && !game->door_opened)
+        return (0);
+    return (1);
 }
 
 /* Déplace le joueur vers l'avant */
@@ -199,83 +202,162 @@ void	update_monster_animations(t_game *game)
 }
 
 /* boucle principale du jeu */
-int	game_loop(t_game *game)
+int game_loop(t_game *game)
 {
-	double current_time;
+    double current_time;
 
-	// Calculer le delta time
-	current_time = get_time();
-	if (game->last_frame_time == 0.0)
-		game->last_frame_time = current_time;
+    // Calculer le delta time
+    current_time = get_time();
+    if (game->last_frame_time == 0.0)
+        game->last_frame_time = current_time;
+    game->delta_time = current_time - game->last_frame_time;
+    game->last_frame_time = current_time;
 
-	game->delta_time = current_time - game->last_frame_time;
-	game->last_frame_time = current_time;
+    // Limiter le delta time pour éviter les sauts lors de freezes
+    if (game->delta_time > 0.1)
+        game->delta_time = 0.1;
 
-	// Limiter le delta time pour éviter les sauts lors de freezes
-	if (game->delta_time > 0.1)
-		game->delta_time = 0.1;
+    // Mettre à jour le timer de l'arme
+    if (game->weapon_timer > 0)
+    {
+        game->weapon_timer -= game->delta_time;
+        if (game->weapon_timer <= 0)
+        {
+            game->weapon_timer = 0;
+            game->firing = 0;
+        }
+    }
 
-	// Mettre à jour le timer de l'arme
-	if (game->weapon_timer > 0)
-	{
-		game->weapon_timer -= game->delta_time;
-		if (game->weapon_timer <= 0)
-		{
-			game->weapon_timer = 0;
-			game->firing = 0;
-		}
-	}
+    // Mettre à jour l'animation de l'arme
+    if (game->weapon_animating)
+    {
+        game->weapon_anim_time += game->delta_time;
 
-	// Mettre à jour l'animation de l'arme
-	if (game->weapon_animating)
-	{
-		game->weapon_anim_time += game->delta_time;
+        // Avancer l'animation
+        if (game->weapon_anim_time >= game->weapon_anim_speed)
+        {
+            game->weapon_anim_time -= game->weapon_anim_speed;
+            game->current_weapon_frame++;
 
-		// Avancer l'animation
-		if (game->weapon_anim_time >= game->weapon_anim_speed)
-		{
-			game->weapon_anim_time -= game->weapon_anim_speed;
-			game->current_weapon_frame++;
+            // Vérifier si l'animation est terminée
+            if (game->current_weapon_frame >= game->weapon_frame_count)
+            {
+                game->current_weapon_frame = 0;
+                game->weapon_animating = 0;
+            }
+        }
+    }
 
-			// Vérifier si l'animation est terminée
-			if (game->current_weapon_frame >= game->weapon_frame_count)
-			{
-				game->current_weapon_frame = 0;
-				game->weapon_animating = 0;
-			}
-		}
-	}
+    // Mettre à jour les effets de coup pour les monstres
+    for (int i = 0; i < game->monster_count; i++)
+    {
+        if (game->monsters[i].hit_timer > 0)
+        {
+            game->monsters[i].hit_timer -= game->delta_time;
+            if (game->monsters[i].hit_timer <= 0)
+            {
+                game->monsters[i].hit_timer = 0;
+                game->monsters[i].hit_animation = 0;
+            }
+        }
+    }
 
-	// Mettre à jour les effets de coup pour les monstres
-	for (int i = 0; i < game->monster_count; i++)
-	{
-		if (game->monsters[i].hit_timer > 0)
-		{
-			game->monsters[i].hit_timer -= game->delta_time;
-			if (game->monsters[i].hit_timer <= 0)
-			{
-				game->monsters[i].hit_timer = 0;
-				game->monsters[i].hit_animation = 0;
-			}
-		}
-	}
+    // Mise à jour des animations des monstres
+    update_monster_animations(game);
 
-	// Mise à jour des animations des monstres
-	update_monster_animations(game);
+    // Vérifier si tous les monstres sont morts pour ouvrir la porte
+    if (!game->all_monsters_killed && all_monsters_dead(game))
+    {
+        game->all_monsters_killed = 1;
+        game->door_opened = 1;
+        game->victory_timer = 3.0; // Afficher le message pendant 3 secondes
+        game->victory_displayed = 1;
+        ft_printf("Tous les monstres ont été éliminés! La porte est ouverte!\n");
+    }
 
-	// Gérer les mouvements du joueur
-	handle_movement(game);
+    // Vérifier si le joueur a traversé la porte pour terminer le jeu
+    if (game->door_opened && game->victory_displayed != 2)
+    {
+        // Trouver la position de la porte
+        int door_found = 0;
+        int door_x = 0;
+        int door_y = 0;
+        
+        for (int y = 0; y < game->map.height && !door_found; y++)
+        {
+            for (int x = 0; x < (int)ft_strlen(game->map.grid[y]) && !door_found; x++)
+            {
+                if (game->map.grid[y][x] == 'D')
+                {
+                    door_x = x;
+                    door_y = y;
+                    door_found = 1;
+                }
+            }
+        }
+        
+        if (door_found)
+        {
+            // Calculer la distance entre le joueur et la porte
+            double dx = game->player.x - (door_x + 0.5);
+            double dy = game->player.y - (door_y + 0.5);
+            double distance = sqrt(dx * dx + dy * dy);
+            
+            // Si le joueur est assez proche de la porte
+            if (distance < 1.0)
+            {
+                // Afficher le message de victoire une seule fois
+                ft_printf("VICTOIRE! Vous avez traversé la porte et terminé le jeu!\n");
+                
+                // Rendre une dernière frame avec le message de victoire
+                game->victory_displayed = 2;
+                render_frame(game);
+                mlx_put_image_to_window(game->mlx, game->win, game->img, 0, 0);
+                
+                // Afficher le message de victoire finale
+                int msg_x = WIN_WIDTH / 2 - 200;
+                int msg_y = WIN_HEIGHT / 2;
+                mlx_string_put(game->mlx, game->win, msg_x, msg_y - 40, 0xFFFF00,
+                    "FÉLICITATIONS!");
+                mlx_string_put(game->mlx, game->win, msg_x, msg_y, 0xFFFF00,
+                    "VOUS AVEZ TERMINÉ LE JEU!");
+                
+                // Attendre un court instant pour que le message soit visible
+                usleep(2000000); // 2 secondes
+                
+                // Fermer le jeu
+                close_window(game);
+                return (0);
+            }
+        }
+    }
 
-	// Générer la nouvelle frame
-	render_frame(game);
+    // Gestion du timer pour le message de victoire
+    if (game->victory_timer > 0)
+    {
+        game->victory_timer -= game->delta_time;
+        
+        if (game->victory_timer <= 0)
+        {
+            game->victory_timer = 0;
+            if (game->victory_displayed == 1)
+                game->victory_displayed = 0;
+        }
+    }
 
-	// Afficher la frame
-	mlx_put_image_to_window(game->mlx, game->win, game->img, 0, 0);
+    // Gérer les mouvements du joueur
+    handle_movement(game);
 
-	draw_controls_menu(game);
+    // Générer la nouvelle frame
+    render_frame(game);
 
-	// Limiter le framerate à environ 60 FPS
-	usleep(16000);
+    // Afficher la frame
+    mlx_put_image_to_window(game->mlx, game->win, game->img, 0, 0);
 
-	return (0);
+    draw_controls_menu(game);
+
+    // Limiter le framerate à environ 60 FPS
+    usleep(16000);
+
+    return (0);
 }

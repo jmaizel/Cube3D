@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   textures.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 14:22:34 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/27 17:52:34 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/30 14:34:56 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,10 @@ int load_all_textures(t_game *game)
     if (!load_texture(game, &game->west_tex, (char *)game->west_tex.img))
         return (0);
     
+    //chargement textures de portes
+    if (game->door_tex.img && !load_texture(game, &game->door_tex, (char *)game->door_tex.img))
+    return (0);
+    
     // Chargement des frames d'animation pour l'arme
     i = 0;
     while (i < game->weapon_frame_count)
@@ -115,6 +119,9 @@ int load_all_textures(t_game *game)
         i++;
     }
     
+    //liberations textures de portes
+    if (game->door_tex.img)
+    free(game->door_tex.img);
     // Libération des chemins des frames de monstre
     i = 0;
     while (i < game->monster_frame_count)
@@ -127,7 +134,6 @@ int load_all_textures(t_game *game)
     return (1);
 }
 
-/* Dessine une ligne texturée verticale pour une colonne de l'écran */
 void draw_textured_line(int x, t_ray *ray, t_game *game)
 {
     t_texture *tex;
@@ -138,7 +144,10 @@ void draw_textured_line(int x, t_ray *ray, t_game *game)
     double step, tex_pos;
     
     // Sélection de la texture selon le type d'objet touché
-    get_texture(ray, game, &tex);
+    if (ray->hit_type == 2 || ray->hit_type == 3) // Porte (fermée ou ouverte)
+        tex = &game->door_tex;
+    else
+        get_texture(ray, game, &tex);
     
     calculate_texture_x(ray, &wall_x, &tex_x, tex);
     step = 1.0 * tex->height / ray->line_height;
@@ -151,9 +160,21 @@ void draw_textured_line(int x, t_ray *ray, t_game *game)
         tex_pos += step;
         color = tex->data[tex_y * tex->width + tex_x];
         
-        // Assombrissement pour les côtés Y
-        if (ray->side == 1)
+        // Assombrissement pour les côtés Y (sauf pour les portes)
+        if (ray->side == 1 && ray->hit_type < 2)
             color = (color >> 1) & 0x7F7F7F;
+        
+        // Si c'est une porte ouverte, la rendre semi-transparente
+        if (ray->hit_type == 3)
+        {
+            // Rendre la porte semi-transparente (alpha = 0.6)
+            int alpha = 153; // 0.6 * 255
+            int r = ((color >> 16) & 0xFF) * alpha / 255;
+            int g = ((color >> 8) & 0xFF) * alpha / 255;
+            int b = (color & 0xFF) * alpha / 255;
+            
+            color = (r << 16) | (g << 8) | b;
+        }
         
         game->img_data[y * (game->size_line / 4) + x] = color;
         y++;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raycasting_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 14:00:00 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/27 17:51:40 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/30 14:34:31 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,14 @@ void safe_perform_dda(t_ray *ray, t_game *game)
         else if (game->map.grid[ray->map_y][ray->map_x] == '1')
         {
             ray->hit = 1;
+        }
+        else if (game->map.grid[ray->map_y][ray->map_x] == 'D')
+        {
+            ray->hit = 1;
+            if (game->door_opened)
+                ray->hit_type = 3; // Porte ouverte (semi-transparente)
+            else
+                ray->hit_type = 2; // Porte fermée 
         }
         iterations++;
     }

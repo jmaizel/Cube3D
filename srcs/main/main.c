@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:37:18 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/27 17:54:00 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/30 14:33:13 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,11 @@ int	main(int argc, char **argv)
 	game.weapon_animating = 0;
 	game.weapon_anim_time = 0;
 	game.weapon_anim_speed = 0.1; // 10 frames par seconde pour l'animation
+	game.door_opened = 0;
+	game.all_monsters_killed = 0;
+	game.victory_displayed = 0;
+	game.victory_timer = 0.0;
+	game.victory_final = 0;
 
 	// Parsing et initialisation
 	if (!parse_cub_file(argv[1], &game))

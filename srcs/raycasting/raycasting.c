@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 14:08:46 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/25 14:20:36 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/30 14:01:20 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,28 +62,37 @@ void	calculate_step_and_side_dist(t_ray *ray)
 }
 
 /* Exécute l'algorithme DDA pour trouver le mur touché */
-void	perform_dda(t_ray *ray, t_game *game)
+void perform_dda(t_ray *ray, t_game *game)
 {
-	while (ray->hit == 0)
-	{
-		if (ray->side_dist_x < ray->side_dist_y)
-		{
-			ray->side_dist_x += ray->delta_dist_x;
-			ray->map_x += ray->step_x;
-			ray->side = 0;
-		}
-		else
-		{
-			ray->side_dist_y += ray->delta_dist_y;
-			ray->map_y += ray->step_y;
-			ray->side = 1;
-		}
-		if (ray->map_y < 0 || ray->map_y >= game->map.height || ray->map_x < 0
-			|| ray->map_x >= (int)ft_strlen(game->map.grid[ray->map_y])
-			|| game->map.grid[ray->map_y][ray->map_x] == '1'
-			|| game->map.grid[ray->map_y][ray->map_x] == ' ')
-			ray->hit = 1;
-	}
+    while (ray->hit == 0)
+    {
+        if (ray->side_dist_x < ray->side_dist_y)
+        {
+            ray->side_dist_x += ray->delta_dist_x;
+            ray->map_x += ray->step_x;
+            ray->side = 0;
+        }
+        else
+        {
+            ray->side_dist_y += ray->delta_dist_y;
+            ray->map_y += ray->step_y;
+            ray->side = 1;
+        }
+        
+        // Vérifier les collisions
+        if (ray->map_y < 0 || ray->map_y >= game->map.height || ray->map_x < 0
+            || ray->map_x >= (int)ft_strlen(game->map.grid[ray->map_y]))
+            ray->hit = 1;
+        else if (game->map.grid[ray->map_y][ray->map_x] == '1')
+            ray->hit = 1;
+        else if (game->map.grid[ray->map_y][ray->map_x] == 'D' && !game->door_opened)
+        {
+            ray->hit = 1;
+            ray->hit_type = 2; // 2 pour indiquer une porte
+        }
+        else if (game->map.grid[ray->map_y][ray->map_x] == ' ')
+            ray->hit = 1;
+    }
 }
 
 /* Calcule la hauteur de la ligne à dessiner à l'écran */

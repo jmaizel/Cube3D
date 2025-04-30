@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_frame.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 14:00:00 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/28 17:37:34 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/30 14:08:48 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,6 @@ void	render_frame(t_game *game)
 	draw_minimap(game);
 	draw_weapon(game);
 	draw_controls_menu(game);
+	if (game->victory_displayed || game->all_monsters_killed)
+        draw_victory_message(game);
 }

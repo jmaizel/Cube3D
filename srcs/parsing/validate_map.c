@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 13:12:10 by jacobmaizel       #+#    #+#             */
-/*   Updated: 2025/04/25 16:50:30 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/04/30 13:58:56 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ int	validate_map(t_game *game)
 		{
 			c = map[y][x];
 
-			if (!ft_strchr("01PNSEWM ", c))
+			if (!ft_strchr("01PNSEWMD ", c))
 				return (exit_error("Error\nCaractère invalide dans la map"), 0);
 			if (ft_strchr("NSEW", c))
 			{
