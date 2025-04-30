@@ -12,8 +12,8 @@ WP1 ./textures/weapon_frame1.xpm
 WP2 ./textures/weapon_frame2.xpm
 WP3 ./textures/weapon_frame3.xpm
 
-F 153,204,255
-C 135,206,235
+F 180,220,255
+C 120,180,220
 
 1111111
 1M000M1
