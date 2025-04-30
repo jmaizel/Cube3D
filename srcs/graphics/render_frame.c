@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 14:00:00 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/30 17:46:28 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/30 19:25:53 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,18 +53,6 @@ static void	draw_floor_ceiling(t_game *game)
 }
 
 /**
- * Vérifie si des éléments de victoire doivent être affichés
- * 
- * @param game Structure principale du jeu
- */
-static int	check_victory_elements(t_game *game)
-{
-	if (game->victory_displayed || game->all_monsters_killed)
-		return (1);
-	return (0);
-}
-
-/**
  * Dessine une frame complète avec sol, plafond, murs, minimap et arme
  * 
  * @param game Structure principale du jeu
@@ -84,8 +72,4 @@ void	render_frame(t_game *game)
 	draw_minimap(game);
 	draw_weapon(game);
 	draw_controls_menu(game);
-	
-	/* Afficher les messages de victoire si nécessaire */
-	if (check_victory_elements(game))
-		draw_victory_message(game);
 }

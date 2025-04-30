@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 16:45:10 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/30 17:08:16 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/30 19:29:20 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,6 +237,8 @@ int	game_loop(t_game *game)
 	render_frame(game);
 	mlx_put_image_to_window(game->mlx, game->win, game->img, 0, 0);
 	draw_controls_menu(game);
+	if (game->victory_displayed || game->all_monsters_killed)
+	draw_victory_message(game);
 	usleep(16000);
 	return (0);
 }

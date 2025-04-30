@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 11:12:03 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/30 18:07:16 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/04/30 19:35:15 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	draw_victory_message(t_game *game)
 
 	msg_x = WIN_WIDTH / 2 - 150;
 	msg_y = WIN_HEIGHT / 2;
-	color = 0x00FF00;
+	color = 0xFF0000;
 	if (game->victory_displayed)
 	{
 		if (game->victory_final)
@@ -90,9 +90,9 @@ void	draw_victory_message(t_game *game)
 		}
 		else
 		{
-			mlx_string_put(game->mlx, game->win, msg_x, msg_y, color,
-				"TOUS LES MONSTRES SONT ELIMINES!");
-			mlx_string_put(game->mlx, game->win, msg_x, msg_y + 30, color,
+			mlx_string_put(game->mlx, game->win, WIN_WIDTH - 300, WIN_HEIGHT - 60, color,
+				"TOUS LES MONSTRES SONT ELIMINÉS!");
+			mlx_string_put(game->mlx, game->win, WIN_WIDTH - 300, WIN_HEIGHT - 40, color,
 				"LA PORTE EST OUVERTE!");
 		}
 	}

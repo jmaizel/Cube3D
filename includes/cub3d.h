@@ -199,6 +199,7 @@ int		find_door_position(t_game *game, int *door_x, int *door_y);
 int		display_victory(t_game *game);
 int		check_door_victory(t_game *game);
 void	update_victory_timer(t_game *game);
+int		check_victory_elements(t_game *game);
 
 /* Fonctions de draw_enemies.c */
 void	init_monsters(t_game *game);
