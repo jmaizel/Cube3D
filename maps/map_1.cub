@@ -1,7 +1,7 @@
-NO ./textures/ice_wall.xpm
-SO ./textures/ice_wall.xpm
-WE ./textures/ice_wall.xpm
-EA ./textures/ice_wall.xpm
+NO ./textures/ice_wall_north.xpm
+SO ./textures/ice_wall_south.xpm
+WE ./textures/ice_wall_west.xpm
+EA ./textures/ice_wall_east.xpm
 DR ./textures/door.xpm
 MT0 ./textures/animation_pixel_frame_1.xpm
 MT1 ./textures/animation_pixel_frame_2.xpm
