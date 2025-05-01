@@ -200,18 +200,39 @@ int		display_victory(t_game *game);
 int		check_door_victory(t_game *game);
 void	update_victory_timer(t_game *game);
 
+/**
+ * Structure pour les paramètres de dessin des monstres
+ * Permet de réduire le nombre d'arguments des fonctions
+ */
+typedef struct s_draw_params
+{
+	int			stripe;
+	int			y;
+	t_sprite	*sprite;
+	int			tex_x;
+}				t_draw_params;
+
 /* Fonctions de draw_enemies.c */
 void	init_monsters(t_game *game);
-void	render_monsters(t_game *game);
+void	process_monster_sprite(t_game *game, t_sprite *sprite, int monster_index);
+
+/* Fonctions de draw_enemies2.c */
 int		all_monsters_dead(t_game *game);
+void	render_monsters(t_game *game);
 
 /* Fonctions de draw_enemies_utils.c */
-void		sort_monsters(t_game *game, double *distances, int *order);
-void		draw_monster_column(t_game *game, int stripe, int draw_start_y,
-				int draw_end_y, t_sprite *sprite, int tex_x, int monster_index);
+void	sort_monsters(t_game *game, double *distances, int *order);
+int		get_monster_pixel(t_game *game, t_draw_params params, int monster_index);
+void	draw_monster_pixel(t_game *game, t_draw_params params,
+		int color, int monster_index);
+
+/* Fonctions de draw_enemies_utils2.c */
+void	draw_monster_column(t_game *game, int stripe, int draw_start_y,
+		int draw_end_y, t_sprite *sprite, int tex_x, int monster_index);
 t_sprite	calc_sprite_pos(t_game *game, int *order, int i, t_sprite *sprite);
-void		calc_sprite_draw_limits(t_sprite *sprite, int *draw_start_x,
-				int *draw_end_x, int *draw_start_y, int *draw_end_y);
+void	calc_sprite_draw_limits(t_sprite *sprite, int *draw_start_x,
+		int *draw_end_x, int *draw_start_y, int *draw_end_y);
+
 
 /* Fonctions de draw_menu.c */
 void	draw_controls_menu(t_game *game);
