@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 11:12:03 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/30 19:35:15 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/01 09:11:26 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 /**
  * Libère la mémoire allouée pour la map
- * 
+ *
  * @param map Tableau 2D représentant la map
  */
 void	free_map(char **map)
@@ -34,7 +34,7 @@ void	free_map(char **map)
 
 /**
  * Affiche un message d'erreur et retourne 0
- * 
+ *
  * @param msg Message d'erreur à afficher
  * @return 0 (toujours)
  */
@@ -46,7 +46,7 @@ int	exit_error(char *msg)
 
 /**
  * Ferme la fenêtre et libère toutes les ressources allouées
- * 
+ *
  * @param game Structure principale du jeu
  * @return 0 (toujours)
  */
@@ -64,8 +64,26 @@ int	close_window(t_game *game)
 }
 
 /**
+ * Affiche les messages de victoire finale
+ *
+ * @param game Structure principale du jeu
+ * @param msg_x Position X du message
+ * @param msg_y Position Y du message
+ * @param color Couleur du message
+ */
+static void	draw_final_victory(t_game *game, int msg_x, int msg_y, int color)
+{
+	mlx_string_put(game->mlx, game->win, msg_x, msg_y - 40, 0xFFFF00,
+		"FÉLICITATIONS!");
+	mlx_string_put(game->mlx, game->win, msg_x, msg_y, 0xFFFF00,
+		"VOUS AVEZ TERMINÉ LE JEU!");
+	mlx_string_put(game->mlx, game->win, msg_x, msg_y + 40, color,
+		"Appuyez sur ESC pour quitter");
+}
+
+/**
  * Affiche un message de victoire quand tous les monstres sont éliminés
- * 
+ *
  * @param game Structure principale du jeu
  */
 void	draw_victory_message(t_game *game)
@@ -80,20 +98,13 @@ void	draw_victory_message(t_game *game)
 	if (game->victory_displayed)
 	{
 		if (game->victory_final)
-		{
-			mlx_string_put(game->mlx, game->win, msg_x, msg_y - 40, 0xFFFF00,
-				"FÉLICITATIONS!");
-			mlx_string_put(game->mlx, game->win, msg_x, msg_y, 0xFFFF00,
-				"VOUS AVEZ TERMINÉ LE JEU!");
-			mlx_string_put(game->mlx, game->win, msg_x, msg_y + 40, color,
-				"Appuyez sur ESC pour quitter");
-		}
+			draw_final_victory(game, msg_x, msg_y, color);
 		else
 		{
-			mlx_string_put(game->mlx, game->win, WIN_WIDTH - 300, WIN_HEIGHT - 60, color,
-				"TOUS LES MONSTRES SONT ELIMINÉS!");
-			mlx_string_put(game->mlx, game->win, WIN_WIDTH - 300, WIN_HEIGHT - 40, color,
-				"LA PORTE EST OUVERTE!");
+			mlx_string_put(game->mlx, game->win, WIN_WIDTH - 300,
+				WIN_HEIGHT - 60, color, "TOUS LES MONSTRES SONT ELIMINÉS!");
+			mlx_string_put(game->mlx, game->win, WIN_WIDTH - 300,
+				WIN_HEIGHT - 40, color, "LA PORTE EST OUVERTE!");
 		}
 	}
 	else if (game->all_monsters_killed && game->door_opened)
