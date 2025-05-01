@@ -199,7 +199,6 @@ int		find_door_position(t_game *game, int *door_x, int *door_y);
 int		display_victory(t_game *game);
 int		check_door_victory(t_game *game);
 void	update_victory_timer(t_game *game);
-int		check_victory_elements(t_game *game);
 
 /* Fonctions de draw_enemies.c */
 void	init_monsters(t_game *game);
@@ -294,14 +293,18 @@ int		validate_map(t_game *game);
 /* Fonctions de raycasting.c */
 void	init_ray(t_ray *ray, t_game *game, int x);
 void	calculate_step_and_side_dist(t_ray *ray);
+int		is_ray_hit(t_ray *ray, t_game *game);
+
+/* Fonctions de raycasting2.c */
 void	perform_dda(t_ray *ray, t_game *game);
 void	calculate_line_height(t_ray *ray);
 void	raycasting(t_game *game);
 
 /* Fonctions de raycasting_utils.c */
-void	complete_raycasting(t_game *game);
 void	safe_perform_dda(t_ray *ray, t_game *game);
-void	safe_draw_textured_line(int x, t_ray *ray, t_game *game);
+void	complete_raycasting(t_game *game);
 
+/* Fonctions de raycasting_utils2.c */
+void	safe_draw_textured_line(int x, t_ray *ray, t_game *game);
 
 #endif
