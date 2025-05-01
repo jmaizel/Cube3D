@@ -65,17 +65,6 @@ typedef struct s_monster
 	double hit_timer; 
 }				t_monster;
 
-/* Structure pour les sprites de monstres */
-typedef struct s_sprite
-{
-	double		x;
-	double		y;
-	int			width;
-	int			height;
-	int			screen_x;
-	double		transform_y;
-}				t_sprite;
-
 typedef struct s_game
 {
 	void		*mlx;
@@ -201,16 +190,41 @@ int		check_door_victory(t_game *game);
 void	update_victory_timer(t_game *game);
 
 /**
+ * Structure pour les informations des sprites
+ */
+typedef struct s_sprite
+{
+	double	x;            // Position X relative au joueur
+	double	y;            // Position Y relative au joueur
+	int		width;        // Largeur du sprite
+	int		height;       // Hauteur du sprite
+	int		screen_x;     // Position X à l'écran
+	double	transform_y;  // Transformation Y (profondeur)
+}			t_sprite;
+
+/**
  * Structure pour les paramètres de dessin des monstres
- * Permet de réduire le nombre d'arguments des fonctions
  */
 typedef struct s_draw_params
 {
-	int			stripe;
-	int			y;
-	t_sprite	*sprite;
-	int			tex_x;
+	int			stripe;       // Colonne X à dessiner
+	int			y;            // Position Y actuelle
+	t_sprite	*sprite;      // Informations du sprite
+	int			tex_x;        // Coordonnée X dans la texture
+	int			draw_start_y; // Début du dessin en Y
+	int			draw_end_y;   // Fin du dessin en Y
 }				t_draw_params;
+
+/**
+ * Structure pour les limites de dessin d'un sprite
+ */
+typedef struct s_draw_limits
+{
+	int		draw_start_x;  // Début du dessin en X
+	int		draw_end_x;    // Fin du dessin en X
+	int		draw_start_y;  // Début du dessin en Y
+	int		draw_end_y;    // Fin du dessin en Y
+}				t_draw_limits;
 
 /* Fonctions de draw_enemies.c */
 void	init_monsters(t_game *game);
@@ -227,67 +241,128 @@ void	draw_monster_pixel(t_game *game, t_draw_params params,
 		int color, int monster_index);
 
 /* Fonctions de draw_enemies_utils2.c */
-void	draw_monster_column(t_game *game, int stripe, int draw_start_y,
-		int draw_end_y, t_sprite *sprite, int tex_x, int monster_index);
+void	draw_monster_column(t_game *game, t_draw_params draw, int monster_index);
 t_sprite	calc_sprite_pos(t_game *game, int *order, int i, t_sprite *sprite);
-void	calc_sprite_draw_limits(t_sprite *sprite, int *draw_start_x,
-		int *draw_end_x, int *draw_start_y, int *draw_end_y);
-
+void	calc_sprite_draw_limits(t_sprite *sprite, t_draw_limits *limits);
 
 /* Fonctions de draw_menu.c */
 void	draw_controls_menu(t_game *game);
 
-/* Définitions de couleurs pour la minimap */
-#define MAP_WALL_COLOR 0xE0E0E0
-#define MAP_FLOOR_COLOR 0x303030
-#define MAP_PLAYER_COLOR 0xFF2020 
-#define MAP_BORDER_COLOR 0xC0C0C0
-#define MAP_BG_COLOR 0x222222 
-
-/* Structure pour les dimensions de la minimap */
+/**
+ * Structure pour les dimensions de la minimap
+ */
 typedef struct s_minimap_size
 {
-	int	width;
-	int	height;
+	int		width;       // Largeur de la minimap en pixels
+	int		height;      // Hauteur de la minimap en pixels
 }				t_minimap_size;
+
+/**
+ * Structure pour les coordonnées de la minimap
+ */
+typedef struct s_minimap_pos
+{
+	int		x;           // Position X de la minimap
+	int		y;           // Position Y de la minimap
+	int		cell_size;   // Taille d'une cellule en pixels
+}				t_minimap_pos;
+
+/**
+ * Structure pour les coordonnées d'une ligne
+ */
+typedef struct s_line
+{
+	int		x0;          // Coordonnée X du point de départ
+	int		y0;          // Coordonnée Y du point de départ
+	int		x1;          // Coordonnée X du point d'arrivée
+	int		y1;          // Coordonnée Y du point d'arrivée
+}				t_line;
+
+/**
+ * Structure pour un point et sa direction
+ */
+typedef struct s_point_dir
+{
+	int		x;           // Position X
+	int		y;           // Position Y
+	int		dir_x;       // Direction X
+	int		dir_y;       // Direction Y
+}				t_point_dir;
+
+/* Constantes pour les couleurs de la minimap */
+# define MAP_BG_COLOR 0x222222       /* Couleur de fond */
+# define MAP_WALL_COLOR 0xE0E0E0     /* Couleur des murs */
+# define MAP_FLOOR_COLOR 0x303030    /* Couleur du sol */
+# define MAP_PLAYER_COLOR 0xFF2020   /* Couleur du joueur */
+# define MAP_BORDER_COLOR 0x404040   /* Couleur de la bordure */
 
 /* Fonctions de draw_minimap.c */
 void	draw_minimap(t_game *game);
 
-/* Fonctions de draw_minimap_utils.c */
-void	draw_line(t_game *game, int x0, int y0, int x1, int y1, int color);
-void	draw_cell(t_game *game, int x, int y, int size, int color);
+/* Fonctions de draw_minimap_utils.c et draw_minimap_utils2.c */
+void	draw_line(t_game *game, t_line line, int color);
+void	draw_cell(t_game *game, t_minimap_pos pos, int color);
 void	draw_player_dot(t_game *game, int x, int y, int color);
-void	draw_minimap_border(t_game *game, int x, int y, int width, int height);
+void	draw_minimap_border(t_game *game, t_minimap_pos pos,
+		t_minimap_size size);
+void	draw_minimap_background(t_game *game, t_minimap_pos pos,
+		t_minimap_size size);
 
+/**
+ * Structure pour les coordonnées de dessin de l'arme
+ */
+typedef struct s_weapon_pos
+{
+	int		x;           // Position X
+	int		y;           // Position Y
+	int		width;       // Largeur
+	int		height;      // Hauteur
+}				t_weapon_pos;
 
-/* Fonctions de draw_weapon.c */
+/**
+ * Structure pour les paramètres de dessin de l'arme
+ */
+typedef struct s_weapon_draw
+{
+	int		start_x;     // Position X de départ
+	int		start_y;     // Position Y de départ
+	int		x;           // Position X courante
+	int		y;           // Position Y courante
+	int		draw_x;      // Position X de dessin
+	int		draw_y;      // Position Y de dessin
+	int		color;       // Couleur du pixel
+}				t_weapon_draw;
+
+/* Fonction de dessin de l'arme */
 void	draw_weapon(t_game *game);
 
 /* Fonctions de render_frame.c */
 void	render_frame(t_game *game);
 
-/* Structure pour les paramètres de texture */
+/**
+ * Structure pour les paramètres de texture
+ */
 typedef struct s_tex_params
 {
-	double	step;
-	double	tex_pos;
-	int		tex_x;
-}			t_tex_params;
+	int		tex_x;       // Coordonnée X dans la texture
+	double	tex_pos;     // Position initiale dans la texture
+	double	step;        // Pas pour parcourir la texture verticalement
+}				t_tex_params;
 
-/* Fonctions de textures.c */
+/* Fonctions de textures.c et textures2.c */
 void	get_texture(t_ray *ray, t_game *game, t_texture **tex);
 void	calculate_texture_x(t_ray *ray, double *wall_x, int *tex_x,
-	t_texture *tex);
+		t_texture *tex);
 int		load_texture(t_game *game, t_texture *texture, char *path);
 int		load_all_textures(t_game *game);
 void	draw_textured_line(int x, t_ray *ray, t_game *game);
 
 /* Fonctions de textures_utils.c */
-int		apply_side_shading(int color);
-int		apply_transparency(int color);
-void	free_texture_paths(t_game *game);
-void	prepare_texture_params(t_ray *ray, t_texture *tex, t_tex_params *params);
+int     apply_side_shading(int color);
+int     apply_transparency(int color);
+void    free_texture_paths(t_game *game);
+void    prepare_texture_params(t_ray *ray, t_texture *tex, t_tex_params *params);
+
 
 /* Fonctions de utils.c */
 void	free_map(char **map);

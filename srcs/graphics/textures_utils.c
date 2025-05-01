@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 17:50:20 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/04/30 17:56:57 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/01 19:38:02 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 /**
  * Applique un effet d'assombrissement aux murs côté Y
- * 
+ *
  * @param color Couleur d'origine
  * @return Couleur assombrie
  */
@@ -25,7 +25,7 @@ int	apply_side_shading(int color)
 
 /**
  * Applique un effet de transparence pour les portes ouvertes
- * 
+ *
  * @param color Couleur d'origine
  * @return Couleur semi-transparente
  */
@@ -44,14 +44,12 @@ int	apply_transparency(int color)
 }
 
 /**
- * Libère la mémoire des chemins de textures après leur chargement
- * 
+ * Libère la mémoire des chemins de textures des murs
+ *
  * @param game Structure principale du jeu
  */
-void	free_texture_paths(t_game *game)
+static void	free_wall_paths(t_game *game)
 {
-	int	i;
-
 	if (game->south_tex.img)
 		free(game->south_tex.img);
 	if (game->north_tex.img)
@@ -60,6 +58,19 @@ void	free_texture_paths(t_game *game)
 		free(game->east_tex.img);
 	if (game->west_tex.img)
 		free(game->west_tex.img);
+	if (game->door_tex.img)
+		free(game->door_tex.img);
+}
+
+/**
+ * Libère la mémoire des chemins de textures des armes et monstres
+ *
+ * @param game Structure principale du jeu
+ */
+static void	free_sprites_paths(t_game *game)
+{
+	int	i;
+
 	i = 0;
 	while (i < game->weapon_frame_count)
 	{
@@ -67,8 +78,6 @@ void	free_texture_paths(t_game *game)
 			free(game->weapon_paths[i]);
 		i++;
 	}
-	if (game->door_tex.img)
-		free(game->door_tex.img);
 	i = 0;
 	while (i < game->monster_frame_count)
 	{
@@ -79,20 +88,12 @@ void	free_texture_paths(t_game *game)
 }
 
 /**
- * Prépare les paramètres pour le dessin d'une ligne texturée
- * 
- * @param ray Structure du rayon
- * @param tex Texture à utiliser
- * @param tex_params Structure pour stocker les paramètres calculés
+ * Libère la mémoire des chemins de textures après leur chargement
+ *
+ * @param game Structure principale du jeu
  */
-void	prepare_texture_params(t_ray *ray, t_texture *tex, t_tex_params *params)
+void	free_texture_paths(t_game *game)
 {
-	double	wall_x;
-	int		tex_x;
-
-	calculate_texture_x(ray, &wall_x, &tex_x, tex);
-	params->step = 1.0 * tex->height / ray->line_height;
-	params->tex_pos = (ray->draw_start - WIN_HEIGHT / 2
-			+ ray->line_height / 2) * params->step;
-	params->tex_x = tex_x;
+	free_wall_paths(game);
+	free_sprites_paths(game);
 }

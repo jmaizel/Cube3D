@@ -6,31 +6,30 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 14:35:00 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/01 09:33:27 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/01 18:57:10 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
 /**
- * Dessine une colonne de pixels d'un monstre avec transparence
+ * Prépare les paramètres et appelle la fonction de dessin de pixel
  * 
  * @param game Structure principale du jeu
- * @param params Structure contenant les paramètres de dessin
+ * @param draw Structure contenant les paramètres de dessin
  * @param monster_index Indice du monstre dans le tableau
  */
-void	draw_monster_column(t_game *game, int stripe, int draw_start_y,
-		int draw_end_y, t_sprite *sprite, int tex_x, int monster_index)
+void	draw_monster_column(t_game *game, t_draw_params draw, int monster_index)
 {
 	int				y;
 	int				color;
 	t_draw_params	params;
 
-	params.stripe = stripe;
-	params.sprite = sprite;
-	params.tex_x = tex_x;
-	y = draw_start_y;
-	while (y < draw_end_y)
+	params.stripe = draw.stripe;
+	params.sprite = draw.sprite;
+	params.tex_x = draw.tex_x;
+	y = draw.draw_start_y;
+	while (y < draw.draw_end_y)
 	{
 		params.y = y;
 		color = get_monster_pixel(game, params, monster_index);
@@ -77,19 +76,18 @@ t_sprite	calc_sprite_pos(t_game *game, int *order, int i,
  * @param sprite Informations sur le sprite
  * @param limits Structure contenant les limites à calculer
  */
-void	calc_sprite_draw_limits(t_sprite *sprite, int *draw_start_x,
-		int *draw_end_x, int *draw_start_y, int *draw_end_y)
+void	calc_sprite_draw_limits(t_sprite *sprite, t_draw_limits *limits)
 {
-	*draw_start_y = -sprite->height / 2 + WIN_HEIGHT / 2;
-	if (*draw_start_y < 0)
-		*draw_start_y = 0;
-	*draw_end_y = sprite->height / 2 + WIN_HEIGHT / 2;
-	if (*draw_end_y >= WIN_HEIGHT)
-		*draw_end_y = WIN_HEIGHT - 1;
-	*draw_start_x = -sprite->width / 2 + sprite->screen_x;
-	if (*draw_start_x < 0)
-		*draw_start_x = 0;
-	*draw_end_x = sprite->width / 2 + sprite->screen_x;
-	if (*draw_end_x >= WIN_WIDTH)
-		*draw_end_x = WIN_WIDTH - 1;
+	limits->draw_start_y = -sprite->height / 2 + WIN_HEIGHT / 2;
+	if (limits->draw_start_y < 0)
+		limits->draw_start_y = 0;
+	limits->draw_end_y = sprite->height / 2 + WIN_HEIGHT / 2;
+	if (limits->draw_end_y >= WIN_HEIGHT)
+		limits->draw_end_y = WIN_HEIGHT - 1;
+	limits->draw_start_x = -sprite->width / 2 + sprite->screen_x;
+	if (limits->draw_start_x < 0)
+		limits->draw_start_x = 0;
+	limits->draw_end_x = sprite->width / 2 + sprite->screen_x;
+	if (limits->draw_end_x >= WIN_WIDTH)
+		limits->draw_end_x = WIN_WIDTH - 1;
 }

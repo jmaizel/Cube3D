@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 14:00:00 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/04/30 19:25:53 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/01 19:23:31 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,16 +59,9 @@ static void	draw_floor_ceiling(t_game *game)
  */
 void	render_frame(t_game *game)
 {
-	/* Dessiner le sol et le plafond */
 	draw_floor_ceiling(game);
-	
-	/* Lancer le raycasting pour dessiner les murs */
 	complete_raycasting(game);
-	
-	/* Dessiner les monstres */
 	render_monsters(game);
-	
-	/* Dessiner les éléments d'interface */
 	draw_minimap(game);
 	draw_weapon(game);
 	draw_controls_menu(game);

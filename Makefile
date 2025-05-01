@@ -6,7 +6,7 @@
 #    By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/28 14:37:22 by jmaizel           #+#    #+#              #
-#    Updated: 2025/05/01 09:41:29 by cdedessu         ###   ########.fr        #
+#    Updated: 2025/05/01 19:38:59 by cdedessu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,7 @@ MAIN_FILES = main.c utils.c
 PARSING_FILES = parse_map.c parsing_cub_file.c validate_map.c
 RAYCASTING_FILES = raycasting.c raycasting_utils.c raycasting_utils2.c raycasting2.c
 GAME_FILES = movement.c mouse.c game_status_utils.c movement_utils.c
-GRAPHICS_FILES = draw_minimap.c draw_weapon.c render_frame.c textures.c draw_enemies.c draw_menu.c draw_enemies_utils.c draw_minimap_utils.c textures_utils.c draw_enemies2.c draw_enemies_utils2.c
+GRAPHICS_FILES = draw_minimap.c draw_weapon.c render_frame.c textures.c draw_enemies.c draw_menu.c draw_enemies_utils.c draw_minimap_utils.c textures_utils.c draw_enemies2.c draw_enemies_utils2.c draw_minimap_utils2.c textures2.c textures_utils2.c
 
 SRC_FILES = $(addprefix $(MAIN_DIR)/, $(MAIN_FILES)) \
             $(addprefix $(PARSING_DIR)/, $(PARSING_FILES)) \

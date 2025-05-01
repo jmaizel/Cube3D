@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 16:31:16 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/01 09:43:19 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/01 18:59:36 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,20 @@ void	init_monsters(t_game *game)
 }
 
 /**
+ * Calcule le texX pour le sprite
+ * 
+ * @param sprite Informations du sprite
+ * @param stripe Colonne X en cours
+ * @param tex_width Largeur de la texture
+ * @return Coordonnée X dans la texture
+ */
+static int	calc_tex_x(t_sprite *sprite, int stripe, int tex_width)
+{
+	return ((int)(256 * (stripe - (-sprite->width / 2 + sprite->screen_x))
+		* tex_width / sprite->width) / 256);
+}
+
+/**
  * Traite le sprite d'un monstre et rend sa colonne
  * 
  * @param game Structure principale du jeu
@@ -73,24 +87,26 @@ void	init_monsters(t_game *game)
 void	process_monster_sprite(t_game *game, t_sprite *sprite,
 		int monster_index)
 {
-	int	draw_start_y;
-	int	draw_end_y;
-	int	draw_start_x;
-	int	draw_end_x;
-	int	stripe;
-	int	tex_x;
+	t_draw_limits	limits;
+	t_draw_params	draw;
+	int				stripe;
+	int				tex_x;
 
-	calc_sprite_draw_limits(sprite, &draw_start_x, &draw_end_x,
-		&draw_start_y, &draw_end_y);
-	stripe = draw_start_x;
-	while (stripe < draw_end_x)
+	calc_sprite_draw_limits(sprite, &limits);
+	draw.sprite = sprite;
+	stripe = limits.draw_start_x;
+	while (stripe < limits.draw_end_x)
 	{
-		tex_x = (int)(256 * (stripe - (-sprite->width / 2 + sprite->screen_x))
-				* game->monster_frames[0].width / sprite->width) / 256;
+		tex_x = calc_tex_x(sprite, stripe, game->monster_frames[0].width);
 		if (sprite->transform_y > 0 && stripe > 0 && stripe < WIN_WIDTH
 			&& sprite->transform_y < game->z_buffer[stripe])
-			draw_monster_column(game, stripe, draw_start_y, draw_end_y,
-				sprite, tex_x, monster_index);
+		{
+			draw.stripe = stripe;
+			draw.tex_x = tex_x;
+			draw.draw_start_y = limits.draw_start_y;
+			draw.draw_end_y = limits.draw_end_y;
+			draw_monster_column(game, draw, monster_index);
+		}
 		stripe++;
 	}
 }

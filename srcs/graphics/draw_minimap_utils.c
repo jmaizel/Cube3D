@@ -1,70 +1,83 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   draw_minimap_utils.c                              :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/01 13:46:10 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/01 13:46:15 by cdedessu         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   draw_minimap_utils.c                              :+:      :+:    :+:   */
+/*   draw_minimap_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 18:05:30 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/01 18:05:33 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/01 19:03:19 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
 /**
+ * Calcule le delta et les signes pour l'algorithme de Bresenham
+ * 
+ * @param line Structure contenant les coordonnées de la ligne
+ * @param delta Structure à remplir avec les deltas
+ * @param sign Structure à remplir avec les signes
+ */
+static void	init_line_params(t_line line, t_line *delta, t_line *sign)
+{
+	delta->x0 = abs(line.x1 - line.x0);
+	delta->y0 = abs(line.y1 - line.y0);
+	if (line.x0 < line.x1)
+		sign->x0 = 1;
+	else
+		sign->x0 = -1;
+	if (line.y0 < line.y1)
+		sign->y0 = 1;
+	else
+		sign->y0 = -1;
+}
+
+/**
+ * Dessine un point à l'écran si les coordonnées sont valides
+ * 
+ * @param game Structure principale du jeu
+ * @param x Coordonnée X du point
+ * @param y Coordonnée Y du point
+ * @param color Couleur du point
+ */
+static void	draw_point(t_game *game, int x, int y, int color)
+{
+	if (x >= 0 && y >= 0 && x < WIN_WIDTH && y < WIN_HEIGHT)
+		game->img_data[y * (game->size_line / 4) + x] = color;
+}
+
+/**
  * Dessine une ligne entre deux points (algorithme de Bresenham)
  * 
  * @param game Structure principale du jeu
- * @param x0 Coordonnée X du point de départ
- * @param y0 Coordonnée Y du point de départ
- * @param x1 Coordonnée X du point d'arrivée
- * @param y1 Coordonnée Y du point d'arrivée
+ * @param line Structure contenant les coordonnées de la ligne
  * @param color Couleur de la ligne
  */
-void	draw_line(t_game *game, int x0, int y0, int x1, int y1, int color)
+void	draw_line(t_game *game, t_line line, int color)
 {
-	int	dx;
-	int	dy;
-	int	sx;
-	int	sy;
-	int	err;
-	int	e2;
+	t_line	delta;
+	t_line	sign;
+	int		err;
+	int		e2;
 
-	dx = abs(x1 - x0);
-	dy = abs(y1 - y0);
-	sx = (x0 < x1) ? 1 : -1;
-	sy = (y0 < y1) ? 1 : -1;
-	err = dx - dy;
-	while (1)
+	init_line_params(line, &delta, &sign);
+	err = delta.x0 - delta.y0;
+	draw_point(game, line.x0, line.y0, color);
+	while (line.x0 != line.x1 || line.y0 != line.y1)
 	{
-		if (x0 >= 0 && y0 >= 0 && x0 < WIN_WIDTH && y0 < WIN_HEIGHT)
-			game->img_data[y0 * (game->size_line / 4) + x0] = color;
-		if (x0 == x1 && y0 == y1)
-			break ;
 		e2 = 2 * err;
-		if (e2 > -dy)
+		if (e2 > -delta.y0)
 		{
-			err -= dy;
-			x0 += sx;
+			err -= delta.y0;
+			line.x0 += sign.x0;
 		}
-		if (e2 < dx)
+		if (e2 < delta.x0)
 		{
-			err += dx;
-			y0 += sy;
+			err += delta.x0;
+			line.y0 += sign.y0;
 		}
+		draw_point(game, line.x0, line.y0, color);
 	}
 }
 
@@ -72,106 +85,26 @@ void	draw_line(t_game *game, int x0, int y0, int x1, int y1, int color)
  * Dessine une cellule de la minimap
  * 
  * @param game Structure principale du jeu
- * @param x Position X de la cellule
- * @param y Position Y de la cellule
+ * @param pos Structure contenant la position de la cellule
  * @param size Taille de la cellule
  * @param color Couleur de la cellule
  */
-void	draw_cell(t_game *game, int x, int y, int size, int color)
+void	draw_cell(t_game *game, t_minimap_pos pos, int color)
 {
 	int	i;
 	int	j;
 
 	i = 1;
-	while (i < size - 1)
+	while (i < pos.cell_size - 1)
 	{
 		j = 1;
-		while (j < size - 1)
+		while (j < pos.cell_size - 1)
 		{
-			if (y + i < WIN_HEIGHT && x + j < WIN_WIDTH)
-				game->img_data[(y + i) * (game->size_line / 4)
-					+ (x + j)] = color;
+			if (pos.y + i < WIN_HEIGHT && pos.x + j < WIN_WIDTH)
+				game->img_data[(pos.y + i) * (game->size_line / 4)
+					+ (pos.x + j)] = color;
 			j++;
 		}
-		i++;
-	}
-}
-
-/**
- * Dessine un point représentant le joueur
- * 
- * @param game Structure principale du jeu
- * @param x Position X du joueur
- * @param y Position Y du joueur
- * @param color Couleur du joueur
- */
-void	draw_player_dot(t_game *game, int x, int y, int color)
-{
-	int	i;
-	int	j;
-
-	i = -2;
-	while (i <= 2)
-	{
-		j = -2;
-		while (j <= 2)
-		{
-			if (i * i + j * j <= 4)
-			{
-				if (y + i >= 0 && y + i < WIN_HEIGHT && x + j >= 0
-					&& x + j < WIN_WIDTH)
-					game->img_data[(y + i) * (game->size_line / 4)
-						+ (x + j)] = color;
-			}
-			j++;
-		}
-		i++;
-	}
-}
-
-/**
- * Dessine un cadre autour de la minimap
- * 
- * @param game Structure principale du jeu
- * @param x Position X de la minimap
- * @param y Position Y de la minimap
- * @param width Largeur de la minimap
- * @param height Hauteur de la minimap
- */
-void	draw_minimap_border(t_game *game, int x, int y, int width, int height)
-{
-	int	i;
-	int	border_size;
-	int	color;
-
-	border_size = 1;
-	color = MAP_BORDER_COLOR;
-	// Bordures horizontales
-	i = -border_size;
-	while (i < width + border_size)
-	{
-		if (y - border_size >= 0 && x + i >= 0 && y - border_size < WIN_HEIGHT
-			&& x + i < WIN_WIDTH)
-			game->img_data[(y - border_size) * (game->size_line / 4)
-				+ (x + i)] = color;
-		if (y + height >= 0 && x + i >= 0 && y + height < WIN_HEIGHT
-			&& x + i < WIN_WIDTH)
-			game->img_data[(y + height) * (game->size_line / 4)
-				+ (x + i)] = color;
-		i++;
-	}
-	// Bordures verticales
-	i = -border_size;
-	while (i < height + border_size)
-	{
-		if (y + i >= 0 && x - border_size >= 0 && y + i < WIN_HEIGHT
-			&& x - border_size < WIN_WIDTH)
-			game->img_data[(y + i) * (game->size_line / 4)
-				+ (x - border_size)] = color;
-		if (y + i >= 0 && x + width >= 0 && y + i < WIN_HEIGHT
-			&& x + width < WIN_WIDTH)
-			game->img_data[(y + i) * (game->size_line / 4)
-				+ (x + width)] = color;
 		i++;
 	}
 }
