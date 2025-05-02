@@ -363,28 +363,88 @@ int     apply_transparency(int color);
 void    free_texture_paths(t_game *game);
 void    prepare_texture_params(t_ray *ray, t_texture *tex, t_tex_params *params);
 
-
 /* Fonctions de utils.c */
 void	free_map(char **map);
 int		exit_error(char *msg);
 int		close_window(t_game *game);
 void	draw_victory_message(t_game *game);
 
-/* Fonctions de parse_map.c */
-int		find_max_width(char **map_lines);
-int		parse_map(char **lines, t_game *game, int start_index);
+/* Structure pour les flags de configuration */
+typedef struct s_config_flags
+{
+	int	no_set;
+	int	so_set;
+	int	we_set;
+	int	ea_set;
+	int	f_set;
+	int	c_set;
+}	t_config_flags;
 
-/* Fonctions de parse_cub_file.c */
+/* Fonctions de parsing_cub_file.c */
 char	**read_files_lines(const char *filename);
 void	free_split(char **split);
 int		parse_color_line(char *line);
-int		parse_config(char **lines, t_game *game, int *map_start_index);
 int		parse_cub_file(const char *filename, t_game *game);
 
-/* Fonctions de validate_map.c */
-int		is_map_closed(char **map, int width, int height);
-void	init_player(t_game *game, int x, int y, char dir);
-int		validate_map(t_game *game);
+/* Fonctions de parsing_cub_utils1.c */
+int		count_file_lines(int fd);
+char	**allocate_lines(int fd, int count);
+int		check_texture_duplication(int is_set, char *texture_type);
+int		parse_texture_line(char *line, void **texture_img, int *is_set);
+int		parse_color_config(char *line, int *color_ptr, int *is_set);
+
+/* Fonctions de parsing_cub_utils2.c */
+int		parse_weapon_frame(t_game *game, char *line, int index);
+int		parse_monster_frame(t_game *game, char *line, int index);
+int		is_map_start(char *line);
+int		check_config_count(int config_count, int min_required, char *error_msg);
+int		handle_unknown_config(int is_map_start_flag);
+
+/* Fonctions de parsing_config_utils.c */
+int		process_north_south(char *line, t_game *game, int *config_count,
+			t_config_flags *flags);
+int		process_west_east(char *line, t_game *game, int *config_count,
+			t_config_flags *flags);
+int		process_weapon_textures(char *line, t_game *game);
+int		process_monster_textures(char *line, t_game *game);
+
+/* Fonctions de parsing_config.c */
+int		parse_config(char **lines, t_game *game, int *map_start_index);
+
+/* Structure pour les vérifications de map */
+typedef struct s_map_check
+{
+	int	x;
+	int	y;
+	int	*count;
+}	t_map_check;
+
+/* Fonctions principales de parse_map.c */
+int find_max_width(char **map_lines);
+int parse_map(char **lines, t_game *game, int start_index);
+
+/* Fonctions de parse_map_utils.c */
+int is_map_line(char *line);
+int is_map_interrupted(char **lines, int i);
+int handle_map_line(char **lines, int i, int *in_map, int *map_lines);
+int count_map_lines(char **lines, int start_index, int *map_start);
+
+/* Fonctions principales de validate_map.c */
+int is_map_closed(char **map, int width, int height);
+void init_player(t_game *game, int x, int y, char dir);
+int validate_map(t_game *game);
+
+/* Fonctions de validate_map_utils.c */
+int check_horizontal_bounds(char **map, int y, int x);
+int check_vertical_bounds(char **map, int y, int x);
+int is_cell_enclosed(char **map, int y, int x, int height);
+int process_map_char(t_game *game, char c, t_map_check *check);
+
+/* Fonctions de validate_map_utils2.c */
+void init_player_north(t_game *game, int x, int y);
+void init_player_south(t_game *game, int x, int y);
+void init_player_east(t_game *game, int x, int y);
+void init_player_west(t_game *game, int x, int y);
 
 /* Fonctions de raycasting.c */
 void	init_ray(t_ray *ray, t_game *game, int x);
