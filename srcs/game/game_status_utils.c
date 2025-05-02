@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 17:18:06 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/04/30 19:29:12 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/02 19:57:56 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ void	check_monsters_status(t_game *game)
 		game->door_opened = 1;
 		game->victory_timer = 3.0;
 		game->victory_displayed = 1;
-		ft_printf("Tous les monstres ont été éliminés! La porte est ouverte!\n");
+		ft_printf("Tous les monstres sont éliminés!\n");
+		ft_printf("La porte est ouverte!\n");
 	}
 }
 

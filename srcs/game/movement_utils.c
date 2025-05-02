@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 17:19:17 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/04/30 17:19:45 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/02 19:46:52 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 /**
  * Retourne le temps actuel en secondes avec précision microseconde
- * 
- * @return Temps actuel en secondes
  */
 double	get_time(void)
 {
@@ -27,8 +25,6 @@ double	get_time(void)
 
 /**
  * Calcule le delta time entre les frames
- * 
- * @param game Structure principale du jeu
  */
 void	calculate_delta_time(t_game *game)
 {
@@ -45,8 +41,6 @@ void	calculate_delta_time(t_game *game)
 
 /**
  * Met à jour le timer de l'arme
- * 
- * @param game Structure principale du jeu
  */
 void	update_weapon_timer(t_game *game)
 {
@@ -72,56 +66,5 @@ void	update_weapon_timer(t_game *game)
 				game->weapon_animating = 0;
 			}
 		}
-	}
-}
-
-/**
- * Met à jour les effets de coup pour les monstres
- * 
- * @param game Structure principale du jeu
- */
-void	update_monster_hit_effects(t_game *game)
-{
-	int	i;
-
-	i = 0;
-	while (i < game->monster_count)
-	{
-		if (game->monsters[i].hit_timer > 0)
-		{
-			game->monsters[i].hit_timer -= game->delta_time;
-			if (game->monsters[i].hit_timer <= 0)
-			{
-				game->monsters[i].hit_timer = 0;
-				game->monsters[i].hit_animation = 0;
-			}
-		}
-		i++;
-	}
-}
-
-/**
- * Met à jour les animations des monstres
- * 
- * @param game Structure principale du jeu
- */
-void	update_monster_animations(t_game *game)
-{
-	int	i;
-
-	i = 0;
-	while (i < game->monster_count)
-	{
-		if (game->monsters[i].alive)
-		{
-			game->monsters[i].anim_time += game->delta_time;
-			if (game->monsters[i].anim_time >= game->monsters[i].anim_speed)
-			{
-				game->monsters[i].anim_time -= game->monsters[i].anim_speed;
-				game->monsters[i].frame = (game->monsters[i].frame + 1)
-					% game->monster_frame_count;
-			}
-		}
-		i++;
 	}
 }
