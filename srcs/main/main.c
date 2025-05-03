@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:37:18 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/01 09:06:23 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/03 11:57:48 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 static void	init_game_part_two(t_game *game)
 {
 	game->weapon_damage = 25;
-	game->weapon_range = 3.0;
+	game->weapon_range = 2.0;
 	game->weapon_frame_count = 0;
 	game->current_weapon_frame = 0;
 	game->weapon_animating = 0;

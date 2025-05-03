@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 17:50:20 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/01 19:38:02 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/03 13:32:31 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,16 +31,25 @@ int	apply_side_shading(int color)
  */
 int	apply_transparency(int color)
 {
-	int	alpha;
 	int	red;
 	int	green;
 	int	blue;
+	int	new_green;
+	int	new_red;
 
-	alpha = 153;
-	red = ((color >> 16) & 0xFF) * alpha / 255;
-	green = ((color >> 8) & 0xFF) * alpha / 255;
-	blue = (color & 0xFF) * alpha / 255;
-	return ((red << 16) | (green << 8) | blue);
+	red = ((color >> 16) & 0xFF);
+	green = ((color >> 8) & 0xFF);
+	blue = (color & 0xFF);
+	if ((red > green && red > blue)
+		|| (red > 60 && red > green * 1.5 && red > blue * 1.5))
+	{
+		new_green = red * 1.2;
+		if (new_green > 255)
+			new_green = 255;
+		new_red = green * 0.7;
+		return ((new_red << 16) | (new_green << 8) | blue);
+	}
+	return (color);
 }
 
 /**
