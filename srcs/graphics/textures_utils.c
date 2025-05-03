@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 17:50:20 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/03 13:32:31 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/03 14:15:27 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,12 @@ int	apply_side_shading(int color)
 }
 
 /**
- * Applique un effet de transparence pour les portes ouvertes
+ * Applique un changement de couleur sur les portes ouvertes
  *
  * @param color Couleur d'origine
- * @return Couleur semi-transparente
+ * @return Couleur verte
  */
-int	apply_transparency(int color)
+int	change_door_color(int color)
 {
 	int	red;
 	int	green;

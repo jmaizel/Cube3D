@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 22:10:27 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/02 20:07:04 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/03 14:13:26 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -382,7 +382,7 @@ int			load_texture(t_game *game, t_texture *texture, char *path);
 int			load_all_textures(t_game *game);
 void		draw_textured_line(int x, t_ray *ray, t_game *game);
 int			apply_side_shading(int color);
-int			apply_transparency(int color);
+int			change_door_color(int color);
 void		free_texture_paths(t_game *game);
 void		prepare_texture_params(t_ray *ray, t_texture *tex,
 				t_tex_params *params);

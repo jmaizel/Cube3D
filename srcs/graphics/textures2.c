@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 19:30:00 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/03 12:09:04 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/03 14:14:27 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ void	draw_textured_line(int x, t_ray *ray, t_game *game)
 		if (ray->side == 1 && ray->hit_type < 2)
 			color = apply_side_shading(color);
 		if (ray->hit_type == 3)
-			color = apply_transparency(color);
+			color = change_door_color(color);
 		game->img_data[y * (game->size_line / 4) + x] = color;
 		y++;
 	}
