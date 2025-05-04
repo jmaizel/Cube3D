@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 22:10:27 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/04 11:10:26 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/04 12:17:22 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@
 /*
 ** Window dimensions
 */
-# define WIN_WIDTH 960
-# define WIN_HEIGHT 540
+# define WIN_WIDTH 1024
+# define WIN_HEIGHT 720
 
 /*
 ** Texture dimensions
