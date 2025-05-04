@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:37:18 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/03 11:57:48 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/04 11:10:46 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ static void	init_game_part_two(t_game *game)
 	game->victory_displayed = 0;
 	game->victory_timer = 0.0;
 	game->victory_final = 0;
+	game->victory_tex.img = NULL;
 }
 
 /**

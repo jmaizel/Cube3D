@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 22:10:27 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/03 14:13:26 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/04 11:10:26 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -296,6 +296,8 @@ typedef struct s_game
 	int			weapon_animating;
 	double		weapon_anim_time;
 	double		weapon_anim_speed;
+
+	t_texture	victory_tex;
 }				t_game;
 
 /*

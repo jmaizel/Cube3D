@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 11:12:03 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/01 09:11:26 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/04 12:12:51 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ int	exit_error(char *msg)
  */
 int	close_window(t_game *game)
 {
+	if (game->victory_tex.img)
+		mlx_destroy_image(game->mlx, game->victory_tex.img);
 	if (game->img)
 		mlx_destroy_image(game->mlx, game->img);
 	if (game->win)

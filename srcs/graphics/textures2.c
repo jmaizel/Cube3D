@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 19:30:00 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/03 14:14:27 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/04 11:47:45 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,8 @@ int	load_all_textures(t_game *game)
 	if (!load_weapon_textures(game))
 		return (0);
 	if (!load_monster_textures(game))
+		return (0);
+	if (!load_texture(game, &game->victory_tex, "./textures/victory.xpm"))
 		return (0);
 	free_texture_paths(game);
 	return (1);

@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 17:18:06 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/02 19:57:56 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/04 12:04:06 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,22 +70,35 @@ int	find_door_position(t_game *game, int *door_x, int *door_y)
  */
 int	display_victory(t_game *game)
 {
+	int	x;
+	int	y;
+	int	start_x;
+	int	start_y;
+
 	ft_printf("VICTOIRE! Vous avez traversé la porte et terminé le jeu!\n");
 	game->victory_displayed = 2;
-	render_frame(game);
+	y = -1;
+	while (++y < WIN_HEIGHT)
+	{
+		x = -1;
+		while (++x < WIN_WIDTH)
+			game->img_data[y * (game->size_line / 4) + x] = 0x000000;
+	}
 	mlx_put_image_to_window(game->mlx, game->win, game->img, 0, 0);
-	mlx_string_put(game->mlx, game->win, WIN_WIDTH / 2 - 200,
-		WIN_HEIGHT / 2 - 40, 0xFFFF00, "FÉLICITATIONS!");
-	mlx_string_put(game->mlx, game->win, WIN_WIDTH / 2 - 200,
-		WIN_HEIGHT / 2, 0xFFFF00, "VOUS AVEZ TERMINÉ LE JEU!");
-	usleep(2000000);
-	close_window(game);
+	if (game->victory_tex.img)
+	{
+		start_x = (WIN_WIDTH - game->victory_tex.width) / 2;
+		start_y = (WIN_HEIGHT - game->victory_tex.height) / 2;
+		mlx_put_image_to_window(game->mlx, game->win, game->victory_tex.img,
+			start_x, start_y);
+	}
+	ft_printf("Écran de victoire affiché. Appuyez sur ESC pour quitter.\n");
 	return (0);
 }
 
 /**
  * Vérifie si le joueur a atteint la porte pour gagner
- * 
+ *
  * @param game Structure principale du jeu
  * @return 0 si le jeu continue, valeur de display_victory sinon
  */
@@ -105,7 +118,10 @@ int	check_door_victory(t_game *game)
 	dy = game->player.y - (door_y + 0.5);
 	distance = sqrt(dx * dx + dy * dy);
 	if (distance < 1.0)
-		return (display_victory(game));
+	{
+		display_victory(game);
+		return (0);
+	}
 	return (0);
 }
 
