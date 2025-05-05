@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_config.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 20:07:23 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/02 19:31:28 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/05 15:07:02 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ static int	check_map_begin(char *line, int *config_count)
 /**
  * Traite une ligne de configuration
  */
-static int	process_line(char *line, t_game *game, int *config_count,
+int	process_line(char *line, t_game *game, int *config_count,
 		t_config_flags *flags)
 {
 	int	result;
@@ -99,30 +99,12 @@ static int	process_line(char *line, t_game *game, int *config_count,
 }
 
 /**
- * Parse les configurations du fichier .cub
+ * Vérifie si une ligne est une texture
  */
-int	parse_config(char **lines, t_game *game, int *map_start_index)
+int	is_texture_line(char *line)
 {
-	int				i;
-	int				config_count;
-	t_config_flags	flags;
-	int				result;
-
-	i = 0;
-	config_count = 0;
-	ft_memset(&flags, 0, sizeof(t_config_flags));
-	while (lines[i])
-	{
-		result = process_line(lines[i], game, &config_count, &flags);
-		if (result < 0)
-			return (0);
-		else if (result == 2)
-		{
-			*map_start_index = i;
-			break ;
-		}
-		i++;
-	}
-	return (check_config_count(config_count, 6,
-			"Error\nConfiguration incomplète"));
+	return (ft_strncmp(line, "NO ", 3) == 0 || ft_strncmp(line, "SO ", 3) == 0
+		|| ft_strncmp(line, "WE ", 3) == 0 || ft_strncmp(line, "EA ", 3) == 0
+		|| ft_strncmp(line, "DR ", 3) == 0 || ft_strncmp(line, "MT", 2) == 0
+		|| ft_strncmp(line, "WP", 2) == 0);
 }

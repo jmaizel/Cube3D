@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:37:18 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/04 11:10:46 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/05 14:28:32 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 /**
  * Initialise les paramètres de l'arme et du jeu
- * 
+ *
  * @param game Structure principale du jeu
  */
 static void	init_game_part_two(t_game *game)
@@ -36,12 +36,21 @@ static void	init_game_part_two(t_game *game)
 
 /**
  * Initialise la structure du jeu
- * 
+ *
  * @param game Structure principale du jeu
  */
 static void	init_game_structure(t_game *game)
 {
+	int	i;
+
 	ft_memset(game, 0, sizeof(t_game));
+	i = 0;
+	while (i < 4)
+	{
+		game->weapon_paths[i] = NULL;
+		game->monster_paths[i] = NULL;
+		i++;
+	}
 	game->rotate_left = 0;
 	game->rotate_right = 0;
 	game->move_speed = 0.13;
@@ -61,7 +70,7 @@ static void	init_game_structure(t_game *game)
 
 /**
  * Initialise les hooks pour la gestion des événements
- * 
+ *
  * @param game Structure principale du jeu
  */
 static void	setup_hooks(t_game *game)
@@ -76,7 +85,7 @@ static void	setup_hooks(t_game *game)
 
 /**
  * Initialise l'environnement MLX et les ressources graphiques
- * 
+ *
  * @param game Structure principale du jeu
  * @return 1 en cas de succès, 0 en cas d'erreur
  */
@@ -99,7 +108,7 @@ static int	init_graphics(t_game *game)
 
 /**
  * Point d'entrée principal du programme
- * 
+ *
  * @param argc Nombre d'arguments
  * @param argv Tableau des arguments
  * @return 0 en cas de succès, 1 en cas d'erreur
