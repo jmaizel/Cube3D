@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 11:41:47 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/06 12:10:34 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/06 12:11:03 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,6 @@ int	close_window(t_game *game)
 		mlx_destroy_display(game->mlx);
 	free(game->mlx);
 	free_map(game->map.grid);
-	dummy = get_next_line(-1);
 	exit(0);
 	return (0);
 }
