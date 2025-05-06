@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 12:11:54 by jacobmaizel       #+#    #+#             */
-/*   Updated: 2025/05/02 19:06:38 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/06 11:43:02 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,5 +76,11 @@ int	parse_map(char **lines, t_game *game, int start_index)
 	map_lines = count_map_lines(lines, start_index, &map_start);
 	if (map_lines == 0)
 		return (0);
-	return (build_map_structure(game, lines, map_start, map_lines));
+	if (!build_map_structure(game, lines, map_start, map_lines))
+	{
+		if (game->map.grid)
+			free_map(game->map.grid);
+		return (0);
+	}
+	return (1);
 }

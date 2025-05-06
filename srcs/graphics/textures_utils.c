@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   textures_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 17:50:20 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/03 14:15:27 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/06 11:41:07 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ int	change_door_color(int color)
 	red = ((color >> 16) & 0xFF);
 	green = ((color >> 8) & 0xFF);
 	blue = (color & 0xFF);
-	if ((red > green && red > blue)
-		|| (red > 60 && red > green * 1.5 && red > blue * 1.5))
+	if ((red > green && red > blue) || (red > 60 && red > green * 1.5
+			&& red > blue * 1.5))
 	{
 		new_green = red * 1.2;
 		if (new_green > 255)
@@ -53,30 +53,11 @@ int	change_door_color(int color)
 }
 
 /**
- * Libère la mémoire des chemins de textures des murs
+ * Libère la mémoire des chemins de textures après leur chargement
  *
  * @param game Structure principale du jeu
  */
-static void	free_wall_paths(t_game *game)
-{
-	if (game->south_tex.img)
-		free(game->south_tex.img);
-	if (game->north_tex.img)
-		free(game->north_tex.img);
-	if (game->east_tex.img)
-		free(game->east_tex.img);
-	if (game->west_tex.img)
-		free(game->west_tex.img);
-	if (game->door_tex.img)
-		free(game->door_tex.img);
-}
-
-/**
- * Libère la mémoire des chemins de textures des armes et monstres
- *
- * @param game Structure principale du jeu
- */
-static void	free_sprites_paths(t_game *game)
+void	free_texture_paths(t_game *game)
 {
 	int	i;
 
@@ -84,25 +65,20 @@ static void	free_sprites_paths(t_game *game)
 	while (i < game->weapon_frame_count)
 	{
 		if (game->weapon_paths[i])
+		{
 			free(game->weapon_paths[i]);
+			game->weapon_paths[i] = NULL;
+		}
 		i++;
 	}
 	i = 0;
 	while (i < game->monster_frame_count)
 	{
 		if (game->monster_paths[i])
+		{
 			free(game->monster_paths[i]);
+			game->monster_paths[i] = NULL;
+		}
 		i++;
 	}
-}
-
-/**
- * Libère la mémoire des chemins de textures après leur chargement
- *
- * @param game Structure principale du jeu
- */
-void	free_texture_paths(t_game *game)
-{
-	free_wall_paths(game);
-	free_sprites_paths(game);
 }

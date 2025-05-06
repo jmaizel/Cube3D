@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   textures2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 19:30:00 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/04 11:47:45 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/06 11:38:24 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 /**
  * Charge les textures des murs
- * 
+ *
  * @param game Structure principale du jeu
  * @return 1 si réussi, 0 sinon
  */
@@ -36,7 +36,7 @@ static int	load_wall_textures(t_game *game)
 
 /**
  * Charge les textures des armes
- * 
+ *
  * @param game Structure principale du jeu
  * @return 1 si réussi, 0 sinon
  */
@@ -50,6 +50,8 @@ static int	load_weapon_textures(t_game *game)
 		if (game->weapon_paths[i] && !load_texture(game,
 				&game->weapon_frames[i], game->weapon_paths[i]))
 			return (0);
+		free(game->weapon_paths[i]);
+		game->weapon_paths[i] = NULL;
 		i++;
 	}
 	return (1);
@@ -57,7 +59,7 @@ static int	load_weapon_textures(t_game *game)
 
 /**
  * Charge les textures des monstres
- * 
+ *
  * @param game Structure principale du jeu
  * @return 1 si réussi, 0 sinon
  */
@@ -71,6 +73,8 @@ static int	load_monster_textures(t_game *game)
 		if (game->monster_paths[i] && !load_texture(game,
 				&game->monster_frames[i], game->monster_paths[i]))
 			return (0);
+		free(game->monster_paths[i]);
+		game->monster_paths[i] = NULL;
 		i++;
 	}
 	return (1);
@@ -78,7 +82,7 @@ static int	load_monster_textures(t_game *game)
 
 /**
  * Charge toutes les textures nécessaires au jeu
- * 
+ *
  * @param game Structure principale du jeu
  * @return 1 si toutes les textures ont été chargées, 0 sinon
  */
@@ -98,7 +102,7 @@ int	load_all_textures(t_game *game)
 
 /**
  * Calcule et dessine une colonne de pixel texturée pour un mur
- * 
+ *
  * @param x Coordonnée X de la colonne à dessiner
  * @param ray Structure contenant les informations du rayon
  * @param game Structure principale du jeu

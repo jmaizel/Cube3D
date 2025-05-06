@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 22:10:27 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/05 15:05:53 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/06 11:43:33 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -419,6 +419,7 @@ void				calc_sprite_draw_limits(t_sprite *sprite,
 void				free_map(char **map);
 int					exit_error(char *msg);
 int					close_window(t_game *game);
+void				cleanup_config_resources(t_game *game);
 
 /*
 ** Raycasting
