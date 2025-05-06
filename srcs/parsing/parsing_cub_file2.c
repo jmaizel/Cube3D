@@ -1,0 +1,75 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing_cub_file2.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/06 11:25:24 by jmaizel           #+#    #+#             */
+/*   Updated: 2025/05/06 11:26:34 by jmaizel          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/cub3d.h"
+
+int	get_num(char *str)
+{
+	int	num;
+	int	i;
+
+	i = 0;
+	num = 0;
+	while (str[i] && (str[i] == ' ' || str[i] == '\t'))
+		i++;
+	while (str[i] && str[i] >= '0' && str[i] <= '9')
+	{
+		num = num * 10 + (str[i] - '0');
+		i++;
+	}
+	while (str[i])
+	{
+		if (str[i] != ' ' && str[i] != '\t')
+			return (-1);
+		i++;
+	}
+	return (num);
+}
+
+int	count_char(char *str, char c)
+{
+	int	count;
+	int	i;
+
+	count = 0;
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == c)
+			count++;
+		i++;
+	}
+	return (count);
+}
+
+int	parse_color_line(char *line)
+{
+	char	**parts;
+	int		color;
+	int		r;
+	int		g;
+	int		b;
+
+	if (count_char(line, ',') != 2)
+		return (exit_error("Error\nFormat RGB invalide"), -1);
+	parts = ft_split(line, ',');
+	if (!parts || !parts[0] || !parts[1] || !parts[2] || parts[3])
+		return (free_split(parts), exit_error("Error\nCouleur invalide"), -1);
+	r = get_num(parts[0]);
+	g = get_num(parts[1]);
+	b = get_num(parts[2]);
+	free_split(parts);
+	if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
+		return (exit_error("Error\nValeurs RGB hors limites"), -1);
+	color = (r << 16) | (g << 8) | b;
+	return (color);
+}

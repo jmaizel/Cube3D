@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:32:17 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/05 15:07:10 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/06 11:12:29 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,9 @@ static void	init_parse_params(int *i, int *config_count, t_config_flags *flags)
 /**
  * Traite les résultats de la configuration
  */
-static int	handle_config_result(char **lines, t_config_data *data,
-		int *map_start_index, int i, int result)
+static int	handle_config_result(t_config_data *data, int *map_start_index,
+		int i, int result)
 {
-	(void)lines;
 	if (result < 0)
 		return (0);
 	if (result == 2 || data->phase == 2)
@@ -69,8 +68,7 @@ static int	process_config_lines(char **lines, t_game *game,
 		if (lines[i][0] != '\0')
 		{
 			result = handle_config(&data, lines[i]);
-			result = handle_config_result(lines, &data, map_start_index, i,
-					result);
+			result = handle_config_result(&data, map_start_index, i, result);
 			if (result == 0 || result == 2)
 				break ;
 		}

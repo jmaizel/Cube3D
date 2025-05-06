@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_cub_file.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:39:22 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/02 19:24:47 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/06 11:25:34 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,30 +52,6 @@ void	free_split(char **split)
 		i++;
 	}
 	free(split);
-}
-
-/**
- * Parse une ligne de couleur au format R,G,B
- */
-int	parse_color_line(char *line)
-{
-	char	**parts;
-	int		color;
-	int		r;
-	int		g;
-	int		b;
-
-	parts = ft_split(line, ',');
-	if (!parts || !parts[0] || !parts[1] || !parts[2] || parts[3])
-		return (exit_error("Error\nCouleur invalide"), -1);
-	r = ft_atoi(parts[0]);
-	g = ft_atoi(parts[1]);
-	b = ft_atoi(parts[2]);
-	if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
-		return (exit_error("Error\nValeurs RGB hors limites"), -1);
-	color = (r << 16) | (g << 8) | b;
-	free_split(parts);
-	return (color);
 }
 
 /**
