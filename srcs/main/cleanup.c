@@ -6,43 +6,11 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 11:41:47 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/06 12:11:03 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/13 16:42:03 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
-
-/**
- * Nettoie les ressources allouées pendant la phase de configuration
- */
-void	cleanup_config_resources(t_game *game)
-{
-	int	i;
-
-	if (game->north_tex.img && !game->mlx)
-		free(game->north_tex.img);
-	if (game->south_tex.img && !game->mlx)
-		free(game->south_tex.img);
-	if (game->east_tex.img && !game->mlx)
-		free(game->east_tex.img);
-	if (game->west_tex.img && !game->mlx)
-		free(game->west_tex.img);
-	if (game->door_tex.img && !game->mlx)
-		free(game->door_tex.img);
-	i = 0;
-	while (i < 4)
-	{
-		if (game->weapon_paths[i])
-			free(game->weapon_paths[i]);
-		i++;
-	}
-	i = 0;
-	while (i++ < 4)
-	{
-		if (game->monster_paths[i])
-			free(game->monster_paths[i]);
-	}
-}
 
 /**
  * Libère les textures des murs

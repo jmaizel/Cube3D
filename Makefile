@@ -6,7 +6,7 @@
 #    By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/28 14:37:22 by jmaizel           #+#    #+#              #
-#    Updated: 2025/05/06 11:43:39 by jmaizel          ###   ########.fr        #
+#    Updated: 2025/05/13 16:42:25 by jmaizel          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,7 @@ LIBS = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -L$(LIBFT_DIR) -lft
 LIBFT = $(LIBFT_DIR)/libft.a
 MLX = $(MLX_DIR)/libmlx.a
 
-MAIN_FILES = main.c utils.c cleanup.c
+MAIN_FILES = main.c utils.c cleanup.c cleanup2.c
 PARSING_FILES = parse_map.c parsing_cub_file.c validate_map.c parse_map_utils.c validate_map_utils.c validate_map_utils2.c parsing_cub_utils.c parsing_cub_utils2.c parsing_config.c parsing_config_utils.c parse_map_utils2.c parsing_config2.c parsing_config3.c parsing_cub_file2.c
 RAYCASTING_FILES = raycasting.c raycasting_utils.c raycasting_utils2.c raycasting2.c
 GAME_FILES = movement.c mouse.c game_status_utils.c movement_utils.c attack.c attack_utils.c movement_rotate.c keyboard.c game_loop.c monster_utils.c
