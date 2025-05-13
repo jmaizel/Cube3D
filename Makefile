@@ -6,7 +6,7 @@
 #    By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/28 14:37:22 by jmaizel           #+#    #+#              #
-#    Updated: 2025/05/13 16:42:25 by jmaizel          ###   ########.fr        #
+#    Updated: 2025/05/13 16:47:11 by jmaizel          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -53,11 +53,22 @@ define progress_bar
 	printf "\rCompiling [%-20s] %d%%" "$$BAR" "$$PROGRESS"
 endef
 
-all: $(NAME)
-	@echo ""
+.PHONY: all clean fclean re message
+
+all: message $(NAME)
+
+message:
+	@if [ ! -f $(NAME) ] || [ -n "$$(find $(SRC_FILES) -newer $(NAME) 2>/dev/null)" ]; then \
+		echo "Compilation en cours..."; \
+	else \
+		echo "$(NAME) est déjà compilé et à jour"; \
+	fi
 
 $(NAME): $(OBJS) $(LIBFT) $(MLX)
 	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBS) > /dev/null 2>&1
+	@if [ -n "$$(find $(SRC_FILES) -newer $(NAME) 2>/dev/null)" ]; then \
+		echo "\nCompilation terminée"; \
+	fi
 
 $(OBJ_DIR)/%.o: ./srcs/%.c | $(OBJ_DIR)
 	@mkdir -p $(dir $@)
@@ -81,11 +92,11 @@ clean:
 	@rm -rf $(OBJ_DIR)
 	@make clean --no-print-directory -C $(LIBFT_DIR) > /dev/null
 	@make clean --no-print-directory -C $(MLX_DIR) > /dev/null 2>&1
+	@echo "Clean: Object files removed."
 
 fclean: clean
 	@rm -f $(NAME)
 	@make fclean --no-print-directory -C $(LIBFT_DIR) > /dev/null
+	@echo "Full clean: Executable and object files removed."
 
 re: fclean all
-
-.PHONY: all clean fclean re
