@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/02 22:10:27 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/06 11:43:33 by jmaizel          ###   ########.fr       */
+/*   Created: 2025/05/13 17:00:36 by jmaizel           #+#    #+#             */
+/*   Updated: 2025/05/13 17:00:37 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -473,6 +473,7 @@ int					process_line(char *line, t_game *game, int *config_count,
 						t_config_flags *flags);
 int					is_texture_line(char *line);
 int					handle_config(t_config_data *data, char *line);
+int					check_texture_uniqueness(t_game *game);
 
 /*
 ** Map validation

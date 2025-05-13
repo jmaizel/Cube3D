@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:39:22 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/06 11:43:06 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/13 16:56:45 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,11 +72,15 @@ int	parse_cub_file(const char *filename, t_game *game)
 		free_split(lines);
 		return (0);
 	}
+	if (!check_texture_uniqueness(game))
+	{
+		cleanup_config_resources(game);
+		return (free_split(lines), 0);
+	}
 	if (!parse_map(lines, game, map_start_index))
 	{
 		cleanup_config_resources(game);
-		free_split(lines);
-		return (0);
+		return (free_split(lines), 0);
 	}
 	free_split(lines);
 	return (1);

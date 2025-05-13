@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 11:25:24 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/06 11:26:34 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/13 17:00:02 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,35 @@ int	parse_color_line(char *line)
 		return (exit_error("Error\nValeurs RGB hors limites"), -1);
 	color = (r << 16) | (g << 8) | b;
 	return (color);
+}
+
+/**
+ * Vérifie que les chemins des t
+ * extures de direction sont tous différents
+ *
+ * @param game Structure principale du jeu
+ * @return 1 si les chemins sont différents, 0 sinon
+ */
+int	check_texture_uniqueness(t_game *game)
+{
+	char	*north;
+	char	*south;
+	char	*east;
+	char	*west;
+
+	north = (char *)game->north_tex.img;
+	south = (char *)game->south_tex.img;
+	east = (char *)game->east_tex.img;
+	west = (char *)game->west_tex.img;
+	if (ft_strncmp(north, south, ft_strlen(north) + 1) == 0 || ft_strncmp(north,
+			east, ft_strlen(north) + 1) == 0 || ft_strncmp(north, west,
+			ft_strlen(north) + 1) == 0 || ft_strncmp(south, east,
+			ft_strlen(south) + 1) == 0 || ft_strncmp(south, west,
+			ft_strlen(south) + 1) == 0 || ft_strncmp(east, west, ft_strlen(east)
+			+ 1) == 0)
+	{
+		exit_error("Error\ntextures des directions doivent être différentes");
+		return (0);
+	}
+	return (1);
 }
