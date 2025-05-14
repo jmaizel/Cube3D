@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+         #
+#    By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/28 14:37:22 by jmaizel           #+#    #+#              #
-#    Updated: 2025/05/13 16:47:11 by jmaizel          ###   ########.fr        #
+#    Updated: 2025/05/14 10:16:46 by cdedessu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -53,8 +53,6 @@ define progress_bar
 	printf "\rCompiling [%-20s] %d%%" "$$BAR" "$$PROGRESS"
 endef
 
-.PHONY: all clean fclean re message
-
 all: message $(NAME)
 
 message:
@@ -100,3 +98,5 @@ fclean: clean
 	@echo "Full clean: Executable and object files removed."
 
 re: fclean all
+
+.PHONY: all clean fclean re message
