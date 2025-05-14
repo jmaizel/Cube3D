@@ -3,23 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   draw_minimap.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:10:35 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/01 19:13:32 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/14 10:41:21 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Détermine la couleur d'une cellule sur la minimap
- * 
- * @param game Structure principale du jeu
- * @param map_y Position Y dans la map
- * @param map_x Position X dans la map
- * @return Couleur de la cellule ou -1 si à ignorer
- */
 static int	get_cell_color(t_game *game, int map_y, int map_x)
 {
 	char	cell_type;
@@ -32,12 +24,6 @@ static int	get_cell_color(t_game *game, int map_y, int map_x)
 	return (-1);
 }
 
-/**
- * Dessine les cases (murs et sol) sur la minimap
- * 
- * @param game Structure principale du jeu
- * @param pos Position de la minimap
- */
 static void	draw_map_cells(t_game *game, t_minimap_pos pos)
 {
 	int				map_y;
@@ -65,12 +51,6 @@ static void	draw_map_cells(t_game *game, t_minimap_pos pos)
 	}
 }
 
-/**
- * Dessine le joueur et sa direction sur la minimap
- * 
- * @param game Structure principale du jeu
- * @param pos Position de la minimap
- */
 static void	draw_player(t_game *game, t_minimap_pos pos)
 {
 	t_line	line;
@@ -87,13 +67,6 @@ static void	draw_player(t_game *game, t_minimap_pos pos)
 	draw_line(game, line, MAP_PLAYER_COLOR);
 }
 
-/**
- * Calcule les dimensions de la minimap
- * 
- * @param game Structure principale du jeu
- * @param pos Structure contenant la position de la minimap
- * @return Structure contenant les dimensions de la minimap
- */
 static t_minimap_size	calculate_minimap_size(t_game *game,
 		t_minimap_pos *pos)
 {
@@ -112,11 +85,6 @@ static t_minimap_size	calculate_minimap_size(t_game *game,
 	return (size);
 }
 
-/**
- * Dessine la minimap en haut à gauche de l'écran
- * 
- * @param game Structure principale du jeu
- */
 void	draw_minimap(t_game *game)
 {
 	t_minimap_pos	pos;

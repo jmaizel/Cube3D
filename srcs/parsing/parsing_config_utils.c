@@ -3,18 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_config_utils.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 20:51:42 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/05 14:47:33 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/14 10:48:01 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Traite les textures principales (NO, SO)
- */
 int	process_north_south(char *line, t_game *game, int *config_count,
 		t_config_flags *flags)
 {
@@ -35,9 +32,6 @@ int	process_north_south(char *line, t_game *game, int *config_count,
 	return (0);
 }
 
-/**
- * Traite les textures principales (WE, EA)
- */
 int	process_west_east(char *line, t_game *game, int *config_count,
 		t_config_flags *flags)
 {
@@ -58,9 +52,6 @@ int	process_west_east(char *line, t_game *game, int *config_count,
 	return (0);
 }
 
-/**
- * Traite les textures d'armes
- */
 int	process_weapon_textures(char *line, t_game *game)
 {
 	if (ft_strncmp(line, "WP0 ", 4) == 0)
@@ -74,9 +65,6 @@ int	process_weapon_textures(char *line, t_game *game)
 	return (0);
 }
 
-/**
- * Traite les textures de monstres
- */
 int	process_monster_textures(char *line, t_game *game)
 {
 	if (ft_strncmp(line, "MT0 ", 4) == 0)

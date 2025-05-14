@@ -3,18 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   movement_rotate.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 21:32:14 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/02 19:50:20 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/14 10:37:53 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Déplace le joueur vers la droite
- */
 void	move_right(t_game *game)
 {
 	double	new_x;
@@ -28,9 +25,6 @@ void	move_right(t_game *game)
 		game->player.y = new_y;
 }
 
-/**
- * Fait pivoter le joueur vers la gauche
- */
 void	rotate_left(t_game *game)
 {
 	double	old_dir_x;
@@ -48,9 +42,6 @@ void	rotate_left(t_game *game)
 		* cos(-ROT_SPEED);
 }
 
-/**
- * Fait pivoter le joueur vers la droite
- */
 void	rotate_right(t_game *game)
 {
 	double	old_dir_x;
@@ -68,9 +59,6 @@ void	rotate_right(t_game *game)
 		* cos(ROT_SPEED);
 }
 
-/**
- * Gère tous les mouvements actifs du joueur
- */
 void	handle_movement(t_game *game)
 {
 	if (game->keys[119] || game->keys[13])

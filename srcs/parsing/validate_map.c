@@ -3,18 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   validate_map.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 13:12:10 by jacobmaizel       #+#    #+#             */
-/*   Updated: 2025/05/02 18:54:43 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/14 10:56:55 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Vérifie si la map est fermée
- */
 int	is_map_closed(char **map, int width, int height)
 {
 	char	c;
@@ -41,9 +38,6 @@ int	is_map_closed(char **map, int width, int height)
 	return (1);
 }
 
-/**
- * Initialise la position et l'orientation du joueur
- */
 void	init_player(t_game *game, int x, int y, char dir)
 {
 	if (dir == 'N')
@@ -56,9 +50,6 @@ void	init_player(t_game *game, int x, int y, char dir)
 		init_player_west(game, x, y);
 }
 
-/**
- * Parcourt la map pour vérifier les caractères valides
- */
 static int	check_map_characters(t_game *game, int *player_count)
 {
 	char		**map;
@@ -86,9 +77,6 @@ static int	check_map_characters(t_game *game, int *player_count)
 	return (1);
 }
 
-/**
- * Valide la map en vérifiant caractères, joueur et fermeture
- */
 int	validate_map(t_game *game)
 {
 	int	player_count;

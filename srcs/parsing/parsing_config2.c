@@ -3,26 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_config2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:32:17 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/05 15:07:06 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/14 10:50:05 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Vérifie si une ligne est une couleur
- */
 static int	is_color_line(char *line)
 {
 	return (ft_strncmp(line, "F ", 2) == 0 || ft_strncmp(line, "C ", 2) == 0);
 }
 
-/**
- * Détermine la phase de parsing pour une ligne
- */
 static int	determine_phase(int current_phase, char *line)
 {
 	if (current_phase == 0 && is_color_line(line))
@@ -32,20 +26,14 @@ static int	determine_phase(int current_phase, char *line)
 	return (current_phase);
 }
 
-/**
- * Vérifie si l'ordre des éléments est respecté
- */
 static int	check_element_order(int phase, char *line)
 {
 	if (phase == 1 && is_texture_line(line))
-		return (exit_error("Error\nTextures erreur ordre declaration"),
+		return (exit_error("Error\nTextures error order declaration"),
 			0);
 	return (1);
 }
 
-/**
- * Prépare et vérifie la phase d'une ligne
- */
 static int	prepare_phase(char *line, int *phase)
 {
 	*phase = determine_phase(*phase, line);
@@ -56,9 +44,6 @@ static int	prepare_phase(char *line, int *phase)
 	return (0);
 }
 
-/**
- * Traite une ligne de configuration avec structure de param
- */
 int	handle_config(t_config_data *data, char *line)
 {
 	int	result;

@@ -3,22 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   draw_minimap_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 18:05:30 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/01 19:03:19 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/14 10:40:50 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Calcule le delta et les signes pour l'algorithme de Bresenham
- * 
- * @param line Structure contenant les coordonnées de la ligne
- * @param delta Structure à remplir avec les deltas
- * @param sign Structure à remplir avec les signes
- */
 static void	init_line_params(t_line line, t_line *delta, t_line *sign)
 {
 	delta->x0 = abs(line.x1 - line.x0);
@@ -33,27 +26,12 @@ static void	init_line_params(t_line line, t_line *delta, t_line *sign)
 		sign->y0 = -1;
 }
 
-/**
- * Dessine un point à l'écran si les coordonnées sont valides
- * 
- * @param game Structure principale du jeu
- * @param x Coordonnée X du point
- * @param y Coordonnée Y du point
- * @param color Couleur du point
- */
 static void	draw_point(t_game *game, int x, int y, int color)
 {
 	if (x >= 0 && y >= 0 && x < WIN_WIDTH && y < WIN_HEIGHT)
 		game->img_data[y * (game->size_line / 4) + x] = color;
 }
 
-/**
- * Dessine une ligne entre deux points (algorithme de Bresenham)
- * 
- * @param game Structure principale du jeu
- * @param line Structure contenant les coordonnées de la ligne
- * @param color Couleur de la ligne
- */
 void	draw_line(t_game *game, t_line line, int color)
 {
 	t_line	delta;
@@ -81,14 +59,6 @@ void	draw_line(t_game *game, t_line line, int color)
 	}
 }
 
-/**
- * Dessine une cellule de la minimap
- * 
- * @param game Structure principale du jeu
- * @param pos Structure contenant la position de la cellule
- * @param size Taille de la cellule
- * @param color Couleur de la cellule
- */
 void	draw_cell(t_game *game, t_minimap_pos pos, int color)
 {
 	int	i;

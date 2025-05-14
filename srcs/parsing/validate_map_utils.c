@@ -3,18 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   validate_map_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 18:31:14 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/02 18:55:22 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/14 10:56:21 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Vérifie les limites horizontales d'une case
- */
 int	check_horizontal_bounds(char **map, int y, int x)
 {
 	int	start;
@@ -37,9 +34,6 @@ int	check_horizontal_bounds(char **map, int y, int x)
 	return (1);
 }
 
-/**
- * Vérifie les limites verticales d'une case
- */
 int	check_vertical_bounds(char **map, int y, int x)
 {
 	if (y == 0)
@@ -53,9 +47,6 @@ int	check_vertical_bounds(char **map, int y, int x)
 	return (1);
 }
 
-/**
- * Vérifie si une case est entourée par des murs ou des cases valides
- */
 int	is_cell_enclosed(char **map, int y, int x, int height)
 {
 	if (y == 0 || y == height - 1)
@@ -67,17 +58,14 @@ int	is_cell_enclosed(char **map, int y, int x, int height)
 	return (1);
 }
 
-/**
- * Traite un caractère de la map
- */
 int	process_map_char(t_game *game, char c, t_map_check *check)
 {
 	if (!ft_strchr("01PNSEWMD ", c))
-		return (exit_error("Error\nCaractère invalide dans la map"), 0);
+		return (exit_error("Error\nInvalid character in the map"), 0);
 	if (ft_strchr("NSEW", c))
 	{
 		if ((*(check->count))++)
-			return (exit_error("Error\nPlus d'un joueur trouvé"), 0);
+			return (exit_error("Error\nMore than one player found"), 0);
 		init_player(game, check->x, check->y, c);
 	}
 	return (1);

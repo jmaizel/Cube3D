@@ -3,44 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_cub_utils2.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 20:05:22 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/05 14:48:07 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/14 10:54:42 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Parse une ligne de configuration pour une frame d'arme
- */
 int	parse_weapon_frame(t_game *game, char *line, int index)
 {
 	if (game->weapon_paths[index] != NULL)
-		return (exit_error("Error\nDuplication texture d'arme"), 0);
+		return (exit_error("Error\nWeapon texture duplication"), 0);
 	game->weapon_paths[index] = ft_strdup(line + 4);
 	if (game->weapon_frame_count < index + 1)
 		game->weapon_frame_count = index + 1;
 	return (1);
 }
 
-/**
- * Parse une ligne de configuration pour une frame de monstre
- */
 int	parse_monster_frame(t_game *game, char *line, int index)
 {
 	if (game->monster_paths[index] != NULL)
-		return (exit_error("Error\nDuplication texture de monstre"), 0);
+		return (exit_error("Error\nMonster Texture Duplication"), 0);
 	game->monster_paths[index] = ft_strdup(line + 4);
 	if (game->monster_frame_count < index + 1)
 		game->monster_frame_count = index + 1;
 	return (1);
 }
 
-/**
- * Vérifie si une ligne est le début de la map
- */
 int	is_map_start(char *line)
 {
 	int	j;
@@ -60,9 +51,6 @@ int	is_map_start(char *line)
 	return (0);
 }
 
-/**
- * Vérifie si le nombre d'éléments de configuration est suffisant
- */
 int	check_config_count(int config_count, int min_required, char *error_msg)
 {
 	if (config_count < min_required)
@@ -70,12 +58,9 @@ int	check_config_count(int config_count, int min_required, char *error_msg)
 	return (1);
 }
 
-/**
- * Traite les erreurs de ligne de configuration inconnue
- */
 int	handle_unknown_config(int is_map_start_flag)
 {
 	if (is_map_start_flag)
 		return (1);
-	return (exit_error("Error\nLigne de config inconnue"), -1);
+	return (exit_error("Error\nUnknown configuration line"), -1);
 }

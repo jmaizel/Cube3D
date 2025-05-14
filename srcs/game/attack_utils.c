@@ -3,18 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   attack_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 21:13:34 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/02 19:37:32 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/14 11:07:40 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Normalise un angle entre -PI et PI
- */
 void	normalize_angle(double *angle)
 {
 	while (*angle > M_PI)
@@ -23,9 +20,6 @@ void	normalize_angle(double *angle)
 		*angle += 2 * M_PI;
 }
 
-/**
- * Initialise les états d'animation de l'arme
- */
 void	init_weapon_animation(t_game *game)
 {
 	game->firing = 1;
@@ -35,9 +29,6 @@ void	init_weapon_animation(t_game *game)
 	game->weapon_anim_time = 0;
 }
 
-/**
- * Vérifie si un monstre est visible dans le champ de vision
- */
 int	is_monster_in_fov(t_game *game, double dx, double dy)
 {
 	double	angle;
@@ -54,9 +45,6 @@ int	is_monster_in_fov(t_game *game, double dx, double dy)
 	return (angle_diff < (M_PI / 3));
 }
 
-/**
- * Applique des dégâts à un monstre
- */
 void	damage_monster(t_game *game, int monster_index)
 {
 	game->monsters[monster_index].health -= game->weapon_damage;
@@ -65,6 +53,6 @@ void	damage_monster(t_game *game, int monster_index)
 	if (game->monsters[monster_index].health <= 0)
 	{
 		game->monsters[monster_index].alive = 0;
-		ft_printf("Monstre %d tué!\n", monster_index);
+		ft_printf("Monster %d killed!\n", monster_index);
 	}
 }

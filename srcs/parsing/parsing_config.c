@@ -3,18 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_config.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 20:07:23 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/05 15:07:02 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/14 11:28:45 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Traite les couleurs (F, C)
- */
 static int	process_colors(char *line, t_game *game, int *config_count,
 		t_config_flags *flags)
 {
@@ -35,9 +32,6 @@ static int	process_colors(char *line, t_game *game, int *config_count,
 	return (0);
 }
 
-/**
- * Traite les textures supplémentaires (porte)
- */
 static int	process_door_texture(char *line, t_game *game, int *config_count)
 {
 	if (ft_strncmp(line, "DR ", 3) == 0)
@@ -49,9 +43,6 @@ static int	process_door_texture(char *line, t_game *game, int *config_count)
 	return (0);
 }
 
-/**
- * Traite la ligne de configuration pour vérifier s'il s'agit du début de la map
- */
 static int	check_map_begin(char *line, int *config_count)
 {
 	int	is_map;
@@ -60,16 +51,13 @@ static int	check_map_begin(char *line, int *config_count)
 	if (is_map)
 	{
 		if (!check_config_count(*config_count, 6,
-				"Error\nConfiguration incomplète avant la map"))
+				"Error\nIncomplete configuration before the map"))
 			return (-1);
 		return (2);
 	}
 	return (handle_unknown_config(is_map));
 }
 
-/**
- * Traite une ligne de configuration
- */
 int	process_line(char *line, t_game *game, int *config_count,
 		t_config_flags *flags)
 {
@@ -98,9 +86,6 @@ int	process_line(char *line, t_game *game, int *config_count,
 	return (check_map_begin(line, config_count));
 }
 
-/**
- * Vérifie si une ligne est une texture
- */
 int	is_texture_line(char *line)
 {
 	return (ft_strncmp(line, "NO ", 3) == 0 || ft_strncmp(line, "SO ", 3) == 0

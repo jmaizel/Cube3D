@@ -3,18 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   movement.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 16:45:10 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/02 19:50:08 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/14 10:39:06 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Vérifie si une position est valide (pas de collision avec un mur)
- */
 int	is_valid_position(t_game *game, double x, double y)
 {
 	if (x < 0 || y < 0 || (int)x >= game->map.width
@@ -27,9 +24,6 @@ int	is_valid_position(t_game *game, double x, double y)
 	return (1);
 }
 
-/**
- * Déplace le joueur vers l'avant
- */
 void	move_forward(t_game *game)
 {
 	double	new_x;
@@ -43,9 +37,6 @@ void	move_forward(t_game *game)
 		game->player.y = new_y;
 }
 
-/**
- * Déplace le joueur vers l'arrière
- */
 void	move_backward(t_game *game)
 {
 	double	new_x;
@@ -59,9 +50,6 @@ void	move_backward(t_game *game)
 		game->player.y = new_y;
 }
 
-/**
- * Déplace le joueur vers la gauche
- */
 void	move_left(t_game *game)
 {
 	double	new_x;

@@ -3,20 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   game_status_utils.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 17:18:06 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/04 12:04:06 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/14 11:01:09 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Vérifie si tous les monstres ont été tués pour ouvrir la porte
- * 
- * @param game Structure principale du jeu
- */
 void	check_monsters_status(t_game *game)
 {
 	if (!game->all_monsters_killed && all_monsters_dead(game))
@@ -25,19 +20,11 @@ void	check_monsters_status(t_game *game)
 		game->door_opened = 1;
 		game->victory_timer = 3.0;
 		game->victory_displayed = 1;
-		ft_printf("Tous les monstres sont éliminés!\n");
-		ft_printf("La porte est ouverte!\n");
+		ft_printf("All monsters are eliminated ! \n");
+		ft_printf("The door is open ! \n");
 	}
 }
 
-/**
- * Trouve la position de la porte dans la map
- * 
- * @param game Structure principale du jeu
- * @param door_x Pointeur pour stocker la position X de la porte
- * @param door_y Pointeur pour stocker la position Y de la porte
- * @return 1 si la porte est trouvée, 0 sinon
- */
 int	find_door_position(t_game *game, int *door_x, int *door_y)
 {
 	int	y;
@@ -62,12 +49,6 @@ int	find_door_position(t_game *game, int *door_x, int *door_y)
 	return (0);
 }
 
-/**
- * Affiche le message de victoire finale 
- * 
- * @param game Structure principale du jeu
- * @return 0 pour indiquer la fin du jeu
- */
 int	display_victory(t_game *game)
 {
 	int	x;
@@ -75,7 +56,7 @@ int	display_victory(t_game *game)
 	int	start_x;
 	int	start_y;
 
-	ft_printf("VICTOIRE! Vous avez traversé la porte et terminé le jeu!\n");
+	ft_printf("You've gone through the door and finished the game!\n");
 	game->victory_displayed = 2;
 	y = -1;
 	while (++y < WIN_HEIGHT)
@@ -92,16 +73,10 @@ int	display_victory(t_game *game)
 		mlx_put_image_to_window(game->mlx, game->win, game->victory_tex.img,
 			start_x, start_y);
 	}
-	ft_printf("Écran de victoire affiché. Appuyez sur ESC pour quitter.\n");
+	ft_printf("Victory screen displayed. Press ESC to exit.\n");
 	return (0);
 }
 
-/**
- * Vérifie si le joueur a atteint la porte pour gagner
- *
- * @param game Structure principale du jeu
- * @return 0 si le jeu continue, valeur de display_victory sinon
- */
 int	check_door_victory(t_game *game)
 {
 	int		door_x;
@@ -125,11 +100,6 @@ int	check_door_victory(t_game *game)
 	return (0);
 }
 
-/**
- * Met à jour le timer de victoire
- * 
- * @param game Structure principale du jeu
- */
 void	update_victory_timer(t_game *game)
 {
 	if (game->victory_timer > 0)

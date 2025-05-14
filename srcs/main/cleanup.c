@@ -3,18 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   cleanup.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 11:41:47 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/13 16:42:03 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/14 10:43:03 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Libère les textures des murs
- */
 static void	free_wall_textures(t_game *game)
 {
 	if (game->north_tex.img)
@@ -29,9 +26,6 @@ static void	free_wall_textures(t_game *game)
 		mlx_destroy_image(game->mlx, game->door_tex.img);
 }
 
-/**
- * Libère les textures des armes
- */
 static void	free_weapon_textures(t_game *game)
 {
 	int	i;
@@ -47,9 +41,6 @@ static void	free_weapon_textures(t_game *game)
 	}
 }
 
-/**
- * Libère les textures des monstres
- */
 static void	free_monster_textures(t_game *game)
 {
 	int	i;
@@ -65,12 +56,6 @@ static void	free_monster_textures(t_game *game)
 	}
 }
 
-/**
- * Ferme la fenêtre et libère toutes les ressources allouées
- *
- * @param game Structure principale du jeu
- * @return 0 (toujours)
- */
 int	close_window(t_game *game)
 {
 	free_wall_textures(game);

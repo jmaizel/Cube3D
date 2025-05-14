@@ -3,22 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   raycasting.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 14:08:46 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/01 09:25:13 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/14 10:57:49 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Initialise les paramètres du rayon pour un x donné de l'écran
- * 
- * @param ray Structure contenant les informations du rayon
- * @param game Structure principale du jeu
- * @param x Coordonnée X sur l'écran
- */
 void	init_ray(t_ray *ray, t_game *game, int x)
 {
 	double	camera_x;
@@ -42,11 +35,6 @@ void	init_ray(t_ray *ray, t_game *game, int x)
 	ray->hit_type = 0;
 }
 
-/**
- * Calcule la direction du pas et la distance jusqu'à la prochaine intersection
- * 
- * @param ray Structure contenant les informations du rayon
- */
 void	calculate_step_and_side_dist(t_ray *ray)
 {
 	if (ray->dir_x < 0)
@@ -71,13 +59,6 @@ void	calculate_step_and_side_dist(t_ray *ray)
 	}
 }
 
-/**
- * Vérifie si une position dans la map est valide
- * 
- * @param ray Structure contenant les informations du rayon
- * @param game Structure principale du jeu
- * @return 1 si la position est valide, 0 sinon
- */
 static int	is_valid_ray_position(t_ray *ray, t_game *game)
 {
 	if (ray->map_y < 0 || ray->map_y >= game->map.height || ray->map_x < 0)
@@ -87,12 +68,6 @@ static int	is_valid_ray_position(t_ray *ray, t_game *game)
 	return (1);
 }
 
-/**
- * Configure le type de hit pour les portes
- * 
- * @param ray Structure contenant les informations du rayon
- * @param game Structure principale du jeu
- */
 static void	set_door_hit_type(t_ray *ray, t_game *game)
 {
 	ray->hit = 1;
@@ -102,13 +77,6 @@ static void	set_door_hit_type(t_ray *ray, t_game *game)
 		ray->hit_type = 2;
 }
 
-/**
- * Vérifie si le rayon a touché un mur ou une porte
- * 
- * @param ray Structure contenant les informations du rayon
- * @param game Structure principale du jeu
- * @return 1 si le rayon a touché quelque chose, 0 sinon
- */
 int	is_ray_hit(t_ray *ray, t_game *game)
 {
 	char	cell;

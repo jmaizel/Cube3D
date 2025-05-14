@@ -3,18 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   parse_map_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 18:44:42 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/05 14:25:10 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/14 10:46:22 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Vérifie si une ligne est une ligne de map valide
- */
 int	is_map_line(char *line)
 {
 	int	i;
@@ -33,9 +30,6 @@ int	is_map_line(char *line)
 	return (found_valid_char);
 }
 
-/**
- * Vérifie si une ligne vide est suivie d'une ligne de map valide
- */
 int	is_map_interrupted(char **lines, int i)
 {
 	int	j;
@@ -50,9 +44,6 @@ int	is_map_interrupted(char **lines, int i)
 	return (0);
 }
 
-/**
- * Compte les lignes de la map et gestion des erreurs
- */
 int	handle_map_line(char **lines, int i, int *in_map, int *map_lines)
 {
 	if (is_map_line(lines[i]))
@@ -64,7 +55,7 @@ int	handle_map_line(char **lines, int i, int *in_map, int *map_lines)
 	else if (lines[i][0] == '\0')
 	{
 		if (*in_map && is_map_interrupted(lines, i))
-			return (exit_error("Error\nLigne vide dans la map"), 0);
+			return (exit_error("Error\nEmpty line in the map"), 0);
 	}
 	else
 	{

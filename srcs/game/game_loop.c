@@ -3,18 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   game_loop.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 21:38:45 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/04 12:10:12 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/14 10:33:38 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Gère l'affichage de l'écran de victoire
- */
 static int	handle_victory_screen(t_game *game)
 {
 	int	start_x;
@@ -31,9 +28,6 @@ static int	handle_victory_screen(t_game *game)
 	return (0);
 }
 
-/**
- * Boucle principale du jeu qui gère les updates et le rendu
- */
 int	game_loop(t_game *game)
 {
 	int	victory_result;

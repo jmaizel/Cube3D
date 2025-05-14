@@ -3,23 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   draw_menu.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 17:34:40 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/04/30 17:33:03 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/14 10:40:30 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Dessine un élément de contrôle dans le menu (touche + action)
- * 
- * @param game Structure principale du jeu
- * @param pos_y Position Y où dessiner l'élément
- * @param key_str Chaîne décrivant la touche
- * @param action_str Chaîne décrivant l'action
- */
 static void	draw_control_item(t_game *game, int pos_y, char *key_str,
 		char *action_str)
 {
@@ -37,11 +29,6 @@ static void	draw_control_item(t_game *game, int pos_y, char *key_str,
 		action_color, action_str);
 }
 
-/**
- * Dessine le menu des contrôles dans le coin supérieur droit de l'écran
- * 
- * @param game Structure principale du jeu
- */
 void	draw_controls_menu(t_game *game)
 {
 	int	x_start;

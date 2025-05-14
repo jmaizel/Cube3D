@@ -3,22 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   textures.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 14:22:34 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/06 11:37:40 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/14 10:42:35 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Détermine quelle texture utiliser selon le côté du mur touché
- *
- * @param ray Structure contenant les informations du rayon
- * @param game Structure principale du jeu
- * @param tex Pointeur sur pointeur pour stocker la texture sélectionnée
- */
 void	get_texture(t_ray *ray, t_game *game, t_texture **tex)
 {
 	if (ray->side == 0)
@@ -37,14 +30,6 @@ void	get_texture(t_ray *ray, t_game *game, t_texture **tex)
 	}
 }
 
-/**
- * Calcule la coordonnée X de la texture pour le mur touché
- *
- * @param ray Structure contenant les informations du rayon
- * @param wall_x Pointeur pour stocker la position exacte du point de collision
- * @param tex_x Pointeur pour stocker la coordonnée X de la texture
- * @param tex Texture à utiliser
- */
 void	calculate_texture_x(t_ray *ray, double *wall_x, int *tex_x,
 		t_texture *tex)
 {
@@ -59,14 +44,6 @@ void	calculate_texture_x(t_ray *ray, double *wall_x, int *tex_x,
 		*tex_x = tex->width - *tex_x - 1;
 }
 
-/**
- * Charge une texture depuis un fichier XPM
- *
- * @param game Structure principale du jeu
- * @param texture Structure pour stocker la texture chargée
- * @param path Chemin vers le fichier XPM
- * @return 1 si le chargement a réussi, 0 sinon
- */
 int	load_texture(t_game *game, t_texture *texture, char *path)
 {
 	char	*original_path;

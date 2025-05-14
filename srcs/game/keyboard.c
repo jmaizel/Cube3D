@@ -3,18 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   keyboard.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 21:36:14 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/04 12:11:25 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/14 10:34:23 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Gère l'appui sur une touche
- */
 int	key_press(int keycode, t_game *game)
 {
 	if (keycode >= 0 && keycode < 256)
@@ -38,9 +35,6 @@ int	key_press(int keycode, t_game *game)
 	return (0);
 }
 
-/**
- * Gère le relâchement d'une touche
- */
 int	key_release(int keycode, t_game *game)
 {
 	if (keycode >= 0 && keycode < 256)

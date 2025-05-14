@@ -3,18 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   parse_map_utils2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:24:07 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/05 14:25:44 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/14 10:48:29 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
-* Vérifie si une ligne est vide (ne contient que des espaces ou des tabulations)
- */
 static int	is_empty_line(char *line)
 {
 	int	i;
@@ -29,9 +26,6 @@ static int	is_empty_line(char *line)
 	return (1);
 }
 
-/**
- * Vérifie s'il y a du contenu non valide après la fin de la map
- */
 static int	check_content_after_map(char **lines, int end_index)
 {
 	int	i;
@@ -46,9 +40,6 @@ static int	check_content_after_map(char **lines, int end_index)
 	return (1);
 }
 
-/**
- * Compte le nombre de lignes de la map et vérifie sa validité
- */
 int	count_map_lines(char **lines, int start_index, int *map_start)
 {
 	int	i;
@@ -72,8 +63,8 @@ int	count_map_lines(char **lines, int start_index, int *map_start)
 		i++;
 	}
 	if (!check_content_after_map(lines, i) && lines[i])
-		return (exit_error("Error\nContenu invalide après la map"), 0);
+		return (exit_error("Error\nInvalid content after map"), 0);
 	if (map_lines == 0)
-		return (exit_error("Error\nAucune map trouvée"), 0);
+		return (exit_error("Error\nNo map found"), 0);
 	return (map_lines);
 }

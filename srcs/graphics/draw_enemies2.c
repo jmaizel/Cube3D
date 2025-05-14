@@ -3,21 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   draw_enemies2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 14:30:00 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/01 09:32:20 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/14 10:40:21 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Vérifie si tous les monstres sont morts
- *
- * @param game Structure principale du jeu
- * @return 1 si tous les monstres sont morts, 0 sinon
- */
 int	all_monsters_dead(t_game *game)
 {
 	int	i;
@@ -32,11 +26,6 @@ int	all_monsters_dead(t_game *game)
 	return (1);
 }
 
-/**
- * Dessine tous les monstres à l'écran
- *
- * @param game Structure principale du jeu
- */
 void	render_monsters(t_game *game)
 {
 	int			i;

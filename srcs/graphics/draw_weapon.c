@@ -3,21 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   draw_weapon.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:10:35 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/01 19:22:12 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/14 10:41:49 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Détermine la frame actuelle pour l'animation de l'arme
- * 
- * @param game Structure principale du jeu
- * @return Indice de la frame actuelle
- */
 static int	get_current_weapon_frame(t_game *game)
 {
 	int	current_frame;
@@ -29,13 +23,6 @@ static int	get_current_weapon_frame(t_game *game)
 	return (current_frame);
 }
 
-/**
- * Initialise les positions pour le dessin de l'arme
- * 
- * @param game Structure principale du jeu
- * @param current_frame Indice de la frame actuelle
- * @param params Structure à remplir avec les paramètres
- */
 static void	init_weapon_draw_params(t_game *game, int current_frame,
 		t_weapon_draw *params)
 {
@@ -45,12 +32,6 @@ static void	init_weapon_draw_params(t_game *game, int current_frame,
 		- game->weapon_frames[current_frame].height + 10;
 }
 
-/**
- * Dessine un pixel de l'arme à la position spécifiée
- * 
- * @param game Structure principale du jeu
- * @param params Paramètres de dessin
- */
 static void	draw_weapon_pixel(t_game *game, t_weapon_draw params)
 {
 	if (params.draw_x >= 0 && params.draw_x < WIN_WIDTH
@@ -59,12 +40,6 @@ static void	draw_weapon_pixel(t_game *game, t_weapon_draw params)
 			+ params.draw_x] = params.color;
 }
 
-/**
- * Dessine l'arme du joueur en bas de l'écran avec animation
- * Utilise la frame actuelle de l'animation déterminée par weapon_animating
- *
- * @param game Structure principale du jeu
- */
 void	draw_weapon(t_game *game)
 {
 	t_weapon_draw	params;

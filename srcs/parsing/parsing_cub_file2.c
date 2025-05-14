@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_cub_file2.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 11:25:24 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/13 17:00:02 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/14 10:52:38 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,27 +60,20 @@ int	parse_color_line(char *line)
 	int		b;
 
 	if (count_char(line, ',') != 2)
-		return (exit_error("Error\nFormat RGB invalide"), -1);
+		return (exit_error("Error\nInvalid RGB format"), -1);
 	parts = ft_split(line, ',');
 	if (!parts || !parts[0] || !parts[1] || !parts[2] || parts[3])
-		return (free_split(parts), exit_error("Error\nCouleur invalide"), -1);
+		return (free_split(parts), exit_error("Error\nInvalid color"), -1);
 	r = get_num(parts[0]);
 	g = get_num(parts[1]);
 	b = get_num(parts[2]);
 	free_split(parts);
 	if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
-		return (exit_error("Error\nValeurs RGB hors limites"), -1);
+		return (exit_error("Error\nRGB values out of range"), -1);
 	color = (r << 16) | (g << 8) | b;
 	return (color);
 }
 
-/**
- * Vérifie que les chemins des t
- * extures de direction sont tous différents
- *
- * @param game Structure principale du jeu
- * @return 1 si les chemins sont différents, 0 sinon
- */
 int	check_texture_uniqueness(t_game *game)
 {
 	char	*north;
@@ -99,7 +92,7 @@ int	check_texture_uniqueness(t_game *game)
 			ft_strlen(south) + 1) == 0 || ft_strncmp(east, west, ft_strlen(east)
 			+ 1) == 0)
 	{
-		exit_error("Error\ntextures des directions doivent être différentes");
+		exit_error("Error\nDirection textures must be different");
 		return (0);
 	}
 	return (1);

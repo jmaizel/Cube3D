@@ -3,18 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   parse_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 12:11:54 by jacobmaizel       #+#    #+#             */
-/*   Updated: 2025/05/06 11:43:02 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/14 10:47:49 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Trouve la largeur maximale dans un tableau de lignes de map
- */
 int	find_max_width(char **map_lines)
 {
 	int	i;
@@ -33,9 +30,6 @@ int	find_max_width(char **map_lines)
 	return (max);
 }
 
-/**
- * Alloue et remplit la structure de map
- */
 static int	build_map_structure(t_game *game, char **lines, int start_index,
 		int map_lines)
 {
@@ -64,9 +58,6 @@ static int	build_map_structure(t_game *game, char **lines, int start_index,
 	return (1);
 }
 
-/**
- * Parse la map à partir des lignes du fichier
- */
 int	parse_map(char **lines, t_game *game, int start_index)
 {
 	int	map_start;

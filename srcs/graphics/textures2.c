@@ -3,21 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   textures2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 19:30:00 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/06 11:38:24 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/14 11:28:10 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Charge les textures des murs
- *
- * @param game Structure principale du jeu
- * @return 1 si réussi, 0 sinon
- */
 static int	load_wall_textures(t_game *game)
 {
 	if (!load_texture(game, &game->north_tex, (char *)game->north_tex.img))
@@ -34,12 +28,6 @@ static int	load_wall_textures(t_game *game)
 	return (1);
 }
 
-/**
- * Charge les textures des armes
- *
- * @param game Structure principale du jeu
- * @return 1 si réussi, 0 sinon
- */
 static int	load_weapon_textures(t_game *game)
 {
 	int	i;
@@ -57,12 +45,6 @@ static int	load_weapon_textures(t_game *game)
 	return (1);
 }
 
-/**
- * Charge les textures des monstres
- *
- * @param game Structure principale du jeu
- * @return 1 si réussi, 0 sinon
- */
 static int	load_monster_textures(t_game *game)
 {
 	int	i;
@@ -80,12 +62,6 @@ static int	load_monster_textures(t_game *game)
 	return (1);
 }
 
-/**
- * Charge toutes les textures nécessaires au jeu
- *
- * @param game Structure principale du jeu
- * @return 1 si toutes les textures ont été chargées, 0 sinon
- */
 int	load_all_textures(t_game *game)
 {
 	if (!load_wall_textures(game))
@@ -100,13 +76,6 @@ int	load_all_textures(t_game *game)
 	return (1);
 }
 
-/**
- * Calcule et dessine une colonne de pixel texturée pour un mur
- *
- * @param x Coordonnée X de la colonne à dessiner
- * @param ray Structure contenant les informations du rayon
- * @param game Structure principale du jeu
- */
 void	draw_textured_line(int x, t_ray *ray, t_game *game)
 {
 	t_texture		*tex;

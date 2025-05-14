@@ -3,23 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   draw_minimap_utils2.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 18:10:30 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/01 19:17:33 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/14 10:41:05 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Dessine un point représentant le joueur
- * 
- * @param game Structure principale du jeu
- * @param x Position X du joueur
- * @param y Position Y du joueur
- * @param color Couleur du joueur
- */
 void	draw_player_dot(t_game *game, int x, int y, int color)
 {
 	int	i;
@@ -44,14 +36,6 @@ void	draw_player_dot(t_game *game, int x, int y, int color)
 	}
 }
 
-/**
- * Dessine les bordures horizontales de la minimap
- * 
- * @param game Structure principale du jeu
- * @param pos Position de la minimap
- * @param size Dimensions de la minimap
- * @param color Couleur de la bordure
- */
 static void	draw_horizontal_borders(t_game *game, t_minimap_pos pos,
 		t_minimap_size size, int color)
 {
@@ -74,14 +58,6 @@ static void	draw_horizontal_borders(t_game *game, t_minimap_pos pos,
 	}
 }
 
-/**
- * Dessine les bordures verticales de la minimap
- * 
- * @param game Structure principale du jeu
- * @param pos Position de la minimap
- * @param size Dimensions de la minimap
- * @param color Couleur de la bordure
- */
 static void	draw_vertical_borders(t_game *game, t_minimap_pos pos,
 		t_minimap_size size, int color)
 {
@@ -104,13 +80,6 @@ static void	draw_vertical_borders(t_game *game, t_minimap_pos pos,
 	}
 }
 
-/**
- * Dessine un cadre autour de la minimap
- * 
- * @param game Structure principale du jeu
- * @param pos Position de la minimap
- * @param size Dimensions de la minimap
- */
 void	draw_minimap_border(t_game *game, t_minimap_pos pos,
 		t_minimap_size size)
 {
@@ -118,13 +87,6 @@ void	draw_minimap_border(t_game *game, t_minimap_pos pos,
 	draw_vertical_borders(game, pos, size, MAP_BORDER_COLOR);
 }
 
-/**
- * Dessine le fond de la minimap
- * 
- * @param game Structure principale du jeu
- * @param pos Position de la minimap
- * @param size Dimensions de la minimap
- */
 void	draw_minimap_background(t_game *game, t_minimap_pos pos,
 		t_minimap_size size)
 {

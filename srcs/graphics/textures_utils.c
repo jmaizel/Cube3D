@@ -3,32 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   textures_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 17:50:20 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/06 11:41:07 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/14 10:42:20 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Applique un effet d'assombrissement aux murs côté Y
- *
- * @param color Couleur d'origine
- * @return Couleur assombrie
- */
 int	apply_side_shading(int color)
 {
 	return ((color >> 1) & 0x7F7F7F);
 }
 
-/**
- * Applique un changement de couleur sur les portes ouvertes
- *
- * @param color Couleur d'origine
- * @return Couleur verte
- */
 int	change_door_color(int color)
 {
 	int	red;
@@ -52,11 +40,6 @@ int	change_door_color(int color)
 	return (color);
 }
 
-/**
- * Libère la mémoire des chemins de textures après leur chargement
- *
- * @param game Structure principale du jeu
- */
 void	free_texture_paths(t_game *game)
 {
 	int	i;

@@ -3,22 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   raycasting_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 14:00:00 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/01 09:21:15 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/14 10:57:13 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Vérifie si le rayon a touché une limite ou un mur
- * 
- * @param ray Structure contenant les informations du rayon
- * @param game Structure principale du jeu
- * @return 1 si le rayon a touché, 0 sinon
- */
 static int	check_ray_hit_wall(t_ray *ray, t_game *game)
 {
 	if (ray->map_y < 0 || ray->map_y >= game->map.height || ray->map_x < 0)
@@ -30,13 +23,6 @@ static int	check_ray_hit_wall(t_ray *ray, t_game *game)
 	return (0);
 }
 
-/**
- * Vérifie si le rayon a touché une porte
- * 
- * @param ray Structure contenant les informations du rayon
- * @param game Structure principale du jeu
- * @return 1 si le rayon a touché une porte, 0 sinon
- */
 static int	check_ray_hit_door(t_ray *ray, t_game *game)
 {
 	if (game->map.grid[ray->map_y][ray->map_x] == 'D')
@@ -51,11 +37,6 @@ static int	check_ray_hit_door(t_ray *ray, t_game *game)
 	return (0);
 }
 
-/**
- * Avance le rayon d'un pas selon l'algorithme DDA
- * 
- * @param ray Structure contenant les informations du rayon
- */
 static void	advance_ray(t_ray *ray)
 {
 	if (ray->side_dist_x < ray->side_dist_y)
@@ -72,12 +53,6 @@ static void	advance_ray(t_ray *ray)
 	}
 }
 
-/**
- * Version sécurisée du DDA avec gestion des portes
- *
- * @param ray Structure contenant les informations du rayon
- * @param game Structure principale du jeu
- */
 void	safe_perform_dda(t_ray *ray, t_game *game)
 {
 	int	max_iterations;
@@ -96,11 +71,6 @@ void	safe_perform_dda(t_ray *ray, t_game *game)
 	}
 }
 
-/**
- * Lance un rayon pour chaque colonne de l'écran
- *
- * @param game Structure principale du jeu
- */
 void	complete_raycasting(t_game *game)
 {
 	t_ray	ray;

@@ -3,22 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   textures_utils2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 19:38:21 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/01 19:38:37 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/14 10:42:24 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Prépare les paramètres pour le dessin d'une ligne texturée
- *
- * @param ray Structure du rayon
- * @param tex Texture à utiliser
- * @param params Structure pour stocker les paramètres calculés
- */
 void	prepare_texture_params(t_ray *ray, t_texture *tex, t_tex_params *params)
 {
 	double	wall_x;

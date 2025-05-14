@@ -3,20 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:37:18 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/05 14:28:32 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/14 11:34:17 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Initialise les paramètres de l'arme et du jeu
- *
- * @param game Structure principale du jeu
- */
 static void	init_game_part_two(t_game *game)
 {
 	game->weapon_damage = 25;
@@ -34,11 +29,6 @@ static void	init_game_part_two(t_game *game)
 	game->victory_tex.img = NULL;
 }
 
-/**
- * Initialise la structure du jeu
- *
- * @param game Structure principale du jeu
- */
 static void	init_game_structure(t_game *game)
 {
 	int	i;
@@ -59,7 +49,7 @@ static void	init_game_structure(t_game *game)
 	game->last_frame_time = 0.0;
 	game->delta_time = 0.0;
 	game->mouse_enabled = 0;
-	game->mouse_sensitivity = 0.002;
+	game->mouse_sensitivity = 0.0005;
 	game->mouse_x = WIN_WIDTH / 2;
 	game->mouse_prev_x = WIN_WIDTH / 2;
 	game->firing = 0;
@@ -68,11 +58,6 @@ static void	init_game_structure(t_game *game)
 	init_game_part_two(game);
 }
 
-/**
- * Initialise les hooks pour la gestion des événements
- *
- * @param game Structure principale du jeu
- */
 static void	setup_hooks(t_game *game)
 {
 	mlx_hook(game->win, 2, 1L << 0, key_press, game);
@@ -83,12 +68,6 @@ static void	setup_hooks(t_game *game)
 	mlx_loop_hook(game->mlx, game_loop, game);
 }
 
-/**
- * Initialise l'environnement MLX et les ressources graphiques
- *
- * @param game Structure principale du jeu
- * @return 1 en cas de succès, 0 en cas d'erreur
- */
 static int	init_graphics(t_game *game)
 {
 	game->mlx = mlx_init();
@@ -106,13 +85,6 @@ static int	init_graphics(t_game *game)
 	return (1);
 }
 
-/**
- * Point d'entrée principal du programme
- *
- * @param argc Nombre d'arguments
- * @param argv Tableau des arguments
- * @return 0 en cas de succès, 1 en cas d'erreur
- */
 int	main(int argc, char **argv)
 {
 	t_game	game;

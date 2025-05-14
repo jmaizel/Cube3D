@@ -3,21 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   raycasting2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 20:15:00 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/01 09:22:27 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/14 10:58:04 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Exécute l'algorithme DDA pour trouver le mur touché
- * 
- * @param ray Structure contenant les informations du rayon
- * @param game Structure principale du jeu
- */
 void	perform_dda(t_ray *ray, t_game *game)
 {
 	while (ray->hit == 0)
@@ -39,11 +33,6 @@ void	perform_dda(t_ray *ray, t_game *game)
 	}
 }
 
-/**
- * Calcule la hauteur de la ligne à dessiner à l'écran
- * 
- * @param ray Structure contenant les informations du rayon
- */
 void	calculate_line_height(t_ray *ray)
 {
 	if (ray->side == 0)
@@ -59,11 +48,6 @@ void	calculate_line_height(t_ray *ray)
 		ray->draw_end = WIN_HEIGHT - 1;
 }
 
-/**
- * Fonction principale de raycasting pour toute la largeur de l'écran
- * 
- * @param game Structure principale du jeu
- */
 void	raycasting(t_game *game)
 {
 	t_ray	ray;

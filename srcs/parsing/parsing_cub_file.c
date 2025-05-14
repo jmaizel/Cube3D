@@ -3,18 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_cub_file.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:39:22 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/13 16:56:45 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/14 10:58:44 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Lit le contenu d'un fichier et le découpe en lignes
- */
 char	**read_files_lines(const char *filename)
 {
 	int		fd;
@@ -36,9 +33,6 @@ char	**read_files_lines(const char *filename)
 	return (lines);
 }
 
-/**
- * Libère la mémoire d'un tableau de chaînes
- */
 void	free_split(char **split)
 {
 	int	i;
@@ -54,9 +48,6 @@ void	free_split(char **split)
 	free(split);
 }
 
-/**
- * Parse le fichier .cub complet (configuration et map)
- */
 int	parse_cub_file(const char *filename, t_game *game)
 {
 	char	**lines;

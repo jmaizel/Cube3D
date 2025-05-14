@@ -3,22 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   draw_enemies.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 16:31:16 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/01 18:59:36 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/14 10:40:14 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Initialise les propriétés d'un monstre
- * 
- * @param game Structure principale du jeu
- * @param x Position X sur la map
- * @param y Position Y sur la map
- */
 static void	init_monster(t_game *game, int x, int y)
 {
 	if (game->monster_frame_count == 0)
@@ -37,12 +30,6 @@ static void	init_monster(t_game *game, int x, int y)
 	game->map.grid[y][x] = '0';
 }
 
-/**
- * Initialise les monstres dans la map
- * Recherche les positions 'M' dans la grille et crée des monstres à ces endroits
- *
- * @param game Structure principale du jeu
- */
 void	init_monsters(t_game *game)
 {
 	int	x;
@@ -63,27 +50,12 @@ void	init_monsters(t_game *game)
 	}
 }
 
-/**
- * Calcule le texX pour le sprite
- * 
- * @param sprite Informations du sprite
- * @param stripe Colonne X en cours
- * @param tex_width Largeur de la texture
- * @return Coordonnée X dans la texture
- */
 static int	calc_tex_x(t_sprite *sprite, int stripe, int tex_width)
 {
 	return ((int)(256 * (stripe - (-sprite->width / 2 + sprite->screen_x))
 		* tex_width / sprite->width) / 256);
 }
 
-/**
- * Traite le sprite d'un monstre et rend sa colonne
- * 
- * @param game Structure principale du jeu
- * @param sprite Informations du sprite
- * @param monster_index Indice du monstre
- */
 void	process_monster_sprite(t_game *game, t_sprite *sprite,
 		int monster_index)
 {

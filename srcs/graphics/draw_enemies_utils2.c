@@ -3,22 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   draw_enemies_utils2.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 14:35:00 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/01 18:57:10 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/14 10:39:54 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Prépare les paramètres et appelle la fonction de dessin de pixel
- * 
- * @param game Structure principale du jeu
- * @param draw Structure contenant les paramètres de dessin
- * @param monster_index Indice du monstre dans le tableau
- */
 void	draw_monster_column(t_game *game, t_draw_params draw, int monster_index)
 {
 	int				y;
@@ -38,15 +31,6 @@ void	draw_monster_column(t_game *game, t_draw_params draw, int monster_index)
 	}
 }
 
-/**
- * Calcule la position du sprite d'un monstre à l'écran
- * 
- * @param game Structure principale du jeu
- * @param order Indices des monstres triés par distance
- * @param i Indice dans le tableau order
- * @param sprite Structure pour stocker les informations du sprite
- * @return Structure contenant les informations calculées
- */
 t_sprite	calc_sprite_pos(t_game *game, int *order, int i,
 		t_sprite *sprite)
 {
@@ -70,12 +54,6 @@ t_sprite	calc_sprite_pos(t_game *game, int *order, int i,
 	return (*sprite);
 }
 
-/**
- * Calcule les limites de dessin du sprite
- * 
- * @param sprite Informations sur le sprite
- * @param limits Structure contenant les limites à calculer
- */
 void	calc_sprite_draw_limits(t_sprite *sprite, t_draw_limits *limits)
 {
 	limits->draw_start_y = -sprite->height / 2 + WIN_HEIGHT / 2;

@@ -3,18 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_config3.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:32:17 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/06 11:12:29 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/14 10:58:40 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Initialise la structure de données de config
- */
 static void	init_config_data(t_config_data *data, t_game *game,
 		int *config_count, t_config_flags *flags)
 {
@@ -24,9 +21,6 @@ static void	init_config_data(t_config_data *data, t_game *game,
 	data->phase = 0;
 }
 
-/**
- * Initialise les paramètres pour le parsing
- */
 static void	init_parse_params(int *i, int *config_count, t_config_flags *flags)
 {
 	*i = 0;
@@ -34,9 +28,6 @@ static void	init_parse_params(int *i, int *config_count, t_config_flags *flags)
 	ft_memset(flags, 0, sizeof(t_config_flags));
 }
 
-/**
- * Traite les résultats de la configuration
- */
 static int	handle_config_result(t_config_data *data, int *map_start_index,
 		int i, int result)
 {
@@ -50,9 +41,6 @@ static int	handle_config_result(t_config_data *data, int *map_start_index,
 	return (1);
 }
 
-/**
- * Traite les lignes pour le parsing
- */
 static int	process_config_lines(char **lines, t_game *game,
 		int *map_start_index, t_config_flags *flags)
 {
@@ -75,12 +63,9 @@ static int	process_config_lines(char **lines, t_game *game,
 		i++;
 	}
 	return (check_config_count(config_count, 6,
-			"Error\nConfiguration incomplète"));
+			"Error\nIncomplete configuration"));
 }
 
-/**
- * Parse les configurations du fichier .cub
- */
 int	parse_config(char **lines, t_game *game, int *map_start_index)
 {
 	t_config_flags	flags;

@@ -3,18 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   monster_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 21:42:41 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/02 19:47:22 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/14 10:34:31 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Met à jour les effets de coup pour les monstres
- */
 void	update_monster_hit_effects(t_game *game)
 {
 	int	i;
@@ -35,9 +32,6 @@ void	update_monster_hit_effects(t_game *game)
 	}
 }
 
-/**
- * Met à jour les animations des monstres
- */
 void	update_monster_animations(t_game *game)
 {
 	int	i;

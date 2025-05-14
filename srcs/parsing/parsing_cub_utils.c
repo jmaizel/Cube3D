@@ -3,18 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_cub_utils.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 20:01:16 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/06 11:43:11 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/14 10:53:44 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Compte le nombre de lignes dans un fichier
- */
 int	count_file_lines(int fd)
 {
 	char	*line;
@@ -33,9 +30,6 @@ int	count_file_lines(int fd)
 	return (count);
 }
 
-/**
- * Alloue et remplit le tableau de lignes à partir du fichier
- */
 char	**allocate_lines(int fd, int count)
 {
 	char	**lines;
@@ -62,23 +56,17 @@ char	**allocate_lines(int fd, int count)
 	return (lines);
 }
 
-/**
- * Vérifie si une texture est déjà définie
- */
 int	check_texture_duplication(int is_set, char *texture_type)
 {
 	if (is_set)
 	{
-		exit_error("Error\nDuplication texture ");
+		exit_error("Error\nTexture duplication");
 		ft_printf("%s\n", texture_type);
 		return (0);
 	}
 	return (1);
 }
 
-/**
- * Parse une ligne de configuration pour une texture
- */
 int	parse_texture_line(char *line, void **texture_img, int *is_set)
 {
 	char	*texture_path;
@@ -87,15 +75,12 @@ int	parse_texture_line(char *line, void **texture_img, int *is_set)
 		return (0);
 	texture_path = ft_strdup(line + 3);
 	if (!texture_path)
-		return (exit_error("Error\nMémoire insuffisante"), 0);
+		return (exit_error("Error\nInsufficient memory"), 0);
 	*texture_img = (void *)texture_path;
 	*is_set = 1;
 	return (1);
 }
 
-/**
- * Parse une ligne de configuration pour une couleur
- */
 int	parse_color_config(char *line, int *color_ptr, int *is_set)
 {
 	if (!check_texture_duplication(*is_set, line))

@@ -3,18 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   mouse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/27 15:46:34 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/02 19:36:47 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/14 10:37:41 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Applique la rotation à partir d'un angle
- */
 static void	apply_rotation(t_game *game, double rotation_angle)
 {
 	double	old_dir_x;
@@ -32,9 +29,6 @@ static void	apply_rotation(t_game *game, double rotation_angle)
 		+ game->player.plane_y * cos(rotation_angle);
 }
 
-/**
- * Gère les mouvements de la souris pour contrôler la rotation du joueur
- */
 int	mouse_move(int x, int y, t_game *game)
 {
 	int		delta_x;
@@ -60,9 +54,6 @@ int	mouse_move(int x, int y, t_game *game)
 	return (0);
 }
 
-/**
- * Active ou désactive le mode de contrôle à la souris
- */
 void	toggle_mouse(t_game *game)
 {
 	game->mouse_enabled = !game->mouse_enabled;
@@ -79,9 +70,6 @@ void	toggle_mouse(t_game *game)
 	}
 }
 
-/**
- * Gère les clics de souris
- */
 int	mouse_click(int button, int x, int y, t_game *game)
 {
 	(void)x;

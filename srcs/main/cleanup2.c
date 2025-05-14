@@ -1,20 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   clanup2.c                                          :+:      :+:    :+:   */
+/*   cleanup2.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 16:41:35 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/13 16:41:54 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/14 10:43:12 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-/**
- * Nettoie les textures principales
- */
 static void	free_main_textures(t_game *game)
 {
 	if (!game->mlx)
@@ -32,9 +29,6 @@ static void	free_main_textures(t_game *game)
 	}
 }
 
-/**
- * Nettoie les chemins d'armes et de monstres
- */
 static void	free_paths(t_game *game)
 {
 	int	i;
@@ -55,9 +49,6 @@ static void	free_paths(t_game *game)
 	}
 }
 
-/**
- * Nettoie les ressources allouées pendant la phase de configuration
- */
 void	cleanup_config_resources(t_game *game)
 {
 	if (!game)
