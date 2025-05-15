@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_cub_file2.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 11:25:24 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/14 10:52:38 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/15 11:09:32 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,11 @@ int	check_texture_uniqueness(t_game *game)
 	south = (char *)game->south_tex.img;
 	east = (char *)game->east_tex.img;
 	west = (char *)game->west_tex.img;
+	if (!north || !south || !east || !west)
+	{
+		exit_error("Error\nTextures des directions manquantes");
+		return (0);
+	}
 	if (ft_strncmp(north, south, ft_strlen(north) + 1) == 0 || ft_strncmp(north,
 			east, ft_strlen(north) + 1) == 0 || ft_strncmp(north, west,
 			ft_strlen(north) + 1) == 0 || ft_strncmp(south, east,
@@ -92,7 +97,7 @@ int	check_texture_uniqueness(t_game *game)
 			ft_strlen(south) + 1) == 0 || ft_strncmp(east, west, ft_strlen(east)
 			+ 1) == 0)
 	{
-		exit_error("Error\nDirection textures must be different");
+		exit_error("Error\ntextures des directions doivent être différentes");
 		return (0);
 	}
 	return (1);
