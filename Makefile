@@ -6,7 +6,7 @@
 #    By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/28 14:37:22 by jmaizel           #+#    #+#              #
-#    Updated: 2025/05/15 12:34:53 by jmaizel          ###   ########.fr        #
+#    Updated: 2025/05/15 14:23:28 by jmaizel          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -53,14 +53,7 @@ define progress_bar
 	printf "\rCompiling [%-20s] %d%%" "$$BAR" "$$PROGRESS"
 endef
 
-all: message $(NAME)
-
-message:
-	@if [ ! -f $(NAME) ] || [ -n "$$(find $(SRC_FILES) -newer $(NAME) 2>/dev/null)" ]; then \
-		echo "Compilation en cours..."; \
-	else \
-		echo "$(NAME) est déjà compilé et à jour"; \
-	fi
+all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT) $(MLX)
 	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBS) > /dev/null 2>&1
