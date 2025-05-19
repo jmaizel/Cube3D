@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:39:22 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/19 17:03:32 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/19 17:43:03 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,28 @@ void	free_split(char **split)
 	free(split);
 }
 
+static int	handle_map_validation(t_game *game, char **lines, int map_start)
+{
+	if (!parse_map(lines, game, map_start))
+	{
+		cleanup_config_resources(game);
+		if (game->map.grid)
+			free_map(game->map.grid);
+		free_split(lines);
+		return (0);
+	}
+	if (!validate_map_texture_coherence(game))
+	{
+		cleanup_config_resources(game);
+		if (game->map.grid)
+			free_map(game->map.grid);
+		free_split(lines);
+		return (0);
+	}
+	free_split(lines);
+	return (1);
+}
+
 int	parse_cub_file(const char *filename, t_game *game)
 {
 	char	**lines;
@@ -61,20 +83,5 @@ int	parse_cub_file(const char *filename, t_game *game)
 		return (cleanup_config_resources(game), free_split(lines), 0);
 	if (!check_texture_uniqueness(game))
 		return (cleanup_config_resources(game), free_split(lines), 0);
-	if (!parse_map(lines, game, map_start_index))
-	{
-		cleanup_config_resources(game);
-		if (game->map.grid)
-			free_map(game->map.grid);
-		return (free_split(lines), 0);
-	}
-	if (!validate_map_texture_coherence(game))
-	{
-		cleanup_config_resources(game);
-		if (game->map.grid)
-			free_map(game->map.grid);
-		return (free_split(lines), 0);
-	}
-	free_split(lines);
-	return (1);
+	return (handle_map_validation(game, lines, map_start_index));
 }
