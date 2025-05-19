@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   textures.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 14:22:34 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/14 10:42:35 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/19 17:02:55 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,11 @@ int	load_texture(t_game *game, t_texture *texture, char *path)
 	texture->img = mlx_xpm_file_to_image(game->mlx, path, &texture->width,
 			&texture->height);
 	if (!texture->img)
+	{
+		if (original_path)
+			free(original_path);
 		return (exit_error("Erreur: Impossible de charger la texture"), 0);
+	}
 	if (original_path)
 		free(original_path);
 	texture->data = (int *)mlx_get_data_addr(texture->img, &texture->bpp,

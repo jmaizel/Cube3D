@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   textures2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 19:30:00 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/14 11:28:10 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/19 17:02:22 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,13 +65,13 @@ static int	load_monster_textures(t_game *game)
 int	load_all_textures(t_game *game)
 {
 	if (!load_wall_textures(game))
-		return (0);
+		return (cleanup_texture_resources(game), 0);
 	if (!load_weapon_textures(game))
-		return (0);
+		return (cleanup_texture_resources(game), 0);
 	if (!load_monster_textures(game))
-		return (0);
+		return (cleanup_texture_resources(game), 0);
 	if (!load_texture(game, &game->victory_tex, "./textures/victory.xpm"))
-		return (0);
+		return (cleanup_texture_resources(game), 0);
 	free_texture_paths(game);
 	return (1);
 }

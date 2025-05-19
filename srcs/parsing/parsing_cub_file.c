@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_cub_file.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:39:22 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/15 12:33:23 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/19 17:03:32 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,11 +64,15 @@ int	parse_cub_file(const char *filename, t_game *game)
 	if (!parse_map(lines, game, map_start_index))
 	{
 		cleanup_config_resources(game);
+		if (game->map.grid)
+			free_map(game->map.grid);
 		return (free_split(lines), 0);
 	}
 	if (!validate_map_texture_coherence(game))
 	{
 		cleanup_config_resources(game);
+		if (game->map.grid)
+			free_map(game->map.grid);
 		return (free_split(lines), 0);
 	}
 	free_split(lines);

@@ -3,16 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+         #
+#    By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/28 14:37:22 by jmaizel           #+#    #+#              #
-#    Updated: 2025/05/15 14:23:28 by jmaizel          ###   ########.fr        #
+#    Updated: 2025/05/19 17:11:11 by cdedessu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = cub3D
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -I$(INCLUDES_DIR) -I$(LIBFT_DIR) -I$(MLX_DIR)
+CFLAGS = -Wall -Wextra -Werror -g -I$(INCLUDES_DIR) -I$(LIBFT_DIR) -I$(MLX_DIR)
 
 LIBFT_DIR = ./libft
 MLX_DIR = ./minilibx-linux
@@ -29,7 +29,7 @@ LIBS = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -L$(LIBFT_DIR) -lft
 LIBFT = $(LIBFT_DIR)/libft.a
 MLX = $(MLX_DIR)/libmlx.a
 
-MAIN_FILES = main.c utils.c cleanup.c cleanup2.c
+MAIN_FILES = main.c utils.c cleanup.c cleanup2.c cleanup3.c
 PARSING_FILES = parse_map.c parsing_cub_file.c validate_map.c parse_map_utils.c validate_map_utils.c validate_map_utils2.c parsing_cub_utils.c parsing_cub_utils2.c parsing_config.c parsing_config_utils.c parse_map_utils2.c parsing_config2.c parsing_config3.c parsing_cub_file2.c contains.c
 RAYCASTING_FILES = raycasting.c raycasting_utils.c raycasting_utils2.c raycasting2.c
 GAME_FILES = movement.c mouse.c game_status_utils.c movement_utils.c attack.c attack_utils.c movement_rotate.c keyboard.c game_loop.c monster_utils.c

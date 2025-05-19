@@ -11,6 +11,7 @@ WP0 ./textures/weapon_frame0.xpm
 WP1 ./textures/weapon_frame1.xpm
 WP2 ./textures/weapon_frame2.xpm
 WP3 ./textures/weapon_frame3.xpm
+
 F 180 ,220,255
 C 120,180,220             
 

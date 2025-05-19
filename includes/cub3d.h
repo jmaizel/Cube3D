@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 17:00:36 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/15 12:32:00 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/19 17:04:20 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -420,6 +420,7 @@ void				free_map(char **map);
 int					exit_error(char *msg);
 int					close_window(t_game *game);
 void				cleanup_config_resources(t_game *game);
+void				cleanup_texture_resources(t_game *game);
 
 /*
 ** Raycasting
