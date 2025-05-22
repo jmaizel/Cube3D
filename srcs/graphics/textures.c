@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   textures.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 14:22:34 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/22 13:37:38 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/22 13:59:17 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,6 @@ void	calculate_texture_x(t_ray *ray, double *wall_x, int *tex_x,
 		*tex_x = tex->width - *tex_x - 1;
 }
 
-/* Dans textures.c, modifiez la fonction load_texture : */
-
 int	load_texture(t_game *game, t_texture *texture, char *path)
 {
 	char	*original_path;
@@ -58,11 +56,6 @@ int	load_texture(t_game *game, t_texture *texture, char *path)
 			&texture->height);
 	if (!img_ptr)
 	{
-		if (original_path)
-		{
-			free(original_path);
-			texture->img = NULL;
-		}
 		texture->data = NULL;
 		return (exit_error("Erreur: Impossible de charger la texture"), 0);
 	}

@@ -3,14 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_cub_utils.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 20:01:16 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/14 10:53:44 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/22 13:57:25 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
+
+char	*ft_skip_whitespace(char *line)
+{
+	while (*line && (*line == ' ' || *line == '\t'))
+		line++;
+	return (line);
+}
 
 int	count_file_lines(int fd)
 {

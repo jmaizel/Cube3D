@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 17:00:36 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/22 11:28:52 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/22 14:00:40 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,7 +233,6 @@ typedef struct s_map_check
 /*
 ** Main game structure
 */
-
 typedef struct s_game
 {
 	void			*mlx;
@@ -468,6 +467,7 @@ int					is_texture_line(char *line);
 int					handle_config(t_config_data *data, char *line);
 int					check_texture_uniqueness(t_game *game);
 int					validate_map_texture_coherence(t_game *game);
+char				*ft_skip_whitespace(char *line);
 
 /*
 ** Map validation

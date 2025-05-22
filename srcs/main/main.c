@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:37:18 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/22 13:34:08 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/22 14:02:11 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ static int	init_graphics(t_game *game)
 		return (exit_error("Erreur init MLX"), 0);
 	if (!load_all_textures(game))
 	{
+		cleanup_texture_resources(game);
 		mlx_destroy_display(game->mlx);
 		free(game->mlx);
 		game->mlx = NULL;
@@ -107,10 +108,7 @@ int	main(int argc, char **argv)
 		return (exit_error("Usage: ./cub3D map.cub"), 1);
 	init_game_structure(&game);
 	if (!parse_cub_file(argv[1], &game))
-	{
-		// Le nettoyage est déjà fait dans parse_cub_file
 		return (1);
-	}
 	init_monsters(&game);
 	if (!init_graphics(&game))
 	{

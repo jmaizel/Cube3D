@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   textures2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 19:30:00 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/22 13:27:37 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/22 14:01:55 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,6 @@ int	load_all_textures(t_game *game)
 		cleanup_texture_resources(game);
 		return (0);
 	}
-	free_texture_paths(game);
 	return (1);
 }
 

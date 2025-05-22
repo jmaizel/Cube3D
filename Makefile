@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+         #
+#    By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/28 14:37:22 by jmaizel           #+#    #+#              #
-#    Updated: 2025/05/22 11:31:30 by cdedessu         ###   ########.fr        #
+#    Updated: 2025/05/22 14:03:49 by jmaizel          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -56,8 +56,8 @@ endef
 all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT) $(MLX)
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBS) > /dev/null 2>&1
-	@if [ -n "$$(find $(SRC_FILES) -newer $(NAME) 2>/dev/null)" ]; then \
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBS) 
+	@if [ -n "$$(find $(SRC_FILES) -newer $(NAME) )" ]; then \
 		echo "\nCompilation terminée"; \
 	fi
 
@@ -74,20 +74,20 @@ $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)/graphics
 
 $(LIBFT):
-	@make --no-print-directory -C $(LIBFT_DIR) > /dev/null
+	@make --no-print-directory -C $(LIBFT_DIR)
 
 $(MLX):
-	@make -s --no-print-directory -C $(MLX_DIR) > /dev/null 2>&1
+	@make -s --no-print-directory -C $(MLX_DIR) 
 
 clean:
 	@rm -rf $(OBJ_DIR)
-	@make clean --no-print-directory -C $(LIBFT_DIR) > /dev/null
-	@make clean --no-print-directory -C $(MLX_DIR) > /dev/null 2>&1
+	@make clean --no-print-directory -C $(LIBFT_DIR)
+	@make clean --no-print-directory -C $(MLX_DIR)
 	@echo "Clean: Object files removed."
 
 fclean: clean
 	@rm -f $(NAME)
-	@make fclean --no-print-directory -C $(LIBFT_DIR) > /dev/null
+	@make fclean --no-print-directory -C $(LIBFT_DIR) 
 	@echo "Full clean: Executable and object files removed."
 
 re: fclean all

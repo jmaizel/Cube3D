@@ -3,63 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   cleanup3.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:00:41 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/22 13:25:42 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/22 13:46:52 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-
-/* Dans cleanup3.c, remplacez la fonction cleanup_wall_textures par : */
-
-static void	cleanup_wall_textures(t_game *game)
+static void	ft_cleanup_single_texture(t_game *game, t_texture *tex)
 {
-	if (game->north_tex.img)
+	if (tex->img)
 	{
-		if (game->mlx && game->north_tex.data)
-			mlx_destroy_image(game->mlx, game->north_tex.img);
-		else if (!game->mlx)
-			free(game->north_tex.img);
-		game->north_tex.img = NULL;
-	}
-	if (game->south_tex.img)
-	{
-		if (game->mlx && game->south_tex.data)
-			mlx_destroy_image(game->mlx, game->south_tex.img);
-		else if (!game->mlx)
-			free(game->south_tex.img);
-		game->south_tex.img = NULL;
-	}
-	if (game->east_tex.img)
-	{
-		if (game->mlx && game->east_tex.data)
-			mlx_destroy_image(game->mlx, game->east_tex.img);
-		else if (!game->mlx)
-			free(game->east_tex.img);
-		game->east_tex.img = NULL;
-	}
-	if (game->west_tex.img)
-	{
-		if (game->mlx && game->west_tex.data)
-			mlx_destroy_image(game->mlx, game->west_tex.img);
-		else if (!game->mlx)
-			free(game->west_tex.img);
-		game->west_tex.img = NULL;
-	}
-	if (game->door_tex.img)
-	{
-		if (game->mlx && game->door_tex.data)
-			mlx_destroy_image(game->mlx, game->door_tex.img);
-		else if (!game->mlx)
-			free(game->door_tex.img);
-		game->door_tex.img = NULL;
+		if (game->mlx && tex->data)
+			mlx_destroy_image(game->mlx, tex->img);
+		else if ((char *)tex->img)
+			free((char *)tex->img);
+		tex->img = NULL;
+		tex->data = NULL;
 	}
 }
 
-/* Remplacez également cleanup_weapon_textures par : */
+static void	cleanup_wall_textures(t_game *game)
+{
+	ft_cleanup_single_texture(game, &game->north_tex);
+	ft_cleanup_single_texture(game, &game->south_tex);
+	ft_cleanup_single_texture(game, &game->east_tex);
+	ft_cleanup_single_texture(game, &game->west_tex);
+	ft_cleanup_single_texture(game, &game->door_tex);
+}
 
 static void	cleanup_weapon_textures(t_game *game)
 {
@@ -68,12 +41,7 @@ static void	cleanup_weapon_textures(t_game *game)
 	i = 0;
 	while (i < 4)
 	{
-		if (game->weapon_frames[i].img)
-		{
-			if (game->mlx && game->weapon_frames[i].data)
-				mlx_destroy_image(game->mlx, game->weapon_frames[i].img);
-			game->weapon_frames[i].img = NULL;
-		}
+		ft_cleanup_single_texture(game, &game->weapon_frames[i]);
 		if (game->weapon_paths[i])
 		{
 			free(game->weapon_paths[i]);
@@ -83,8 +51,6 @@ static void	cleanup_weapon_textures(t_game *game)
 	}
 }
 
-/* Et cleanup_monster_textures par : */
-
 static void	cleanup_monster_textures(t_game *game)
 {
 	int	i;
@@ -92,12 +58,7 @@ static void	cleanup_monster_textures(t_game *game)
 	i = 0;
 	while (i < 4)
 	{
-		if (game->monster_frames[i].img)
-		{
-			if (game->mlx && game->monster_frames[i].data)
-				mlx_destroy_image(game->mlx, game->monster_frames[i].img);
-			game->monster_frames[i].img = NULL;
-		}
+		ft_cleanup_single_texture(game, &game->monster_frames[i]);
 		if (game->monster_paths[i])
 		{
 			free(game->monster_paths[i]);
@@ -114,6 +75,5 @@ void	cleanup_texture_resources(t_game *game)
 	cleanup_wall_textures(game);
 	cleanup_weapon_textures(game);
 	cleanup_monster_textures(game);
-	if (game->victory_tex.img && game->mlx)
-		mlx_destroy_image(game->mlx, game->victory_tex.img);
+	ft_cleanup_single_texture(game, &game->victory_tex);
 }

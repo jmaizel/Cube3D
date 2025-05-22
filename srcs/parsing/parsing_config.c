@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_config.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 20:07:23 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/14 11:28:45 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/22 13:57:51 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,29 +61,33 @@ static int	check_map_begin(char *line, int *config_count)
 int	process_line(char *line, t_game *game, int *config_count,
 		t_config_flags *flags)
 {
-	int	result;
+	int		result;
+	char	*trimmed_line;
 
 	if (line[0] == '\0')
 		return (1);
-	result = process_north_south(line, game, config_count, flags);
+	trimmed_line = ft_skip_whitespace(line);
+	if (trimmed_line[0] == '\0')
+		return (1);
+	result = process_north_south(trimmed_line, game, config_count, flags);
 	if (result != 0)
 		return (result);
-	result = process_west_east(line, game, config_count, flags);
+	result = process_west_east(trimmed_line, game, config_count, flags);
 	if (result != 0)
 		return (result);
-	result = process_colors(line, game, config_count, flags);
+	result = process_colors(trimmed_line, game, config_count, flags);
 	if (result != 0)
 		return (result);
-	result = process_door_texture(line, game, config_count);
+	result = process_door_texture(trimmed_line, game, config_count);
 	if (result != 0)
 		return (result);
-	result = process_weapon_textures(line, game);
+	result = process_weapon_textures(trimmed_line, game);
 	if (result != 0)
 		return (result);
-	result = process_monster_textures(line, game);
+	result = process_monster_textures(trimmed_line, game);
 	if (result != 0)
 		return (result);
-	return (check_map_begin(line, config_count));
+	return (check_map_begin(trimmed_line, config_count));
 }
 
 int	is_texture_line(char *line)
