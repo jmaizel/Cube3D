@@ -9,17 +9,15 @@ MT2 ./textures/animation_pixel_frame_3.xpm
 MT3 ./textures/animation_pixel_frame_4.xpm
 WP0 ./textures/weapon_frame0.xpm
 WP1 ./textures/weapon_frame1.xpm
-
 WP2 ./textures/weapon_frame2.xpm
-WP3 ./textures/weapon_frame3.xpm 
+WP3 ./textures/weapon_frame3.xpm
 
 F 180,220,255
 C 120,180,220
-
 
         111111111111111111111111
 1111111101M000000100111111111111
 1N000M00010000001001111111111111
 10000000010000010001111111111111
 100000000000000D0011111
-11111111111111111111111111111111
+11111111111111111111111111111111 

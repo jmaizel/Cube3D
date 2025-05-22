@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 20:07:23 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/22 14:46:50 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/22 15:39:47 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,17 +61,11 @@ static int	check_map_begin(char *line, int *config_count,
 	return (handle_unknown_config(is_map));
 }
 
-int	process_line(char *line, t_game *game, int *config_count,
-		t_config_flags *flags)
+static int	process_config_elements(char *trimmed_line, t_game *game,
+		int *config_count, t_config_flags *flags)
 {
-	int		result;
-	char	*trimmed_line;
+	int	result;
 
-	if (line[0] == '\0')
-		return (1);
-	trimmed_line = ft_skip_whitespace(line);
-	if (trimmed_line[0] == '\0')
-		return (1);
 	result = process_north_south(trimmed_line, game, config_count, flags);
 	if (result != 0)
 		return (result);
@@ -90,13 +84,22 @@ int	process_line(char *line, t_game *game, int *config_count,
 	result = process_monster_textures(trimmed_line, game);
 	if (result != 0)
 		return (result);
-	return (check_map_begin(trimmed_line, config_count, flags));
+	return (0);
 }
 
-int	is_texture_line(char *line)
+int	process_line(char *line, t_game *game, int *config_count,
+		t_config_flags *flags)
 {
-	return (ft_strncmp(line, "NO ", 3) == 0 || ft_strncmp(line, "SO ", 3) == 0
-		|| ft_strncmp(line, "WE ", 3) == 0 || ft_strncmp(line, "EA ", 3) == 0
-		|| ft_strncmp(line, "DR ", 3) == 0 || ft_strncmp(line, "MT", 2) == 0
-		|| ft_strncmp(line, "WP", 2) == 0);
+	int		result;
+	char	*trimmed_line;
+
+	if (line[0] == '\0')
+		return (1);
+	trimmed_line = ft_skip_whitespace(line);
+	if (trimmed_line[0] == '\0')
+		return (1);
+	result = process_config_elements(trimmed_line, game, config_count, flags);
+	if (result != 0)
+		return (result);
+	return (check_map_begin(trimmed_line, config_count, flags));
 }

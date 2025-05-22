@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 14:22:34 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/22 14:41:27 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/22 15:46:55 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int	load_texture(t_game *game, t_texture *texture, char *path)
 	if (!trimmed_path)
 	{
 		texture->data = NULL;
-		return (exit_error("Erreur: Allocation mémoire"), 0);
+		return (exit_error("Error/n Memory allocation"), 0);
 	}
 	img_ptr = mlx_xpm_file_to_image(game->mlx, trimmed_path, &texture->width,
 			&texture->height);
@@ -91,7 +91,7 @@ int	load_texture(t_game *game, t_texture *texture, char *path)
 	if (!img_ptr)
 	{
 		texture->data = NULL;
-		return (exit_error("Erreur: Impossible de charger la texture"), 0);
+		return (exit_error("Error/n Can not load texture "), 0);
 	}
 	if (original_path)
 		free(original_path);

@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:32:17 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/22 14:56:40 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/22 15:40:21 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,23 +38,6 @@ static int	handle_config_result(t_config_data *data, int *map_start_index,
 		*map_start_index = i;
 		return (2);
 	}
-	return (1);
-}
-
-int	validate_required_configs(t_config_flags *flags)
-{
-	if (!flags->no_set)
-		return (exit_error("Error\nMissing NO texture"), 0);
-	if (!flags->so_set)
-		return (exit_error("Error\nMissing SO texture"), 0);
-	if (!flags->we_set)
-		return (exit_error("Error\nMissing WE texture"), 0);
-	if (!flags->ea_set)
-		return (exit_error("Error\nMissing EA texture"), 0);
-	if (!flags->f_set)
-		return (exit_error("Error\nMissing F color"), 0);
-	if (!flags->c_set)
-		return (exit_error("Error\nMissing C color"), 0);
 	return (1);
 }
 
