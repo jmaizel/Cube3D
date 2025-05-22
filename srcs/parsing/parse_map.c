@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 12:11:54 by jacobmaizel       #+#    #+#             */
-/*   Updated: 2025/05/22 11:11:15 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/22 11:53:36 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,11 @@ static int	build_map_structure(t_game *game, char **lines, int start_index,
 	game->map.height = map_lines;
 	game->map.width = find_max_width(game->map.grid);
 	if (!validate_map(game))
+	{
+		free_map(game->map.grid);
+		game->map.grid = NULL;
 		return (0);
+	}
 	return (1);
 }
 
@@ -84,10 +88,6 @@ int	parse_map(char **lines, t_game *game, int start_index)
 	if (map_lines == 0)
 		return (0);
 	if (!build_map_structure(game, lines, map_start, map_lines))
-	{
-		if (game->map.grid)
-			free_map(game->map.grid);
 		return (0);
-	}
 	return (1);
 }
