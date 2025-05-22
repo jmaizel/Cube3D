@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 12:11:54 by jacobmaizel       #+#    #+#             */
-/*   Updated: 2025/05/22 11:53:36 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/22 13:28:56 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static int	copy_map_lines(t_game *game, char **lines, int start_index,
 					free(game->map.grid[j]);
 				free(game->map.grid);
 				game->map.grid = NULL;
-				return (0);
+				return (exit_error("Error\nMemory allocation failed"), 0);
 			}
 			j++;
 		}

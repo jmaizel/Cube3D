@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 14:22:34 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/22 11:01:20 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/22 13:37:38 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,23 +44,31 @@ void	calculate_texture_x(t_ray *ray, double *wall_x, int *tex_x,
 		*tex_x = tex->width - *tex_x - 1;
 }
 
+/* Dans textures.c, modifiez la fonction load_texture : */
+
 int	load_texture(t_game *game, t_texture *texture, char *path)
 {
 	char	*original_path;
+	void	*img_ptr;
 
 	while (*path && (*path == ' ' || *path == '\t'))
 		path++;
 	original_path = (char *)texture->img;
-	texture->img = mlx_xpm_file_to_image(game->mlx, path, &texture->width,
+	img_ptr = mlx_xpm_file_to_image(game->mlx, path, &texture->width,
 			&texture->height);
-	if (!texture->img)
+	if (!img_ptr)
 	{
 		if (original_path)
+		{
 			free(original_path);
+			texture->img = NULL;
+		}
+		texture->data = NULL;
 		return (exit_error("Erreur: Impossible de charger la texture"), 0);
 	}
 	if (original_path)
 		free(original_path);
+	texture->img = img_ptr;
 	texture->data = (int *)mlx_get_data_addr(texture->img, &texture->bpp,
 			&texture->size_line, &texture->endian);
 	return (1);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_cub_file.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:39:22 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/19 17:43:03 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/22 13:34:23 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,21 @@ int	parse_cub_file(const char *filename, t_game *game)
 		return (exit_error("Error: Could not read .cub file"), 0);
 	map_start_index = 0;
 	if (!parse_config(lines, game, &map_start_index))
-		return (cleanup_config_resources(game), free_split(lines), 0);
+	{
+		cleanup_config_resources(game);
+		free_split(lines);
+		return (0);
+	}
 	if (!check_texture_uniqueness(game))
-		return (cleanup_config_resources(game), free_split(lines), 0);
-	return (handle_map_validation(game, lines, map_start_index));
+	{
+		cleanup_config_resources(game);
+		free_split(lines);
+		return (0);
+	}
+	if (!handle_map_validation(game, lines, map_start_index))
+	{
+		cleanup_config_resources(game);
+		return (0);
+	}
+	return (1);
 }

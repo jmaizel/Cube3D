@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:37:18 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/22 11:29:20 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/22 13:34:08 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,12 +68,32 @@ static int	init_graphics(t_game *game)
 	if (!game->mlx)
 		return (exit_error("Erreur init MLX"), 0);
 	if (!load_all_textures(game))
+	{
+		mlx_destroy_display(game->mlx);
+		free(game->mlx);
+		game->mlx = NULL;
 		return (0);
+	}
 	game->win = mlx_new_window(game->mlx, WIN_WIDTH, WIN_HEIGHT,
 			"Cub3D avec raycasting");
 	if (!game->win)
+	{
+		cleanup_texture_resources(game);
+		mlx_destroy_display(game->mlx);
+		free(game->mlx);
+		game->mlx = NULL;
 		return (exit_error("Erreur fenêtre"), 0);
+	}
 	game->img = mlx_new_image(game->mlx, WIN_WIDTH, WIN_HEIGHT);
+	if (!game->img)
+	{
+		mlx_destroy_window(game->mlx, game->win);
+		cleanup_texture_resources(game);
+		mlx_destroy_display(game->mlx);
+		free(game->mlx);
+		game->mlx = NULL;
+		return (exit_error("Erreur image"), 0);
+	}
 	game->img_data = (int *)mlx_get_data_addr(game->img, &game->bpp,
 			&game->size_line, &game->endian);
 	return (1);
@@ -87,10 +107,18 @@ int	main(int argc, char **argv)
 		return (exit_error("Usage: ./cub3D map.cub"), 1);
 	init_game_structure(&game);
 	if (!parse_cub_file(argv[1], &game))
+	{
+		// Le nettoyage est déjà fait dans parse_cub_file
 		return (1);
+	}
 	init_monsters(&game);
 	if (!init_graphics(&game))
+	{
+		if (game.map.grid)
+			free_map(game.map.grid);
+		cleanup_config_resources(&game);
 		return (1);
+	}
 	render_frame(&game);
 	mlx_put_image_to_window(game.mlx, game.win, game.img, 0, 0);
 	setup_hooks(&game);
