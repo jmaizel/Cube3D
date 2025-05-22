@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:37:18 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/22 14:02:11 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/22 15:01:22 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,35 +66,24 @@ static int	init_graphics(t_game *game)
 {
 	game->mlx = mlx_init();
 	if (!game->mlx)
-		return (exit_error("Erreur init MLX"), 0);
+		return (exit_error("Error/n minilibx"), 0);
 	if (!load_all_textures(game))
-	{
-		cleanup_texture_resources(game);
-		mlx_destroy_display(game->mlx);
-		free(game->mlx);
-		game->mlx = NULL;
-		return (0);
-	}
+		return (cleanup_texture_resources(game), mlx_destroy_display(game->mlx),
+			free(game->mlx), game->mlx = NULL, 0);
 	game->win = mlx_new_window(game->mlx, WIN_WIDTH, WIN_HEIGHT,
 			"Cub3D avec raycasting");
 	if (!game->win)
 	{
 		cleanup_texture_resources(game);
 		mlx_destroy_display(game->mlx);
-		free(game->mlx);
-		game->mlx = NULL;
-		return (exit_error("Erreur fenêtre"), 0);
+		return (free(game->mlx), game->mlx = NULL, exit_error("Error/n wndow"),
+			0);
 	}
 	game->img = mlx_new_image(game->mlx, WIN_WIDTH, WIN_HEIGHT);
 	if (!game->img)
-	{
-		mlx_destroy_window(game->mlx, game->win);
-		cleanup_texture_resources(game);
-		mlx_destroy_display(game->mlx);
-		free(game->mlx);
-		game->mlx = NULL;
-		return (exit_error("Erreur image"), 0);
-	}
+		return (mlx_destroy_window(game->mlx, game->win),
+			cleanup_texture_resources(game), mlx_destroy_display(game->mlx),
+			free(game->mlx), game->mlx = NULL, exit_error("Error/n image"), 0);
 	game->img_data = (int *)mlx_get_data_addr(game->img, &game->bpp,
 			&game->size_line, &game->endian);
 	return (1);

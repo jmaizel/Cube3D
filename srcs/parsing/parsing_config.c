@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 20:07:23 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/22 13:57:51 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/22 14:46:50 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ static int	process_door_texture(char *line, t_game *game, int *config_count)
 	return (0);
 }
 
-static int	check_map_begin(char *line, int *config_count)
+static int	check_map_begin(char *line, int *config_count,
+		t_config_flags *flags)
 {
 	int	is_map;
 
@@ -52,6 +53,8 @@ static int	check_map_begin(char *line, int *config_count)
 	{
 		if (!check_config_count(*config_count, 6,
 				"Error\nIncomplete configuration before the map"))
+			return (-1);
+		if (!validate_required_configs(flags))
 			return (-1);
 		return (2);
 	}
@@ -87,7 +90,7 @@ int	process_line(char *line, t_game *game, int *config_count,
 	result = process_monster_textures(trimmed_line, game);
 	if (result != 0)
 		return (result);
-	return (check_map_begin(trimmed_line, config_count));
+	return (check_map_begin(trimmed_line, config_count, flags));
 }
 
 int	is_texture_line(char *line)

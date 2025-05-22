@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:39:22 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/22 13:47:40 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/22 14:56:10 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ int	parse_cub_file(const char *filename, t_game *game)
 	lines = read_files_lines(filename);
 	if (!lines)
 		return (exit_error("Error: Could not read .cub file"), 0);
-	
 	map_start_index = 0;
 	if (!parse_config(lines, game, &map_start_index))
 	{
@@ -86,16 +85,13 @@ int	parse_cub_file(const char *filename, t_game *game)
 		free_split(lines);
 		return (0);
 	}
-	
 	if (!check_texture_uniqueness(game))
 	{
 		cleanup_config_resources(game);
 		free_split(lines);
 		return (0);
 	}
-	
 	if (!handle_map_validation(game, lines, map_start_index))
 		return (0);
-	
 	return (1);
 }

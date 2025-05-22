@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 17:00:36 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/22 14:00:40 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/22 14:47:33 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -467,6 +467,7 @@ int					is_texture_line(char *line);
 int					handle_config(t_config_data *data, char *line);
 int					check_texture_uniqueness(t_game *game);
 int					validate_map_texture_coherence(t_game *game);
+int					validate_required_configs(t_config_flags *flags);
 char				*ft_skip_whitespace(char *line);
 
 /*
