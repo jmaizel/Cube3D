@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 14:22:34 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/22 13:59:17 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/05/22 14:41:27 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,16 +44,50 @@ void	calculate_texture_x(t_ray *ray, double *wall_x, int *tex_x,
 		*tex_x = tex->width - *tex_x - 1;
 }
 
+static char	*ft_trim_path(char *path)
+{
+	char	*start;
+	char	*end;
+	char	*trimmed;
+	int		len;
+	int		i;
+
+	start = path;
+	while (*start && (*start == ' ' || *start == '\t'))
+		start++;
+	end = start + ft_strlen(start) - 1;
+	while (end > start && (*end == ' ' || *end == '\t' || *end == '\n'))
+		end--;
+	len = end - start + 1;
+	trimmed = malloc(len + 1);
+	if (!trimmed)
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		trimmed[i] = start[i];
+		i++;
+	}
+	trimmed[len] = '\0';
+	return (trimmed);
+}
+
 int	load_texture(t_game *game, t_texture *texture, char *path)
 {
 	char	*original_path;
+	char	*trimmed_path;
 	void	*img_ptr;
 
-	while (*path && (*path == ' ' || *path == '\t'))
-		path++;
 	original_path = (char *)texture->img;
-	img_ptr = mlx_xpm_file_to_image(game->mlx, path, &texture->width,
+	trimmed_path = ft_trim_path(path);
+	if (!trimmed_path)
+	{
+		texture->data = NULL;
+		return (exit_error("Erreur: Allocation mémoire"), 0);
+	}
+	img_ptr = mlx_xpm_file_to_image(game->mlx, trimmed_path, &texture->width,
 			&texture->height);
+	free(trimmed_path);
 	if (!img_ptr)
 	{
 		texture->data = NULL;
