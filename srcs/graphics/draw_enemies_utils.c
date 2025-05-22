@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:15:30 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/14 10:39:40 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/22 11:06:50 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,8 @@ int	get_monster_pixel(t_game *game, t_draw_params params,
 	int	tex_y;
 	int	d;
 
+	if (game->monster_frame_count == 0)
+		return (0);
 	frame = game->monsters[monster_index].frame;
 	if (frame >= game->monster_frame_count)
 		frame = 0;

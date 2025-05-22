@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:37:18 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/14 11:34:17 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/22 11:29:20 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,6 @@ static void	init_game_structure(t_game *game)
 	game->monster_frame_count = 0;
 	game->last_frame_time = 0.0;
 	game->delta_time = 0.0;
-	game->mouse_enabled = 0;
-	game->mouse_sensitivity = 0.0005;
-	game->mouse_x = WIN_WIDTH / 2;
-	game->mouse_prev_x = WIN_WIDTH / 2;
 	game->firing = 0;
 	game->weapon_cooldown = 0.5;
 	game->weapon_timer = 0.0;
@@ -63,8 +59,6 @@ static void	setup_hooks(t_game *game)
 	mlx_hook(game->win, 2, 1L << 0, key_press, game);
 	mlx_hook(game->win, 3, 1L << 1, key_release, game);
 	mlx_hook(game->win, 17, 0, close_window, game);
-	mlx_hook(game->win, 6, 1L << 6, mouse_move, game);
-	mlx_mouse_hook(game->win, mouse_click, game);
 	mlx_loop_hook(game->mlx, game_loop, game);
 }
 

@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 17:34:40 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/14 10:40:30 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/22 11:30:51 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,7 @@ void	draw_controls_menu(t_game *game)
 	mlx_string_put(game->mlx, game->win, x_start, y_start + line_height * i++,
 		title_color, "CONTROLS:");
 	draw_control_item(game, y_start + line_height * i++, "WASD:", "Move");
-	draw_control_item(game, y_start + line_height * i++, "Arrows/Mouse:",
-		"Look");
-	draw_control_item(game, y_start + line_height * i++, "M:",
-		"Toggle mouse");
+	draw_control_item(game, y_start + line_height * i++, "Arrows:", "Look");
 	draw_control_item(game, y_start + line_height * i++, "LMB/Space:",
 		"Shoot");
 	draw_control_item(game, y_start + line_height * i++, "ESC:", "Quit");

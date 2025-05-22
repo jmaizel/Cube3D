@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 16:45:10 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/14 10:39:06 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/22 11:09:01 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,20 @@
 
 int	is_valid_position(t_game *game, double x, double y)
 {
-	if (x < 0 || y < 0 || (int)x >= game->map.width
-		|| (int)y >= game->map.height)
+	int	map_x;
+	int	map_y;
+
+	map_x = (int)x;
+	map_y = (int)y;
+	if (x < 0 || y < 0 || map_x >= game->map.width || map_y >= game->map.height)
 		return (0);
-	if (game->map.grid[(int)y][(int)x] == '1')
+	if (!game->map.grid || !game->map.grid[map_y])
 		return (0);
-	if (game->map.grid[(int)y][(int)x] == 'D' && !game->door_opened)
+	if (map_x >= (int)ft_strlen(game->map.grid[map_y]))
+		return (0);
+	if (game->map.grid[map_y][map_x] == '1')
+		return (0);
+	if (game->map.grid[map_y][map_x] == 'D' && !game->door_opened)
 		return (0);
 	return (1);
 }

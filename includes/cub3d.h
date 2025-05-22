@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 17:00:36 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/19 17:04:20 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/22 11:28:52 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -281,11 +281,6 @@ typedef struct s_game
 	int				size_line;
 	int				endian;
 
-	int				mouse_x;
-	int				mouse_prev_x;
-	int				mouse_enabled;
-	double			mouse_sensitivity;
-
 	int				firing;
 	double			weapon_cooldown;
 	double			weapon_timer;
@@ -326,9 +321,6 @@ void				handle_movement(t_game *game);
 */
 int					key_press(int keycode, t_game *game);
 int					key_release(int keycode, t_game *game);
-int					mouse_move(int x, int y, t_game *game);
-void				toggle_mouse(t_game *game);
-int					mouse_click(int button, int x, int y, t_game *game);
 
 /*
 ** Game loop and timing

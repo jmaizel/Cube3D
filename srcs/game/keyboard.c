@@ -6,7 +6,7 @@
 /*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 21:36:14 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/14 10:34:23 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/05/22 11:29:55 by cdedessu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,6 @@ int	key_press(int keycode, t_game *game)
 		game->rotate_right = 1;
 	else if (keycode == 65307 || keycode == 53)
 		close_window(game);
-	else if (keycode == 109 || keycode == 46)
-		toggle_mouse(game);
 	else if (keycode == 32 || keycode == 1)
 		attack(game);
 	return (0);

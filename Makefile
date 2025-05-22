@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: cdedessu <cdedessu@student.42.fr>          +#+  +:+       +#+         #
+#    By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/28 14:37:22 by jmaizel           #+#    #+#              #
-#    Updated: 2025/05/19 17:11:11 by cdedessu         ###   ########.fr        #
+#    Updated: 2025/05/22 11:31:30 by cdedessu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,7 @@ MLX = $(MLX_DIR)/libmlx.a
 MAIN_FILES = main.c utils.c cleanup.c cleanup2.c cleanup3.c
 PARSING_FILES = parse_map.c parsing_cub_file.c validate_map.c parse_map_utils.c validate_map_utils.c validate_map_utils2.c parsing_cub_utils.c parsing_cub_utils2.c parsing_config.c parsing_config_utils.c parse_map_utils2.c parsing_config2.c parsing_config3.c parsing_cub_file2.c contains.c
 RAYCASTING_FILES = raycasting.c raycasting_utils.c raycasting_utils2.c raycasting2.c
-GAME_FILES = movement.c mouse.c game_status_utils.c movement_utils.c attack.c attack_utils.c movement_rotate.c keyboard.c game_loop.c monster_utils.c
+GAME_FILES = movement.c game_status_utils.c movement_utils.c attack.c attack_utils.c movement_rotate.c keyboard.c game_loop.c monster_utils.c
 GRAPHICS_FILES = draw_minimap.c draw_weapon.c render_frame.c textures.c draw_enemies.c draw_menu.c draw_enemies_utils.c draw_minimap_utils.c textures_utils.c draw_enemies2.c draw_enemies_utils2.c draw_minimap_utils2.c textures2.c textures_utils2.c
 
 SRC_FILES = $(addprefix $(MAIN_DIR)/, $(MAIN_FILES)) \
