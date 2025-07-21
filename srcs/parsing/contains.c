@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 12:30:50 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/15 12:34:18 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/06/02 11:49:21 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,4 +65,11 @@ int	validate_map_texture_coherence(t_game *game)
 		return (0);
 	}
 	return (1);
+}
+
+int	check_result(int result)
+{
+	if (result < 0 || result != 0)
+		return (result);
+	return (0);
 }

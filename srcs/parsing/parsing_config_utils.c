@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 20:51:42 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/22 14:56:23 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/06/02 11:42:00 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,14 @@ int	process_north_south(char *line, t_game *game, int *config_count,
 	if (ft_strncmp(line, "NO ", 3) == 0)
 	{
 		if (!parse_texture_line(line, &game->north_tex.img, &flags->no_set))
-			return (0);
+			return (-1);
 		(*config_count)++;
 		return (1);
 	}
 	else if (ft_strncmp(line, "SO ", 3) == 0)
 	{
 		if (!parse_texture_line(line, &game->south_tex.img, &flags->so_set))
-			return (0);
+			return (-1);
 		(*config_count)++;
 		return (1);
 	}
@@ -38,14 +38,14 @@ int	process_west_east(char *line, t_game *game, int *config_count,
 	if (ft_strncmp(line, "WE ", 3) == 0)
 	{
 		if (!parse_texture_line(line, &game->west_tex.img, &flags->we_set))
-			return (0);
+			return (-1);
 		(*config_count)++;
 		return (1);
 	}
 	else if (ft_strncmp(line, "EA ", 3) == 0)
 	{
 		if (!parse_texture_line(line, &game->east_tex.img, &flags->ea_set))
-			return (0);
+			return (-1);
 		(*config_count)++;
 		return (1);
 	}

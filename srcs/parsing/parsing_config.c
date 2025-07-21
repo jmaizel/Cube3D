@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 20:07:23 by cdedessu          #+#    #+#             */
-/*   Updated: 2025/05/22 15:39:47 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/06/02 11:49:03 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,14 @@ static int	process_colors(char *line, t_game *game, int *config_count,
 	if (ft_strncmp(line, "F ", 2) == 0)
 	{
 		if (!parse_color_config(line, &game->floor_color, &flags->f_set))
-			return (0);
+			return (-1);
 		(*config_count)++;
 		return (1);
 	}
 	else if (ft_strncmp(line, "C ", 2) == 0)
 	{
 		if (!parse_color_config(line, &game->ceiling_color, &flags->c_set))
-			return (0);
+			return (-1);
 		(*config_count)++;
 		return (1);
 	}
@@ -67,12 +67,15 @@ static int	process_config_elements(char *trimmed_line, t_game *game,
 	int	result;
 
 	result = process_north_south(trimmed_line, game, config_count, flags);
+	result = check_result(result);
 	if (result != 0)
 		return (result);
 	result = process_west_east(trimmed_line, game, config_count, flags);
+	result = check_result(result);
 	if (result != 0)
 		return (result);
 	result = process_colors(trimmed_line, game, config_count, flags);
+	result = check_result(result);
 	if (result != 0)
 		return (result);
 	result = process_door_texture(trimmed_line, game, config_count);
@@ -82,9 +85,7 @@ static int	process_config_elements(char *trimmed_line, t_game *game,
 	if (result != 0)
 		return (result);
 	result = process_monster_textures(trimmed_line, game);
-	if (result != 0)
-		return (result);
-	return (0);
+	return (result);
 }
 
 int	process_line(char *line, t_game *game, int *config_count,

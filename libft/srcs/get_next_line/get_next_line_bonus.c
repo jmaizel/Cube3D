@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdedessu <cdedessu@student.s19.be>         +#+  +:+       +#+        */
+/*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 11:16:19 by cdedessu          #+#    #+#             */
-/*   Updated: 2024/11/05 21:29:19 by cdedessu         ###   ########.fr       */
+/*   Updated: 2025/06/02 11:32:38 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,47 +128,43 @@ char	*get_next_line(int fd)
 #include <fcntl.h>
 #include <stdio.h>
 
-int main(void)
+int	main(void)
 {
-    int fd1, fd2, fd3;
-    char *line;
+	char	*line;
 
-    fd1 = open("file1.txt", O_RDONLY);
-    fd2 = open("file2.txt", O_RDONLY);
-    fd3 = open("file3.txt", O_RDONLY);
-
-    if (fd1 == -1 || fd2 == -1 || fd3 == -1)
-    {
-        perror("Erreur lors de l'ouverture des fichiers");
-        if (fd1 != -1) close(fd1);
-        if (fd2 != -1) close(fd2);
-        if (fd3 != -1) close(fd3);
-        return (1);
-    }
-    printf("Contenu de File 1:\n");
-    while ((line = get_next_line(fd1)) != NULL)
-    {
-        printf("%s\n", line);
-        free(line);
-    }
-    close(fd1);
-	
-    printf("\nContenu de File 2:\n");
-    while ((line = get_next_line(fd2)) != NULL)
-    {
-        printf("%s\n", line);
-        free(line);
-    }
-    close(fd2);
-
-    printf("\nContenu de File 3:\n");
-    while ((line = get_next_line(fd3)) != NULL)
-    {
-        printf("%s\n", line);
-        free(line);
-    }
-    close(fd3);
-	
-    return (0);
+	int fd1, fd2, fd3;
+	fd1 = open("file1.txt", O_RDONLY);
+	fd2 = open("file2.txt", O_RDONLY);
+	fd3 = open("file3.txt", O_RDONLY);
+	if (fd1 == -1 || fd2 == -1 || fd3 == -1)
+	{
+		perror("Erreur lors de l'ouverture des fichiers");
+		if (fd1 != -1) close(fd1);
+		if (fd2 != -1) close(fd2);
+		if (fd3 != -1) close(fd3);
+		return (1);
+	}
+	printf("Contenu de File 1:\n");
+	while ((line = get_next_line(fd1)) != NULL)
+	{
+		printf("%s\n", line);
+		free(line);
+	}
+	close(fd1);
+	printf("\nContenu de File 2:\n");
+	while ((line = get_next_line(fd2)) != NULL)
+	{
+		printf("%s\n", line);
+		free(line);
+	}
+	close(fd2);
+	printf("\nContenu de File 3:\n");
+	while ((line = get_next_line(fd3)) != NULL)
+	{
+		printf("%s\n", line);
+		free(line);
+	}
+	close(fd3);
+	return (0);
 }
 */

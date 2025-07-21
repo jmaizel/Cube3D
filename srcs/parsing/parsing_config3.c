@@ -6,7 +6,7 @@
 /*   By: jmaizel <jmaizel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:32:17 by jmaizel           #+#    #+#             */
-/*   Updated: 2025/05/22 15:40:21 by jmaizel          ###   ########.fr       */
+/*   Updated: 2025/06/02 11:44:45 by jmaizel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,9 @@ static int	process_config_lines(char **lines, t_game *game,
 		{
 			result = handle_config(&data, lines[i]);
 			result = handle_config_result(&data, map_start_index, i, result);
-			if (result == 0 || result == 2)
+			if (result == 0)
+				return (0);
+			if (result == 2)
 				break ;
 		}
 		i++;
